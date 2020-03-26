@@ -1,0 +1,30 @@
+{
+	"printWidth": 120,
+	"singleQuote": true,
+	"semi": false,
+	"useTabs": true,
+	"overrides": [
+		{
+			"files": "*.js",
+			"options": {
+				"arrowParens": "always",
+				"bracketSpacing": true,
+				"semi": true,
+				"tabWidth": 2,
+				"useTabs": false
+			}
+		},
+		{
+			"files": "*.html",
+			"options": {
+				"tabWidth": 4
+			}
+		},
+		{
+			"files": "*.pug",
+			"options": {
+				"bracketSpacing": true
+			}
+		}
+	]
+}
