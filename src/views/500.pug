@@ -1,0 +1,15 @@
+extends layout
+
+block title
+	title Internal server error - Flight Finder
+
+block content
+	main(role='main')
+		.container.py-5.py-lg-10
+			.row.justify-content-center.align-items-center
+				.col-lg-5.text-center.text-lg-left.order-2.order-lg-1
+					h1.text-dark.font-weight-bold.text-xl-nowrap.text-lh-1 Something went wrong
+					p.mb-4.text-muted= "Your request can't be processed right now. Try again later."
+					a.btn.btn-primary.px-4(href='/') Back to Home
+				.col-lg-7.text-center.order-1.order-lg-2.mb-4.mb-lg-0
+					img.img-fluid.w-md-90.w-lg-100(src='../images/svg/undraw_server_down.svg', alt='Page Not Found')

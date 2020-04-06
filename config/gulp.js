@@ -10,6 +10,7 @@ const paths = {
     '!dist/static/vendors',
     '!dist/static/vendors/**/*'
   ],
+  images_dir: 'dist/static/images',
   dist_dir: 'dist',
   dist_files: 'dist/**/*.*',
   views: {
@@ -21,7 +22,7 @@ const paths = {
     dist: 'dist/static/css'
   },
   js: {
-    src: 'src/satic/js/**/*.js',
+    src: 'src/static/js/**/*.js',
     dist: 'dist/static/js'
   },
   fonts: {
@@ -29,12 +30,15 @@ const paths = {
     dist: 'dist/static/fonts'
   },
   images: {
-    src: 'src/static/images/**/*.+(png|jpg|jpeg|svg)',
+    src: 'src/static/images/**/*.+(png|jpg|jpeg|svg|ico)',
     dist: 'dist/static/images'
   },
   vendors: {
     fontawesome: {
-      src: ['node_modules/font-awesome/*css*/font-awesome.min.css', 'node_modules/font-awesome/*fonts*/*'],
+      src: [
+        'node_modules/@fortawesome/fontawesome-free/*css*/all.min.css',
+        'node_modules/@fortawesome/fontawesome-free/*webfonts*/*'
+      ],
       dist: 'dist/static/vendors/font-awesome'
     },
     jquery: {

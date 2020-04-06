@@ -18,19 +18,16 @@ gulp.task('copy:images', () =>
 );
 
 gulp.task('copy:vendors', (done) => {
-  config.paths.vendors.forEach((vendor) => gulp.src(vendor.src).pipe(gulp.dest(vendor.dist)));
+  Object.keys(config.paths.vendors).forEach((index) => {
+    const vendor = config.paths.vendors[index];
+    return gulp.src(vendor.src).pipe(gulp.dest(vendor.dist));
+  });
   done();
 });
 
-// gulp.task('copy:vendors', (done) => {
-//   Object.keys(config.paths.vendors).forEach((index) => {
-//     const vendor = config.paths.vendors[index];
-//     return gulp.src(vendor.src).pipe(gulp.dest(vendor.dist));
-//   });
-//   done();
-// });
-
 gulp.task('clean', () => del(config.paths.dist_dir).then((cb) => cache.clearAll(cb)));
+
+gulp.task('clean:images', () => del(config.paths.images_dir).then((cb) => cache.clearAll(cb)));
 
 gulp.task('clean:dist', () => del(config.paths.cleanup_dirs));
 
@@ -62,6 +59,7 @@ gulp.task('dev:css', () =>
       )
     )
     .pipe(gulp.dest(config.paths.css.dist))
+    .pipe(browserSync.stream())
 );
 
 gulp.task('watch:css', (done) => {

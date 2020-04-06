@@ -1,0 +1,40 @@
+extends layout
+
+block title
+	title Sign in - Flight Finder
+
+block content
+	main.bg-gray(role='main')
+		.container.py-5.py-lg-12
+			.row.align-items-center.justify-content-center
+				.col-lg-6.order-2.order-lg-1.px-md-12.px-lg-0.px-xl-8
+					h3.section-title.section-title-lg-left.section-title-gutter-sm.text-center.text-lg-left.mb-5 Account sign in
+					.card
+						.card-body.p-4
+							form#signInForm.needs-validation(method='POST', action='/user/sign-in', novalidate='')
+								.form-group
+									label.text-muted.required(for='email') Email address
+									.prepend-icon
+										i.fas.fa-envelope.fa-fw
+										input#email.form-control(type='email', name='email', placeholder='johndoe@placeholder.com', required='')
+										.invalid-feedback Email address is required.
+								.form-group
+									label.text-muted.required(for='password') Password
+									.prepend-icon
+										i.fas.fa-lock.fa-fw
+										input#password.form-control(type='password', name='password', placeholder='Password', required='')
+										.invalid-feedback Password is required.
+								.form-group.custom-control.custom-checkbox.mt-5
+									input#rememberMyPassword.custom-control-input(type='checkbox', name='rememberMyPassword')
+									label.custom-control-label.font-size-15(for='rememberMyPassword') Remember my password
+								.form-group
+									button.btn.btn-primary.btn-block(type='submit') Sign in
+							.mt-1.font-size-14
+								p.text-gray-1.mb-1
+									a(href='#!') Forgot your password
+									| ?
+								p.text-gray-1.mb-0
+									| Don&apos;t have an account?
+									a(href='#!') &nbsp;Register now
+				.col-lg-6.text-center.order-1.order-lg-2.mb-3.mb-lg-0.mt-lg-10.px-lg-8
+					img.img-fluid.w-75.w-md-65.w-lg-100(src='../images/svg/undraw_world.svg', alt='Welcome')

@@ -40,20 +40,27 @@ app.use(
 app.use(flash());
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/user', usersRouter);
 app.use('/flight', flightsRouter);
 app.use('/booking', bookingRouter);
 
 app.use((req, res, next) => {
-  next(createError(404));
+  // next(createError(404));
+  res.status(400);
+  res.render('404');
 });
 
 app.use((err, req, res, next) => {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  if (req.app.get('env') === 'development') {
+    res.locals.message = err.message;
+    res.locals.error = err;
+    res.render('error');
+    return;
+  }
 
-  res.status(err.status || 500);
-  res.render('error');
+  const error = err.status || 500;
+  res.status(error);
+  res.render(`${error}`);
 });
 
 module.exports = app;
