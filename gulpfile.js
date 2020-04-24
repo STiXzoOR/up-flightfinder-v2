@@ -6,15 +6,11 @@ const autoprefixer = require('gulp-autoprefixer');
 const browserSync = require('browser-sync').create();
 const nodemon = require('gulp-nodemon');
 const config = require('./config/gulp.js');
-require('./config/object-foreach.js');
 
 gulp.task('copy:fonts', () => gulp.src(config.paths.fonts.src).pipe(gulp.dest(config.paths.fonts.dist)));
 
 gulp.task('copy:images', () =>
-  gulp
-    .src(config.paths.images.src)
-    .pipe(cache(imagemin()))
-    .pipe(gulp.dest(config.paths.images.dist))
+  gulp.src(config.paths.images.src).pipe(cache(imagemin())).pipe(gulp.dest(config.paths.images.dist))
 );
 
 gulp.task('copy:vendors', (done) => {
@@ -26,6 +22,8 @@ gulp.task('copy:vendors', (done) => {
 });
 
 gulp.task('clean', () => del(config.paths.dist_dir).then((cb) => cache.clearAll(cb)));
+
+gulp.task('clean:vendors', () => del(config.paths.vendors_dir));
 
 gulp.task('clean:images', () => del(config.paths.images_dir).then((cb) => cache.clearAll(cb)));
 
@@ -53,7 +51,7 @@ gulp.task('dev:css', () =>
           'iOS >= 9',
           'Safari >= 9',
           'Android >= 4.4',
-          'Opera >= 30'
+          'Opera >= 30',
         ],
         { cascade: true }
       )
