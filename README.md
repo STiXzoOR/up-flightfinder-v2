@@ -11,28 +11,88 @@ The goal is to build a web application which enables the user not only to search
 - Have latest version of Node.js installed.
 - Have latest version of Python installed.
   - NOTE: if installing on windows, tick `Add Python to PATH`
+- Have Redis installed.
+  - For Windows: download latest release from [here](hhttps://github.com/downloads/dmajkic/redis/redis-2.4.5-win32-win64.zip). Extract it and run `redis-server.exe` to start the server.
+  - For MacOS: install [brew](https://brew.sh/) and then run `brew install redis`. Finally run `redis-server` to start the server.
 - Have MySQL and phpMyAdmin installed.
   - For Windows/Linux: install [XAMPP](https://www.apachefriends.org/download.html)
   - For MacOS: install [MAMP](https://downloads.mamp.info/MAMP-PRO/releases/5.5/MAMP_MAMP_PRO_5.5.pkg)
 
 ## Project Setup
 
-- TODO
+- Clone the repo or download as zip.
+- Navigate to the folder where you cloned/extracted the repo.
+
+> PYTHON
+
+- Navigate to `./config/python_scripts` and create a virtual environment.
+  - Run `python -m venv venv` to initialize it.
+  - To activate it:
+    - On Windows: Run `venv\Scripts\activate`
+    - On MacOS/Linux: Run `source venv/bin/activate`
+- Run `pip install -r requirements.txt` to install the python dependencies.
+- Run `python generate_dotenv.py` without any arguments to generate the default .env file.
+
+  - Accepted arguments:
+    - `--debug`: whether to run flask app in debug mode. Defualt: disabled.
+    - `--database-user`: database username. **Default: root**.
+    - `--database-password`: database password. **Default: "" or root if it's MAMP**.
+    - `--database-host`: database host location. **Default: localhost**.
+    - `--use-mailgun`: use mailgun service to send emails. **Default: disabled**.
+      - `--mailgun-api-key`: mailgun generated api key.
+      - `--mailgun-base-url`: mailgun base url server. **Default: US**.
+      - `--mailgun-api-domain`: mailgun api assigned domain.
+      - `--mailgun-sender-email`: mailgun sender email.
+
+- Navigate to `./config/python_scripts/database` and run `python generate_db.py` without any arguments to create, initialize and fill the database.
+
+  - Accepted arguments:
+    - `--create-db`: creates the empty database if not exists.
+    - `--init-db`: initializes/resets database with the default values.
+    - `--generate-flights`: generates flights for one month.
+  - When the script if finished, we are done with the python part and can safely deactivate the virtual environment by running `deactivate`
+
+> NPM
+
+From the root of the project follow the steps below:
+
+- Run `npm install --global gulp-cli`
+- Run `npm install` to install the npm dependencies.
+- Run `gulp init` to initialize the static resources.
 
 ## Running App
 
-- TODO
+- To run the app in development mode:
+
+  - Run `gulp` or `npm run dev`
+
+    - Accepted arguments:
+
+      - `copy:fonts`: copies the fonts from **src** to **dist** folder.
+      - `copy:images`: copies the images after they are optimized from **src** to **dist** folder.
+      - `copy:vendors`: copies the vendors from **src** to **dist** folder.
+      - `init`: initializes the static resources by running all three previous commands.
+      - `clean:images`: deletes the images from the **dist** folder.
+      - `clean:vendors`: deletes the vendors from the **dist** folder..
+      - `clean:dist`: clears the **dist** folder without deleting the static resources.
+      - `clean`: deletes the **dist** folder entirely.
+
+    - NOTE: you need to run `gulp init` to reinitialize the resources after running the clean commands.
+
+- To run the app in production mode:
+  - Run `npm start prod`
 
 ## Technologies Used
 
-| Area                      | Technology                               |
-| ------------------------- | ---------------------------------------- |
-| Front-End                 | Bootstrap, HTML5, CSS3, Javascript (ES6) |
-| Back-End                  | Node.js, Express.js                      |
-| Authentication Middleware | Passport.js                              |
-| Transactional Emails      | Mailgun                                  |
-| Database                  | MySQL (WAMP/MAMP/LAMP Bundle)            |
-| Deployment                | Local                                    |
+| Area                        | Technology                               |
+| --------------------------- | ---------------------------------------- |
+| Front-End                   | Bootstrap, HTML5, CSS3, Javascript (ES6) |
+| Back-End                    | Node.js, Express.js                      |
+| Authentication Middleware   | Passport.js                              |
+| In-memory caching/Datastore | Redis                                    |
+| Transactional Emails        | Mailgun                                  |
+| Database                    | MySQL (WAMP/MAMP/LAMP Bundle)            |
+| Deployment                  | Local/Remote                             |
 
 ## Authors
 
@@ -43,7 +103,6 @@ The goal is to build a web application which enables the user not only to search
 ## Credits
 
 - [Bootstrap](https://getbootstrap.com/) for the frontend framework.
-- [Mateuszmarkowski](https://github.com/mateuszmarkowski/jQuery-Seat-Charts/) for the seat map functionality.
 - [Rajendra](https://www.behance.net/gallery/1041969/FlightFinder-Logo-Design) for the logo icon.
 - [UnDraw](https://undraw.co/) for the used illustrations.
 - [Unsplash](https://unsplash.com/) for the images.
