@@ -5361,42 +5361,77 @@ ul {
 }
 
 .custom-datepicker .numInputWrapper {
+	background-color: rgba(0, 0, 0, 0.1);
+	padding: 0.5rem;
+	border-radius: 0.4125rem;
+	margin-left: 0.5rem;
+}
+
+.custom-datepicker:not(.allow-year-change) .numInputWrapper {
+	cursor: default;
 	width: 3.125rem;
-}
-
-.custom-datepicker .numInputWrapper span.arrowUp,
-.custom-datepicker .numInputWrapper span.arrowDown {
-	display: none;
-}
-
-.custom-datepicker .flatpickr-current-month .cur-month:hover,
-.custom-datepicker .numInputWrapper:hover {
-	pointer-events: none;
+	padding: 0;
+	border-radius: 0;
 	background-color: transparent;
 }
 
+.custom-datepicker:not(.allow-year-change) .numInputWrapper span.arrowUp,
+.custom-datepicker:not(.allow-year-change) .numInputWrapper span.arrowDown {
+	display: none;
+}
+
+.custom-datepicker .flatpickr-current-month .numInputWrapper span.arrowUp:after {
+	border-bottom-color: rgba(255, 255, 255, 0.7);
+}
+
+.custom-datepicker .flatpickr-current-month .numInputWrapper span.arrowDown:after {
+	border-top-color: rgba(255, 255, 255, 0.7);
+}
+
 .custom-datepicker .flatpickr-months .flatpickr-monthDropdown-months {
-	cursor: default;
 	font-size: 1.25rem;
 	font-weight: 700;
 	margin: 0;
 	padding: 0;
 	width: auto;
+	padding: 0.5rem;
 	text-align: right;
+	background-color: rgba(0, 0, 0, 0.1);
+	border-radius: 0.3125rem;
 	-moz-appearance: none;
 	     appearance: none;
 	-webkit-appearance: none;
 }
 
+.custom-datepicker:not(.allow-month-change) .flatpickr-months .flatpickr-monthDropdown-months {
+	cursor: default;
+	padding: 0;
+	background-color: transparent;
+	border-radius: 0;
+}
+
 .custom-datepicker .flatpickr-current-month input.cur-year {
+	padding: 0;
 	font-size: 1.125rem;
 	font-weight: 400;
 	text-align: left;
+	color: #fff;
+}
+
+.custom-datepicker:not(.allow-month-change) .flatpickr-current-month input.cur-year {
 	cursor: default;
 	-moz-appearance: none;
 	     appearance: none;
 	-webkit-appearance: none;
 	color: rgba(255, 255, 255, 0.7);
+}
+
+.custom-datepicker:not(.allow-month-change) .flatpickr-current-month .cur-month,
+.custom-datepicker:not(.allow-year-change) .numInputWrapper,
+.custom-datepicker:not(.allow-month-change) .flatpickr-current-month .cur-month:hover,
+.custom-datepicker:not(.allow-year-change) .numInputWrapper:hover {
+	pointer-events: none;
+	background-color: transparent;
 }
 
 .custom-datepicker .flatpickr-prev-month,
@@ -5405,7 +5440,7 @@ ul {
 	padding-top: 0.25rem;
 	top: 50%;
 	-webkit-transform: translate(0, -50%);
-	transform: translate(0, -50%);
+	        transform: translate(0, -50%);
 }
 
 .custom-datepicker .flatpickr-prev-month.flatpickr-prev-month {
