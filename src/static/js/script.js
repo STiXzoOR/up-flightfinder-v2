@@ -5,46 +5,73 @@ let oneWaySelectedDate;
 
 $.fn.headerReveal = function headerReveal() {
   const $w = $(window);
+  const $main = $('main');
+  const breakpoints = {
+    xs: 0,
+    sm: 576,
+    md: 768,
+    lg: 992,
+    xl: 1200,
+  };
+
   const self = this;
   this.element = $(this);
   this.scrolled = false;
   this.revealed = false;
+  this.breakpoint = breakpoints[$(this).data('breakpoint')];
+  this.isAbsolute = $(this)
+    .attr('class')
+    .match(/header-abs|header-sm-abs|header-md-abs|header-lg-abs|header-xl-abs/);
 
   return (
     $w.on('scroll', () => {
-      if ($w.scrollTop() > self.element.outerHeight() && !self.scrolled) {
-        self.element.addClass('scrolled');
-        self.element.addClass('transition-scroll-none');
-        self.element.addClass('header-moved-up');
-
-        self.scrolled = true;
-      } else if ($w.scrollTop() <= self.element.outerHeight() && self.scrolled) {
-        self.element.removeClass('scrolled');
-
-        if (self.scrollTimeOutId) clearTimeout(self.scrollTimeOutId);
-
-        self.scrollTimeOutId = setTimeout(() => {
-          self.element.removeClass('header-moved-up');
-        }, 10);
-
-        self.scrolled = false;
-      }
-
-      if ($w.scrollTop() > 400 && !self.revealed) {
-        self.element.removeClass('transition-scroll-none');
-
-        if (self.transitionTimeoutID) clearTimeout(self.transitionTimeoutID);
-
-        self.element.removeClass('header-moved-up');
-        self.revealed = true;
-      } else if ($w.scrollTop() <= 400 && self.revealed) {
-        self.element.addClass('header-moved-up');
-
-        self.transitionTimeoutID = setTimeout(() => {
+      if ($w.width() >= self.breakpoint) {
+        if ($w.scrollTop() > self.element.outerHeight() && !self.scrolled) {
+          self.element.addClass('scrolled');
           self.element.addClass('transition-scroll-none');
-        }, 300);
+          self.element.addClass('header-moved-up');
 
-        self.revealed = false;
+          if (!self.isAbsolute) {
+            $main.css({ 'margin-top': self.outerHeight() });
+          }
+
+          self.scrolled = true;
+        } else if ($w.scrollTop() <= self.element.outerHeight() && self.scrolled) {
+          self.element.removeClass('scrolled');
+
+          if (!self.isAbsolute) {
+            $main.css({ 'margin-top': '' });
+          }
+
+          if (self.scrollTimeOutId) clearTimeout(self.scrollTimeOutId);
+
+          self.scrollTimeOutId = setTimeout(() => {
+            self.element.removeClass('header-moved-up');
+          }, 10);
+
+          self.scrolled = false;
+        }
+
+        if ($w.scrollTop() > 400 && !self.revealed) {
+          self.element.removeClass('transition-scroll-none');
+
+          if (self.transitionTimeoutID) clearTimeout(self.transitionTimeoutID);
+
+          self.element.removeClass('header-moved-up');
+          self.revealed = true;
+        } else if ($w.scrollTop() <= 400 && self.revealed) {
+          self.element.addClass('header-moved-up');
+
+          if (!self.isAbsolute) {
+            $main.css({ 'margin-top': self.outerHeight() });
+          }
+
+          self.transitionTimeoutID = setTimeout(() => {
+            self.element.addClass('transition-scroll-none');
+          }, 300);
+
+          self.revealed = false;
+        }
       }
     }),
     this

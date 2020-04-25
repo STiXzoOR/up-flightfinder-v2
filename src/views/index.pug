@@ -2,7 +2,9 @@ extends layout
 include mixins/_header
 
 block header
-	header.page-header.header-bg-transparent-sm.header-white-nav-links-md.border-bottom.border-bottom-0-md.border-white-translucent.header-scroll-md.transition-scroll
+	header.page-header.header-sm-abs.header-sm-bg-transparent.header-md-white-nav-links.border-bottom.border-md-bottom-0.border-white-translucent.header-md-scroll.transition-scroll(
+		data-breakpoint='md'
+	)
 		+headerContent
 
 block content

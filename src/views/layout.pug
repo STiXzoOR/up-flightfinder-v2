@@ -1,3 +1,5 @@
+include mixins/_header
+
 doctype html
 html
 	head
@@ -17,36 +19,8 @@ html
 			title Flight Finder
 	body
 		block header
-			header.page-header.header-dark-nav-links-md.border-bottom.header-scroll-md.transition-scroll.position-relative
-				block header-content
-					.header-wrapper.header-shadow-on-hide.py-3.py-md-0
-						.container-fluid
-							nav.navbar.navbar-expand-md.py-1.px-0
-								a.navbar-brand.mr-auto(href='/')
-									i.ff.ff-logo.ff-xl.ff-fw.mr-1.ml-n1
-									| Flight Finder
-								button.navbar-toggler.navbar-toggler-hamburger(
-									type='button',
-									data-toggle='collapse',
-									data-target='#headerNavbar',
-									aria-controls='headerNavbar',
-									aria-expanded='false'
-								)
-									span.navbar-toggler-hamburger-icon
-								#headerNavbar.navbar-collapse.collapse.pt-4.pt-md-0
-									ul.navbar-nav.navbar-separate-md.ml-auto
-										li.nav-item
-											a.nav-link(href='/booking/manage-booking')
-												i.fas.fa-edit.fa-fw.mr-2
-												| Manage booking
-										li.nav-item
-											a.nav-link(href='/user/sign-up')
-												i.fas.fa-user-plus.fa-fw.mr-2
-												| Sign up
-										li.nav-item
-											a.nav-link(href='/user/sign-in')
-												i.fas.fa-sign-in-alt.fa-fw.mr-2
-												| Sign in
+			header.page-header.header-dark-nav-links.border-bottom.header-md-scroll.transition-scroll(data-breakpoint='md')
+				+headerContent
 		block content
 		block footer
 			footer.page-footer.border-top
