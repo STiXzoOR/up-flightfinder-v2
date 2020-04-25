@@ -1,4 +1,5 @@
 extends layout
+include mixins/_alert
 
 block title
 	title Manage booking - Flight Finder
@@ -10,9 +11,8 @@ block content
 				.col-lg-10.col-xl-9
 					h1.section-title.section-title-left.section-title-gutter-sm.font-size-md-35.mb-4 Manage booking
 					p.mb-5.text-gray-1 Enter your details below to view, edit or cancel the booking
-					if showAlert
-						.alert.alert-danger(role='alert')
-					.card.p-4
+					+showAlert
+					.card.shadow-soft.p-4
 						.card-header.pb-4.pt-0.px-0
 							.row.align-items-center.justify-content-center.justify-content-lg-between.no-gutters.text-lg-center
 								.col-sm-6.col-md

@@ -70,5 +70,5 @@ QuantityCounter.prototype = {
 
   getMin() {
     return this.min;
-  }
+  },
 };

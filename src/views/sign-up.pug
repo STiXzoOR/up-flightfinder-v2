@@ -1,4 +1,5 @@
 extends layout
+include mixins/_alert
 
 block title
 	title Sign up - Flight Finder
@@ -9,7 +10,8 @@ block content
 			.row.align-items-center.justify-content-center
 				.col-lg-6.order-2.order-lg-1.px-md-12.px-lg-0.px-xl-5
 					h3.section-title.section-title-lg-left.section-title-gutter-sm.text-center.text-lg-left.mb-5 Account sign up
-					.card
+					+showAlert
+					.card.shadow-soft
 						.card-body.p-4
 							form#signUpForm.needs-validation(method='POST', action='/user/sign-up', novalidate='')
 								.form-row
@@ -43,7 +45,7 @@ block content
 										label.text-muted.required(for='gender') Gender
 										.prepend-icon.custom-select2
 											i.fas.fa-venus-mars.fa-fw
-											select#gender.form-control.custom-select(
+											select#gender.select2-input.form-control.custom-select(
 												name='gender',
 												data-minimum-results-for-search='Infinity',
 												required=''
@@ -64,7 +66,7 @@ block content
 										input#password.form-control(
 											type='password',
 											name='password',
-											pattern='^(?=.*[A-Za-z])[A-Za-z\d\W]{8,}$',
+											pattern='^(?=.*[A-Za-z])[A-Za-z\\d\\W]{8,}$',
 											placeholder='Password',
 											required=''
 										)
