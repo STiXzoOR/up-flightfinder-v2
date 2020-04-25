@@ -1,0 +1,6 @@
+black
+Faker
+flake8
+pylint
+PyMySQL
+python-dotenv
