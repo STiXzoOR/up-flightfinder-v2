@@ -4337,33 +4337,29 @@ ul {
 
 .carousel-item .hero-content h2 {
 	font-weight: 500;
+	text-transform: capitalize;
 }
 
 .carousel-item .hero-content p {
 	color: #fff;
 }
 
-.carousel-item .hero .fadeInUp {
+.carousel-item .hero .heroFadeInUp {
 	opacity: 0;
-	-webkit-transform: translate3d(0, 100%, 0);
 	transform: translate3d(0, 100%, 0);
 }
 
-.carousel-item.active .hero .fadeInUp {
+.carousel-item.active .hero .heroFadeInUp {
 	opacity: 1;
-	-webkit-transform: translate3d(0, 0, 0);
 	transform: translate3d(0, 0, 0);
 }
 
-.carousel .hero .fadeInUp.duration4 {
-	-webkit-transition: 0.4s all ease-in-out 0.2s;
-	transition: 0.4s all ease-in-out 0.2s;
-	text-transform: capitalize;
+.carousel .hero .heroFadeInUp.duration4 {
+	transition: all 0.4s ease-in-out 0.2s;
 }
 
-.carousel .hero .fadeInUp.duration6 {
-	-webkit-transition: 0.6s all ease-in-out 0.4s;
-	transition: 0.6s all ease-in-out 0.4s;
+.carousel .hero .heroFadeInUp.duration6 {
+	transition: all 0.6s ease-in-out 0.4s;
 }
 
 @media (min-width: 576px) {
