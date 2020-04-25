@@ -1,4 +1,5 @@
-const createError = require('http-errors');
+require('dotenv').config();
+
 const express = require('express');
 const expressSession = require('express-session');
 const favicon = require('serve-favicon');
@@ -30,6 +31,7 @@ app.use(favicon(path.join(__dirname, '/dist/static/images', 'favicon.ico')));
 app.use(
   expressSession({
     secret: 'session',
+    secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: false,
     duration: 30 * 60 * 1000,
@@ -45,8 +47,7 @@ app.use('/flight', flightsRouter);
 app.use('/booking', bookingRouter);
 
 app.use((req, res, next) => {
-  // next(createError(404));
-  res.status(400);
+  res.status(404);
   res.render('404');
 });
 

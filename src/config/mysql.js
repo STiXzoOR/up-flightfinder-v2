@@ -1,101 +1,88 @@
-const mysql = require('mysql');
-const async = require('async');
+const mysql = require('mysql2');
+const os = require('os');
 
-const pool = mysql.createPool({
+const OSX = os.platform() === 'darwin';
+
+const options = {
   connectionLimit: 100,
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'flightfinderdb',
-  debug: false
-});
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  namedPlaceholders: true,
+  debug: false,
+};
 
-function fetchData(query, fields, callback) {
-  async.waterfall(
-    [
-      () => {
-        pool.getConnection((err, connection) => {
-          if (err) {
-            callback(true);
-          } else {
-            callback(null, connection);
-          }
-        });
-      },
-      (connection) => {
-        connection.query(query, fields, (err, rows) => {
-          connection.release();
-          if (!err) {
-            callback(rows.length === 0 ? false : rows);
-          } else {
-            callback(true);
-          }
-        });
-      }
-    ],
-    (result) => {
-      if (typeof result === 'boolean' && result === true) {
-        callback(null);
-      } else {
-        callback(result);
-      }
-    }
-  );
+if (OSX) {
+  options.socketPath = '/Applications/MAMP/tmp/mysql/mysql.sock';
 }
 
-function transactionData(query, fields, callback) {
-  async.waterfall(
-    [
-      () => {
-        pool.getConnection((err, connection) => {
-          if (err) {
-            callback(true);
-          } else {
-            callback(null, connection);
-          }
+class Database {
+  constructor() {
+    this.pool = mysql.createPool(options);
+  }
+
+  fetch(sql, args) {
+    return new Promise((resolve, reject) => {
+      this.pool.getConnection((err, connection) => {
+        if (err) return reject(err);
+
+        connection.execute(sql, args, (err, rows) => {
+          connection.release();
+
+          if (err) return reject(err);
+
+          resolve(rows);
         });
-      },
-      (connection) => {
+      });
+    });
+  }
+
+  fetchOne(sql, args) {
+    const query = `${sql} LIMIT 1`;
+    return this.fetch(query, args);
+  }
+
+  commit(sql, args) {
+    return new Promise((resolve, reject) => {
+      this.pool.getConnection((err, connection) => {
+        if (err) return reject(err);
+
         connection.beginTransaction((err) => {
-          if (err) {
-            connection.release();
-            callback(true);
-          } else {
-            connection.query(query, fields, (queryErr, result) => {
-              if (queryErr) {
+          if (err) return reject(err);
+
+          connection.execute(sql, args, (err, rows) => {
+            if (err) {
+              connection.rollback(() => {
+                connection.release();
+                return reject(err);
+              });
+            }
+
+            connection.commit((err) => {
+              if (err) {
                 connection.rollback(() => {
                   connection.release();
-                  callback(true);
-                });
-              } else {
-                connection.commit((commitErr) => {
-                  if (commitErr) {
-                    connection.rollback(() => {
-                      connection.release();
-                      callback(true);
-                    });
-                  } else {
-                    connection.release();
-                    callback(result.length === 0 ? false : result);
-                  }
+                  return reject(err);
                 });
               }
+
+              resolve(rows);
             });
-          }
+          });
         });
-      }
-    ],
-    (result) => {
-      if (typeof result === 'boolean' && result === true) {
-        callback(null);
-      } else {
-        callback(result);
-      }
-    }
-  );
+      });
+    });
+  }
+
+  close() {
+    return new Promise((resolve, reject) => {
+      this.pool.end((err) => {
+        if (err) return reject(err);
+        resolve();
+      });
+    });
+  }
 }
 
-module.exports.fetchData = fetchData;
-module.exports.insertData = transactionData;
-module.exports.updateData = transactionData;
-module.exports.deleteData = transactionData;
+module.exports = Database;
