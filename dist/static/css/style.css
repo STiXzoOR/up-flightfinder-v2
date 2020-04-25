@@ -195,6 +195,18 @@ table th {
 	border: 1px solid #e7eaf3;
 }
 
+.table-bordered thead th,
+.table-bordered thead td {
+	border-bottom-width: 2px;
+}
+
+.table-borderless th,
+.table-borderless td,
+.table-borderless thead th,
+.table-borderless tbody + tbody {
+	border: 0;
+}
+
 .table-striped tbody tr:nth-of-type(odd) {
 	background-color: #f8fafd;
 }
