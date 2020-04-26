@@ -17,13 +17,36 @@ mixin headerContent
 					ul.navbar-nav.navbar-separate-md.ml-auto
 						li.nav-item
 							a.nav-link(href='/booking/manage-booking')
-								i.fas.fa-edit.fa-fw.mr-2
+								i.d-none.d-md-inline-block.fas.fa-edit.fa-fw.mr-2
 								| Manage booking
-						li.nav-item
-							a.nav-link(href='/user/sign-up')
-								i.fas.fa-user-plus.fa-fw.mr-2
-								| Sign up
-						li.nav-item
-							a.nav-link(href='/user/sign-in')
-								i.fas.fa-sign-in-alt.fa-fw.mr-2
-								| Sign in
+						if user && user.isAuthenticated
+							li.nav-item.dropdown.dropdown-user
+								a.nav-link.dropdown-toggle.dropdown-user-toggle(
+									role='button',
+									data-toggle='dropdown',
+									data-display='static',
+									aria-haspopup='true',
+									aria-expanded='false'
+								)
+									.flex-vertical-center
+										| Hi, #{user.first_name}
+										i.d-none.d-md-inline-block.fas.fa-user-circle.font-size-md-30.ml-md-2
+								ul.dropdown-menu.dropdown-menu-md-right
+									li
+										a.dropdown-item(href='/user/profile') Profile
+									li
+										a.dropdown-item(href='/user/profile#bookings') Bookings history
+									li
+										a.dropdown-item(href='/user/profile#settings') Change password
+									.dropdown-divider
+									li
+										a.dropdown-item(href='/user/sign-out') Sign out
+						else
+							li.nav-item
+								a.nav-link(href='/user/sign-up')
+									i.d-none.d-md-inline-block.fas.fa-user-plus.fa-fw.mr-2
+									| Sign up
+							li.nav-item
+								a.nav-link(href='/user/sign-in')
+									i.d-none.d-md-inline-block.fas.fa-sign-in-alt.fa-fw.mr-2
+									| Sign in
