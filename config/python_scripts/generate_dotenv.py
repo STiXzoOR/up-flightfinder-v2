@@ -4,6 +4,7 @@ import platform
 import argparse
 
 OSX = platform.system() == "Darwin"
+WINDOWS = platform.system() == "Windows"
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
@@ -32,10 +33,10 @@ parser.add_argument(
     "--database-password",
     metavar="password",
     type=str,
-    default="root" if OSX else "",
+    default="root" if OSX or WINDOWS else "",
     action="store",
     help="database password to connect (default: {password})".format(
-        password="root" if OSX else "None"
+        password="root" if OSX or WINDOWS else "None"
     ),
 )
 
