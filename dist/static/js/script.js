@@ -333,7 +333,15 @@ function displayAdultCount(adults, children, infants) {
     result.text(`${adults} Adult, ${selectedClass}`);
   }
 
-  resultInputData.adults = adults;
+  resultInputData.passengers.adults = adults;
+
+  const passengers = {
+    adults: resultInputData.passengers.adults,
+    children: resultInputData.passengers.children,
+    infants: resultInputData.passengers.infants,
+  };
+
+  resultInputData.passengers.total = Object.values(passengers).reduce((a, b) => a + b);
   resultInput.val(JSON.stringify(resultInputData));
 }
 
@@ -351,7 +359,15 @@ function displayChildrenCount(adults, children, infants) {
     result.text(`${adults} Adult, ${selectedClass}`);
   }
 
-  resultInputData.children = children;
+  resultInputData.passengers.children = children;
+
+  const passengers = {
+    adults: resultInputData.passengers.adults,
+    children: resultInputData.passengers.children,
+    infants: resultInputData.passengers.infants,
+  };
+
+  resultInputData.passengers.total = Object.values(passengers).reduce((a, b) => a + b);
   resultInput.val(JSON.stringify(resultInputData));
 }
 
@@ -369,7 +385,15 @@ function displayInfantCount(adults, children, infants) {
     result.text(`${adults} Adult, ${selectedClass}`);
   }
 
-  resultInputData.infants = infants;
+  resultInputData.passengers.infants = infants;
+
+  const passengers = {
+    adults: resultInputData.passengers.adults,
+    children: resultInputData.passengers.children,
+    infants: resultInputData.passengers.infants,
+  };
+
+  resultInputData.passengers.total = Object.values(passengers).reduce((a, b) => a + b);
   resultInput.val(JSON.stringify(resultInputData));
 }
 
@@ -408,7 +432,7 @@ function initCounters() {
     QuantityCounter.prototype.plus.call(this);
     adultCounter.setMax(9 - this.getNumber());
 
-    displayAdultCount(adultCounter.getNumber(), this.getNumber(), infantCounter.getNumber());
+    displayChildrenCount(adultCounter.getNumber(), this.getNumber(), infantCounter.getNumber());
   };
 
   childrenCounter.minus = function () {
