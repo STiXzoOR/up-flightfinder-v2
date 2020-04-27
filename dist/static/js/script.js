@@ -391,25 +391,42 @@ $('#navOnewayPillTab').on('click', () => {
   fp.setDate(roundTripSelectedDates[0], true);
 });
 
-// $('#fromAirport').on('select:focus', function() {
-//   $(this).parent().addClass('left-focused');
-// })
+$('#fromAirport').on('change', function filter() {
+  const value = $(this).val();
 
-$('.btn-reverse-destinations').on('click', function () {
+  $('#toAirport').find('option:not(:first-child):disabled').prop('disabled', false);
+  $('#toAirport').find(`option[value="${value}"]`).prop('disabled', true);
+});
+
+$('#toAirport').on('change', function filter() {
+  const value = $(this).val();
+
+  $('#fromAirport').find('option:not(:first-child):disabled').prop('disabled', false);
+  $('#fromAirport').find(`option[value="${value}"]`).prop('disabled', true);
+});
+
+$('.btn-reverse-destinations').on('click', function reverse() {
   const $icon = $(this).children().first();
   const $from = $('select[name="fromAirport"]');
   const $to = $('select[name="toAirport"]');
   const fromVal = $from.val();
+  const toVal = $to.val();
 
-  $icon.removeClass('fa-exchange-alt').addClass('fa-sync').addClass('fa-spin').addClass('text-primary');
+  if (fromVal === null && toVal === null) return;
 
-  $from.val($to.val()).trigger('change');
+  $icon.removeClass('fa-exchange-alt').addClass('fa-sync fa-spin text-primary');
 
   if (this.animationTimeoutID) clearTimeout(this.animationTimeoutID);
   this.animationTimeoutID = setTimeout(() => {
-    $icon.removeClass('fa-spin').removeClass('fa-sync').addClass('fa-exchange-alt').removeClass('text-primary');
-    $to.val(fromVal).trigger('change');
-  }, 500);
+    $icon.removeClass('fa-spin fa-sync text-primary').addClass('fa-exchange-alt');
+  }, 300);
+
+  $from.find('option:not(:first-child):disabled').prop('disabled', false);
+  $to.find('option:not(:first-child):disabled').prop('disabled', false);
+
+  $from.val(toVal).trigger('change');
+  $to.val(fromVal).trigger('change');
+});
 });
 
 $(() => {
@@ -418,4 +435,7 @@ $(() => {
   initSelect2();
   initCounters();
   $('.class-list').classCheckList();
+  setTimeout(() => {
+    $('#preloader').fadeOut(500);
+  }, 3000);
 });

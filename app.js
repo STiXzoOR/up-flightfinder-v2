@@ -62,8 +62,7 @@ app.use('/flight', flightsRouter);
 app.use('/booking', bookingRouter);
 
 app.use((req, res, next) => {
-  res.status(404);
-  res.render('404');
+  return res.status(404).render('404');
 });
 
 app.use((err, req, res, next) => {
@@ -75,8 +74,7 @@ app.use((err, req, res, next) => {
   }
 
   const error = err.status || 500;
-  res.status(error);
-  res.render(`${error}`);
+  return res.status(error).render(`${error}`);
 });
 
 module.exports = app;

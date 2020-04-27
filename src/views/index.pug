@@ -58,48 +58,63 @@ block content
 											) One Way
 									#navTabsContent.tab-content
 										#navRoundtripSearch.tab-pane.show.fade.active(role='tabpanel')
-											form#flightSearchForm.needs-validation(novalidate)
+											form#flightSearchForm.needs-validation(action='/flight/search-flights', novalidate)
+												input(type='hidden', name='type', value='RT', required='')
 												.form-row
 													.form-group.col-12.col-lg-5.mb-3.mb-lg-0
 														.form-row.justify-content-center
 															.col-sm-6.custom-select2.half-left.mb-3.mb-sm-0
 																span.text-muted From
-																select#fromAirport.form-control.custom-select(
+																select#fromAirport.select2-input.form-control.custom-select(
 																	name='fromAirport',
 																	data-placeholder='City or airport',
+																	data-format-result='formatAirports',
+																	data-format-selection='formatAirports',
 																	required=''
 																)
-																.invalid-feedback Invalid source airport.
+																	option(selected='', disabled='', hidden='')
+																	each airport in airports
+																		option(value=`${airport.code}`) #{airport.city} (#{airport.code})
+																.invalid-feedback Source is required.
 															.btn-reverse-destinations-wrapper.d-none.d-sm-flex
 																a.btn.btn-icon.btn-reverse-destinations(href='#!', role='button')
 																	i.fas.fa-exchange-alt.fa-fw
 															.col-sm-6.custom-select2.half-right
 																span.text-muted To
-																select#toAirport.form-control.custom-select(
+																select#toAirport.select2-input.form-control.custom-select(
 																	name='toAirport',
 																	data-placeholder='City or airport',
+																	data-format-result='formatAirports',
+																	data-format-selection='formatAirports',
 																	required=''
 																)
-																.invalid-feedback Invalid destination airport.
+																	option(selected='', disabled='', hidden='')
+																	each airport in airports
+																		option(value=`${airport.code}`) #{airport.city} (#{airport.code})
+																.invalid-feedback Dedtination is required.
 													.form-group.col-sm-6.col-lg-3.mb-3.mb-lg-0
 														span.text-muted Depart - Return
 														.custom-datepicker
 															input#departReturnDatepicker.form-control.text-truncate.flatpickr-input(
 																type='date',
-																name='departReturnDate',
-																data-datepicker-mode='range',
-																data-datepicker-preselected-dates='true',
-																data-datepicker-display-date-format='D, j M',
+																name='flightDates',
+																data-mode='range',
+																data-preselected-dates='true',
+																data-min-date='today',
+																data-alt-format='D, j M',
+																data-date-format='Y-m-d',
+																data-month-selector-type='static',
+																data-year-selector-type='static',
 																required=''
 															)
-															.invalid-feedback= "Invalid depart date."
+															.invalid-feedback Flight dates are required.
 													.form-group.col-sm-6.col-lg-3.mb-3.mb-lg-0
 														span.text-muted= "Passengers & class"
 														.dropdown
 															input#passengersClassInput.form-control.d-none(
 																type='text',
 																name='passengersClass',
-																value='{"adults": 1, "children": 0, "infants": 0, "class":"Economy"}',
+																value='{"passengers": {"adults": 1, "children": 0, "infants": 0, "total": 1}, "class":"Economy"}',
 																required=''
 															)
 															.dropdown-input.form-control.dropdown-toggle(
@@ -110,7 +125,7 @@ block content
 																aria-expanded='false'
 															)
 																span#passengerClassResult= "1 Adult, Economy"
-															.invalid-feedback Invalid passengers or class.
+															.invalid-feedback Passengers and class are required.
 															.dropdown-menu.keep-open(aria-labelledby='dropdownMenuLink')
 																.passengers-wrapper
 																	h6.font-size-18 Passengers
@@ -171,7 +186,7 @@ block content
 																		li.class-list-item Business
 																		li.class-list-item First
 													.form-group.col-lg-1.mt-lg-4.mb-3.mb-sm-0
-														button#flightSearch.btn.btn-primary.btn-block(type='submit', name='flightSearch')
+														button#flightSearch.btn.btn-primary.btn-block(type='submit')
 															i.fas.fa-search.fa-fw.mr-1.mr-lg-0
 															span.d-inline-block.d-lg-none.font-weight-bold SEARCH FLIGHTS
 		.why-choose-block.border-top.border-sm-top-0
@@ -197,7 +212,7 @@ block content
 						.text-center.my-3
 							h2.section-title.mb-0 Popular Destinations
 						.row
-							each destination in [{'name': 'Greece', 'price': 80},{'name': 'New York', 'price': 75},{'name': 'Paris', 'price': 100},{'name': 'Cyprus', 'price': 80},{'name': 'Madrid', 'price': 92},{'name': 'Tokyo', 'price': 120},{'name': 'Moscow', 'price': 70},{'name': 'China', 'price': 105},{'name': 'London', 'price': 84}]
+							each destination in destinations
 								.col-12.col-lg-4
 									.item-destination.shadow-sm
 										.bg-img-mask

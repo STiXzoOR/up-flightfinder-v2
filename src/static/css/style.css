@@ -5101,6 +5101,10 @@ ul {
 	.search-flights-card .nav-pills .nav-link.active {
 		border-color: #297cbb;
 	}
+
+	.search-flights-card .nav-pills .nav-link.active:hover {
+		background-color: #297cbb;
+	}
 }
 
 /*-------------------------------------------*\
