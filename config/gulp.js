@@ -68,9 +68,15 @@ const paths = {
     },
     select2_bootstrap: {
       src: 'node_modules/select2-theme-bootstrap4/dist/select2-bootstrap.min.css',
-      dist: 'dist/static/vendors/select2/css'
-    }
-  }
+      dist: 'dist/static/vendors/select2/css',
+    },
+    ion_range: {
+      src: [
+        'node_modules/ion-rangeslider/*js*/ion.rangeSlider.min.js',
+        'node_modules/ion-rangeslider/*css*/ion.rangeSlider.min.css',
+      ],
+      dist: 'dist/static/vendors/ion.rangeSlider',
+    },
 };
 
 module.exports = {

@@ -5966,7 +5966,141 @@ ul {
 }
 
 /*-------------------------------------------*\
-    2.15. Sizing
+    2.15. Custom ion.Range Slider
+\*-------------------------------------------*/
+.irs--bootstrap {
+	height: 1.5rem;
+}
+
+.irs--bootstrap.irs-with-indicator {
+	height: 4rem;
+}
+
+.irs--bootstrap.irs-with-grid {
+	height: 2.85rem;
+}
+
+.irs-with-indicator.irs-with-grid {
+	height: 5.35rem;
+}
+
+.irs--bootstrap .irs-line {
+	top: 0.5rem;
+	height: 0.5rem;
+	background-color: #e7eaf3;
+	border-radius: 0.5rem;
+}
+
+.irs--bootstrap .irs-bar {
+	top: 0.5rem;
+	height: 0.5rem;
+	background-color: #297cbb;
+}
+
+.irs--bootstrap .irs-bar--single {
+	border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.irs--bootstrap .irs-shadow {
+	height: 0.4375rem;
+	bottom: 1.3125rem;
+	background-color: rgba(222, 228, 236, 0.5);
+}
+
+.irs--bootstrap .irs-handle {
+	top: -0.02rem;
+	width: 1.5rem;
+	height: 1.5rem;
+	border: 2px solid #297cbb;
+	background-color: #fff;
+	border-radius: 50%;
+	box-shadow: 0 0.1875rem 0.75rem rgba(140, 152, 164, 0.3125);
+	transition-duration: 0.3s;
+	transition-property: background-color, transform;
+	transition-timing-function: ease-in-out;
+}
+
+.irs--bootstrap .irs-handle.state_hover,
+.irs--bootstrap .irs-handle:hover {
+	background-color: #f0f6ff;
+	transform: scale(1.2);
+}
+
+.irs--bootstrap .irs-min,
+.irs--bootstrap .irs-max {
+	color: #77838f;
+	font-size: 0.875rem;
+	line-height: 1;
+	top: 0;
+	padding: 0.5rem;
+	background-color: rgba(119, 131, 143, 0.1);
+	border-radius: 0.3125rem;
+}
+
+.irs--bootstrap .irs-from,
+.irs--bootstrap .irs-to,
+.irs--bootstrap .irs-single {
+	font-size: 0.875rem;
+	line-height: 1;
+	text-shadow: none;
+	padding: 0.5rem;
+	color: #3b444f;
+	min-width: 2.5rem;
+	border-radius: 0.3125rem;
+	background-color: rgba(41, 124, 187, 0.1);
+}
+.irs--bootstrap .irs-from:before,
+.irs--bootstrap .irs-to:before,
+.irs--bootstrap .irs-single:before {
+	position: absolute;
+	display: block;
+	content: '';
+	bottom: -0.65rem;
+	left: 50%;
+	width: 0;
+	height: 0;
+	overflow: hidden;
+	border: 5px solid transparent;
+	border-top-color: rgba(41, 124, 187, 0.1);
+	transform: translateX(-50%);
+}
+
+.irs-with-indicator .irs-line,
+.irs-with-indicator .irs-bar {
+	top: 3rem;
+}
+
+.irs-with-indicator .irs-handle {
+	top: 2.5rem;
+}
+
+.irs-with-grid .irs-grid {
+	height: 1.75rem;
+}
+
+.irs-with-grid .irs-grid-pol {
+	height: 0.5rem;
+	background-color: rgba(119, 131, 143, 0.35);
+}
+
+.irs-with-grid .irs-grid-pol.small {
+	display: none;
+	height: 0.25rem;
+}
+
+.irs-with-grid .irs-grid-text {
+	min-width: 2.5rem;
+	line-height: 1;
+	font-size: 0.875rem;
+	color: #77838f;
+	border-radius: 6.1875rem;
+	padding: 0 0.25rem;
+}
+
+.irs-with-grid .irs-grid-text.current {
+	background: rgba(41, 124, 187, 0.1);
+	color: #297cbb;
+}
 \*-------------------------------------------*/
 /*-------------------------------------------*\
     2.15.1. Width

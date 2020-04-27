@@ -431,6 +431,98 @@ function initCounters() {
   };
 }
 
+const rangeSlider = {
+  defaultConfig: {
+    skin: 'bootstrap',
+    prettify_separator: ',',
+    onStart: () => {},
+    onChange: () => {},
+    onFinish: () => {},
+    onUpdate: () => {},
+  },
+
+  init(selector, config) {
+    if (!$(selector).length) return;
+
+    this.selector = $(selector);
+    this.config = config && $.isPlainObject(config) ? $.extend({}, this.defaultConfig, config) : this.defaultConfig;
+
+    this.initRangeSlider();
+  },
+
+  initRangeSlider() {
+    const { config } = this;
+
+    this.selector.each((i, el) => {
+      const $this = $(el);
+      const type = $this.data('type');
+      const minResult = $this.data('result-min');
+      const maxResult = $this.data('result-max');
+      const hasGrid = Boolean($this.data('grid'));
+
+      $this.ionRangeSlider(config);
+      const slider = $(el).data('ionRangeSlider');
+
+      $(el).on('change', () => {
+        if (minResult && type === 'single') {
+          if ($(minResult).is('input')) {
+            $(minResult).val(slider.from);
+          } else {
+            $(minResult).text(slider.from);
+          }
+        } else if (minResult || (maxResult && type === 'double')) {
+          if ($(minResult).is('input')) {
+            $(minResult).val(slider.from);
+          } else {
+            $(minResult).text(slider.from);
+          }
+
+          if ($(minResult).is('input')) {
+            $(maxResult).val(slider.to);
+          } else {
+            $(maxResult).text(slider.to);
+          }
+        }
+
+        if (hasGrid && type === 'single') {
+          $(slider.result.slider)
+            .find('.irs-grid-text')
+            .each(function setCurrent() {
+              const current = $(this);
+
+              if ($(current).text() === slider.from) {
+                $(slider.result.slider).find('.irs-grid-text').removeClass('current');
+                $(current).addClass('current');
+              }
+            });
+        }
+      });
+
+      if (minResult && type === 'single' && $(minResult).is('input')) {
+        $(minResult).on('change', function changeVal() {
+          slider.update({
+            from: $(this).val(),
+          });
+        });
+      } else if (
+        minResult ||
+        (maxResult && type === 'double' && $(minResult).is('input')) ||
+        $(maxResult).is('input')
+      ) {
+        $(minResult).on('change', function changeVal() {
+          slider.update({
+            from: $(this).val(),
+          });
+        });
+        $(maxResult).on('change', function changeVal() {
+          slider.update({
+            to: $(this).val(),
+          });
+        });
+      }
+    });
+  },
+};
 $('.needs-validation').on('submit', function validateForm(e) {
   if ($(this)[0].checkValidity() === false) {
     e.preventDefault();
