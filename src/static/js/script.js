@@ -3,6 +3,22 @@
 let roundTripSelectedDates;
 let oneWaySelectedDate;
 
+function formatAirports(airport) {
+  if (!airport.id) {
+    return airport.text;
+  }
+
+  const args = airport.text.split(' ');
+  const code = args.pop();
+  const name = args.join(' ');
+  const $airport = $('<span/>').addClass('flex-center-between').text(name);
+  const $code = $('<span/>').addClass('font-size-12 text-muted ml-2').text(code);
+
+  $code.appendTo($airport);
+
+  return $airport;
+}
+
 $.fn.headerReveal = function headerReveal() {
   const $w = $(window);
   const $main = $('main');
@@ -78,78 +94,6 @@ $.fn.headerReveal = function headerReveal() {
   );
 };
 
-$.fn.customSelect2 = function customSelect2(options) {
-  this.select2(options);
-
-  const self = this;
-  this.element = $(this);
-  this.parent = this.element.parent();
-  this.select = this.element.data('select2');
-  this.options = this.select.options;
-  this.dropdown = this.select.dropdown;
-  this.dropBelow = true;
-  this.isOpened = false;
-
-  return (
-    this.element.on('select2:open', () => {
-      self.parent.addClass('focused');
-
-      if (!self.options.multiple) {
-        self.dropdown.$search.attr(
-          'placeholder',
-          self.options.placeholder !== '' ? self.options.placeholder : 'Select option...'
-        );
-      }
-      self.dropdown.$dropdown.hide();
-      self.dropBelow = self.dropdown.$dropdown.hasClass('select2-dropdown--below');
-
-      setTimeout(() => {
-        self.dropdown.$dropdown
-          .css('opacity', 0)
-          .stop(true, true)
-          .fadeIn(300, 'swing', () => {
-            if (!self.options.multiple) {
-              self.dropdown.$search.focus();
-            }
-          })
-          .animate(
-            { opacity: 1, top: self.dropBelow ? '0.25rem' : '-0.25rem' },
-            { queue: false, duration: 300, easing: 'swing' }
-          );
-      }, 10);
-
-      self.isOpened = true;
-    }),
-    this.element.on('select2:closing', (e) => {
-      if (self.isOpened) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        self.dropdown.$dropdown
-          .fadeOut(200, 'swing', () => {
-            self.element.select2('close');
-          })
-          .animate(
-            { opacity: 0, top: self.dropBelow ? '1.25rem' : '-1.25rem' },
-            {
-              queue: false,
-              duration: 200,
-              easing: 'swing',
-            }
-          );
-        self.isOpened = false;
-      }
-    }),
-    this.element.on('select2:close', () => {
-      setTimeout(() => {
-        self.parent.removeClass('focused');
-        $(':focus').blur();
-      }, 1);
-    }),
-    this
-  );
-};
-
 $.fn.classCheckList = function classCheckList() {
   return this.on('click', (e) => {
     if ($(e.target).hasClass('selected')) return;
@@ -168,75 +112,212 @@ $.fn.classCheckList = function classCheckList() {
   });
 };
 
-function initCalendars() {
-  $('.flatpickr-input').each((i, el) => {
-    const $this = $(el);
-    const isInline = Boolean($this.data('datepicker-inline'));
-    const mode = $this.data('datepicker-mode');
-    const minDate = $this.data('datepicker-min-date');
-    const maxDate = $this.data('datepicker-max-date');
-    const container = $this.data('datepicker-container');
-    const displayDateFormat = $this.data('datepicker-display-date-format');
-    const sendDateFormat = $this.data('datepicker-send-date-format');
-    const preselectedDates = $this.data('datepicker-preselected-dates');
+$.fn.syncText = function syncText() {
+  return this.each(function init() {
+    const self = this;
+    this.element = $(this);
+    this.isInput = $(this).is('input');
+    this.targetPlaceholder = $(this).data('sync-placeholder');
+    this.evaluateValue = (target, value) => {
+      if (target.is('input')) {
+        target.val(value);
+      } else {
+        target.text(value);
+      }
+    };
 
-    const today = new Date();
-    let defaultDates = null;
+    let target = $(this).data('sync-controls');
+    let parent = $(this).data('sync-parent');
+    parent = ($(`#${parent}`).length && $(`#${parent}`)) || $(`.${parent}`);
+    target = (parent.find(`#${target}`).length && parent.find(`#${target}`)) || parent.find(`.${target}`);
 
-    if (preselectedDates && mode === 'range') {
-      const todayPlusDate = new Date();
-      todayPlusDate.setDate(todayPlusDate.getDate() + 10);
-      defaultDates = [today, todayPlusDate];
-    } else if (preselectedDates && mode === 'single') {
-      defaultDates = today;
-    }
+    $(this).on('change paste keyup', () => {
+      let value = self.targetPlaceholder;
 
-    const fp = $this.flatpickr({
-      allowInput: true,
-      altInput: true,
-      inline: isInline,
-      defaultDate: defaultDates,
-      mode: mode || 'single',
-      altFormat: displayDateFormat || 'd M Y',
-      dateFormat: sendDateFormat || 'Y-m-d',
-      minDate: minDate || 'today',
-      maxDate: maxDate || false,
-      appendTo: container ? container[0] : $this.parent()[0],
-      monthSelectorType: 'static',
-      locale: {
-        firstDayOfWeek: 1,
-        rangeSeparator: ' - ',
-      },
-      onClose: (selectedDates, dateStr, instance) => {
-        if (instance.config.mode === 'range') {
-          if (selectedDates.length === 1) {
-            instance.setDate([selectedDates[0], selectedDates[0]], true);
-          }
+      if (self.isInput && self.element.val()) {
+        value = self.element.val();
+      } else if (!self.isInput && self.element.text()) {
+        value = self.element.text();
+      }
 
-          if (selectedDates[0].getTime() === selectedDates[1].getTime()) {
-            const selectedDate = instance.formatDate(selectedDates[0], instance.config.altFormat);
-            instance._input.value = `${selectedDate} - ${selectedDate}`;
-          }
+      self.evaluateValue(target, value);
+    });
+
+    $(this).trigger('change');
+  });
+};
+
+const datePicker = {
+  defaultConfig: {
+    allowInput: true,
+    altInput: true,
+    locale: {
+      firstDayOfWeek: 1,
+      rangeSeparator: ' - ',
+    },
+    onClose: (selectedDates, dateStr, instance) => {
+      if (instance.config.mode === 'range') {
+        if (selectedDates.length === 1) {
+          instance.setDate([selectedDates[0], selectedDates[0]], true);
         }
-      },
+
+        if (selectedDates[0].getTime() === selectedDates[1].getTime()) {
+          const selectedDate = instance.formatDate(selectedDates[0], instance.config.altFormat);
+          instance._input.value = `${selectedDate} - ${selectedDate}`;
+          instance.input.value = `${instance.input.value} - ${instance.input.value}`;
+        }
+      }
+    },
+  },
+
+  init(selector, config) {
+    if (!$(selector).length) return;
+
+    this.selector = $(selector);
+    this.config = config && $.isPlainObject(config) ? $.extend({}, this.defaultConfig, config) : this.defaultConfig;
+
+    this.initDatePicker();
+  },
+
+  initDatePicker() {
+    const self = this;
+
+    this.selector.each((i, el) => {
+      const $this = $(el);
+      const config = $.extend({}, self.config);
+      const mode = $this.data('mode');
+      const container = $this.data('container');
+      const allowMonth = $this.data('month-selector-type') === 'dropdown';
+      const allowYear = $this.data('year-selector-type') === 'dropdown';
+      const preselectedDates = $this.data('preselected-dates');
+      const defaultSelected = $this.data('default-selected-dates');
+      const today = new Date();
+
+      if (preselectedDates && mode === 'range') {
+        const todayPlusDate = new Date();
+        todayPlusDate.setDate(todayPlusDate.getDate() + 10);
+        config.defaultDate = [today, todayPlusDate];
+      } else if (preselectedDates && mode === 'single') {
+        config.defaultDate = today;
+      } else if (defaultSelected) {
+        config.defaultDate = defaultSelected;
+      }
+
+      config.appendTo = container ? container[0] : $this.parent()[0];
+
+      const fp = $this.flatpickr(config);
+
+      if (allowMonth) {
+        $this.parent().addClass('allow-month-change');
+      }
+
+      if (allowYear) {
+        $this.parent().addClass('allow-year-change');
+      }
+
+      fp._input.onkeydown = () => false;
     });
+  },
+};
 
-    fp._input.onkeydown = () => false;
-  });
-}
+const customSelect = {
+  defaultConfig: {
+    containerCssClass: ':all:',
+    theme: 'bootstrap',
+  },
 
-function initSelect2() {
-  $('.custom-select2 select').each((i, el) => {
-    const $this = $(el);
-    const container = $this.data('dropdown-parent');
+  init(selector, config) {
+    if (!$(selector).length) return;
 
-    $this.customSelect2({
-      containerCssClass: ':all:',
-      dropdownParent: container ? container[0] : $this.parent()[0],
-      theme: 'bootstrap',
+    this.selector = $(selector);
+    this.config = config && $.isPlainObject(config) ? $.extend({}, this.defaultConfig, config) : this.defaultConfig;
+
+    this.initCustomSelect();
+  },
+
+  initCustomSelect() {
+    const that = this;
+
+    this.selector.each(function init(i, el) {
+      const self = this;
+      const config = $.extend({}, that.config);
+      const container = $(el).data('dropdown-parent');
+      const formatResult = $(el).data('format-result');
+      const formatSelection = $(el).data('format-selection');
+
+      this.element = $(el);
+      this.parent = $(el).parent();
+      this.dropBelow = true;
+      this.isOpened = false;
+
+      config.dropdownParent = container ? container[0] : $(el).parent()[0];
+      if (formatResult) config.templateResult = window[formatResult];
+      if (formatSelection) config.templateSelection = window[formatSelection];
+
+      $(el).select2(config);
+
+      const select2 = $(el).data('select2');
+
+      this.element.on('select2:open', () => {
+        self.parent.addClass('focused');
+
+        if (!select2.options.multiple) {
+          select2.dropdown.$search.attr(
+            'placeholder',
+            select2.options.placeholder !== '' ? select2.options.placeholder : 'Select option...'
+          );
+        }
+        select2.dropdown.$dropdown.hide();
+        self.dropBelow = select2.dropdown.$dropdown.hasClass('select2-dropdown--below');
+
+        setTimeout(() => {
+          select2.dropdown.$dropdown
+            .css('opacity', 0)
+            .stop(true, true)
+            .fadeIn(300, 'swing', () => {
+              if (!select2.options.multiple) {
+                select2.dropdown.$search.focus();
+              }
+            })
+            .animate(
+              { opacity: 1, top: self.dropBelow ? '0.25rem' : '-0.25rem' },
+              { queue: false, duration: 300, easing: 'swing' }
+            );
+        }, 10);
+
+        self.isOpened = true;
+      });
+
+      this.element.on('select2:closing', (e) => {
+        if (self.isOpened) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          select2.dropdown.$dropdown
+            .fadeOut(200, 'swing', () => {
+              self.element.select2('close');
+            })
+            .animate(
+              { opacity: 0, top: self.dropBelow ? '1.25rem' : '-1.25rem' },
+              {
+                queue: false,
+                duration: 200,
+                easing: 'swing',
+              }
+            );
+          self.isOpened = false;
+        }
+      });
+
+      this.element.on('select2:close', () => {
+        setTimeout(() => {
+          self.parent.removeClass('focused');
+          $(':focus').blur();
+        }, 1);
+      });
     });
-  });
-}
+  },
+};
 
 function displayAdultCount(adults, children, infants) {
   const result = $('#passengerClassResult');
@@ -369,14 +450,21 @@ $('.uppercase-input').on('keyup paste', function uppercase() {
 });
 
 $('#navRoundtripPillTab').on('click', () => {
-  const fp = $('#departReturnDatepicker')[0]._flatpickr;
+  $('#flightSearchForm').find('input[name="type"]').val('RT');
+
+  let fp = $('#departReturnDatepicker')[0]._flatpickr;
   [oneWaySelectedDate] = fp.selectedDates;
 
+  if (!roundTripSelectedDates) roundTripSelectedDates = [oneWaySelectedDate, oneWaySelectedDate];
   const departDate = oneWaySelectedDate;
   const arrivalDate =
     departDate.getTime() > roundTripSelectedDates[1].getTime() ? departDate : roundTripSelectedDates[1];
 
   roundTripSelectedDates = [departDate, arrivalDate];
+
+  fp.destroy();
+  datePicker.init('#departReturnDatepicker', { disableMobile: 'true' });
+  fp = $('#departReturnDatepicker')[0]._flatpickr;
 
   fp.set('mode', 'range');
   fp.setDate(roundTripSelectedDates, true);
@@ -384,8 +472,16 @@ $('#navRoundtripPillTab').on('click', () => {
 });
 
 $('#navOnewayPillTab').on('click', () => {
-  const fp = $('#departReturnDatepicker')[0]._flatpickr;
+  $('#flightSearchForm').find('input[name="type"]').val('OW');
+
+  let fp = $('#departReturnDatepicker')[0]._flatpickr;
   roundTripSelectedDates = fp.selectedDates;
+
+  $(fp.input).val('');
+  $(fp._input).val('');
+  fp.destroy();
+  datePicker.init('#departReturnDatepicker', fp.isMobile ? { disableMobile: 'false' } : {});
+  fp = $('#departReturnDatepicker')[0]._flatpickr;
 
   fp.set('mode', 'single');
   fp.setDate(roundTripSelectedDates[0], true);
@@ -431,10 +527,15 @@ $('.btn-reverse-destinations').on('click', function reverse() {
 
 $(() => {
   $('.page-header').headerReveal();
-  initCalendars();
-  initSelect2();
+  datePicker.init('.flatpickr-input');
+  customSelect.init('.select2-input');
+  rangeSlider.init('.ion-range-slider-input');
   initCounters();
+  initCheckedBaggage();
+  initInsuranceCard();
   $('.class-list').classCheckList();
+  $('[data-toggle="tooltip"]').tooltip();
+  $('[data-toggle="popover"]').popover();
   setTimeout(() => {
     $('#preloader').fadeOut(500);
   }, 3000);
