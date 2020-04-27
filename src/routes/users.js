@@ -8,23 +8,22 @@ require('../config/passport')(passport);
 
 const router = express.Router();
 
-/* GET users listing. */
 router.get('/', (req, res, next) => {
-  next(createError(400));
+  return next(createError(400));
 });
 
 router.get('/sign-in', (req, res, next) => {
-  res.render('sign-in');
+  return res.render('sign-in');
 });
 
 router.get('/sign-up', (req, res, next) => {
-  res.render('sign-up');
+  return res.render('sign-up');
 });
 
 router.get('/sign-out', (req, res) => {
   req.session.destroy(() => {
     req.logout();
-    res.redirect('/');
+    return res.redirect('/');
   });
 });
 
@@ -98,11 +97,11 @@ router.post('/sign-up', async (req, res, next) => {
     });
 
   if (response.error) {
-    res.status(response.status).render('sign-up', { error: response.message });
-  } else {
-    res.flash('success', response.message);
-    res.redirect('/user/sign-in');
+    return res.status(response.status).render('sign-up', { error: response.message });
   }
+
+  res.flash('success', response.message);
+  return res.redirect('/user/sign-in');
 });
 
 module.exports = router;
