@@ -43,7 +43,7 @@ module.exports = (passport) => {
             id: data[0].customer_id,
             firstName: data[0].first_name,
             lastName: data[0].last_name,
-            fullname: `${this.firstName} ${this.lastName}`,
+            fullname: `${data[0].firstName} ${data[0].lastName}`,
             role: data[0].customer_type,
           };
         } else {

@@ -166,7 +166,7 @@ def init_database():
     print("Done!")
 
 
-def generate_flights():
+def generate_flights(days=30):
     print_stmt("Generating flights... ")
 
     def _cleanup_flights():
@@ -222,7 +222,7 @@ def generate_flights():
     time_multiplier = 4
     classes = ["Economy", "Business", "First Class"]
     date_start = today = _get_start_date()
-    date_end = date_start + timedelta(days=30)
+    date_end = date_start + timedelta(days=days)
 
     with open(current_dir + "/data/routes_durations.json", mode="r") as file:
         durations = json.load(file)
@@ -366,9 +366,15 @@ if __name__ == "__main__":
         "--init-db", action="store_true", help="initialize database",
     )
     parser.add_argument(
-        "--generate-flights",
-        action="store_true",
-        help="generate flights for one month",
+        "--generate-flights", action="store_true", help="generate flights",
+    )
+    parser.add_argument(
+        "--days",
+        metavar="days",
+        type=int,
+        default=30,
+        action="store",
+        help="specify for how many days to generate flights",
     )
 
     args = parser.parse_args()
@@ -392,6 +398,8 @@ if __name__ == "__main__":
             exit(0)
 
         init_database()
+    elif not args.generate_flights and args.days:
+        parser.error("You can't use this command with the --generate-flights command")
     elif args.generate_flights:
         if not database_exists():
             parser.error(
@@ -400,7 +408,7 @@ if __name__ == "__main__":
         elif database_is_empty() or not table_exists(table="flight"):
             parser.error("Database is empty or corrupted. Please run --init-db first!")
 
-        generate_flights()
+        generate_flights(days=30 if not args.days else args.days)
     else:
         create_database()
         init_database()
