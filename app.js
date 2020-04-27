@@ -25,7 +25,7 @@ app.set('view engine', 'pug');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, '/dist/static')));
+app.use('/static', express.static(path.join(__dirname, '/dist/static')));
 app.use(favicon(path.join(__dirname, '/dist/static/images', 'favicon.ico')));
 
 app.use(
@@ -69,8 +69,7 @@ app.use((err, req, res, next) => {
   if (req.app.get('env') === 'development') {
     res.locals.message = err.message;
     res.locals.error = err;
-    res.render('error');
-    return;
+    return res.render('error');
   }
 
   const error = err.status || 500;

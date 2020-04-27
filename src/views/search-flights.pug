@@ -413,7 +413,7 @@ block content
 																.row.align-items-center.text-center
 																	.col-3.col-sm-auto.col-md-3.col-lg-auto.col-xl-3
 																		img.img-fluid(
-																			src=`../images/airlines/${flight.departAirlineCode}.png`,
+																			src=`/static/images/airlines/${flight.departAirlineCode}.png`,
 																			alt=`${flight.departAirlineName}`
 																		)
 																	.col-auto.pl-0.pl-sm-3
@@ -434,7 +434,7 @@ block content
 																	.row.align-items-center.text-center
 																		.col-3.col-sm-auto.col-md-3.col-lg-auto.col-xl-3
 																			img.img-fluid(
-																				src=`../images/airlines/${flight.returnAirlineCode}.png`,
+																				src=`/static/images/airlines/${flight.returnAirlineCode}.png`,
 																				alt=`${flight.returnAirlineName}`
 																			)
 																		.col-auto.pl-0.pl-sm-3
@@ -491,7 +491,7 @@ block content
 																			.row.align-items-center.text-center
 																				.d-none.d-md-block.col-auto.col-lg
 																					.flex-vertical-center
-																						img.img-fluid.mr-3(src=`../images/airlines/${flight.departAirlineCode}.png`)
+																						img.img-fluid.mr-3(src=`/static/images/airlines/${flight.departAirlineCode}.png`)
 																						ul.d-flex.flex-column.font-size-14.text-left
 																							li #{flight.departFlightID}
 																							li #{flight.departAirlineName}
@@ -536,7 +536,7 @@ block content
 																				.row.align-items-center.text-center
 																					.d-none.d-md-block.col-auto.col-lg
 																						.flex-vertical-center
-																							img.img-fluid.mr-3(src=`../images/airlines/${flight.returnAirlineCode}.png`)
+																							img.img-fluid.mr-3(src=`/static/images/airlines/${flight.returnAirlineCode}.png`)
 																							ul.d-flex.flex-column.font-size-14.text-left
 																								li #{flight.returnFlightID}
 																								li #{flight.returnAirlineName}
