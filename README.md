@@ -12,11 +12,11 @@ The goal is to build a web application which enables the user not only to search
 - Have latest version of Python installed.
   - NOTE: if installing on windows, tick `Add Python to PATH`
 - Have Redis installed.
-  - For Windows: download latest release from [here](hhttps://github.com/downloads/dmajkic/redis/redis-2.4.5-win32-win64.zip). Extract it and run `redis-server.exe` to start the server.
+  - For Windows: follow the instructions on [RedisLabs](https://redislabs.com/blog/redis-on-windows-10/).
   - For MacOS: install [brew](https://brew.sh/) and then run `brew install redis`. Finally run `redis-server` to start the server.
 - Have MySQL and phpMyAdmin installed.
-  - For Windows/Linux: install [XAMPP](https://www.apachefriends.org/download.html)
-  - For MacOS: install [MAMP](https://downloads.mamp.info/MAMP-PRO/releases/5.5/MAMP_MAMP_PRO_5.5.pkg)
+  - For Windows/Linux: install [MAMP](https://downloads.mamp.info/MAMP-PRO-WINDOWS/releases/4.1.1/MAMP_MAMP_PRO_4.1.1.exe)
+  - For MacOS: install [MAMP](https://downloads.mamp.info/MAMP-PRO/releases/5.7/MAMP_MAMP_PRO_5.7.pkg)
 
 ## Project Setup
 
@@ -49,7 +49,8 @@ The goal is to build a web application which enables the user not only to search
   - Accepted arguments:
     - `--create-db`: creates the empty database if not exists.
     - `--init-db`: initializes/resets database with the default values.
-    - `--generate-flights`: generates flights for one month.
+    - `--generate-flights`: generates flights.
+      - `--days`: specify for how many days to generate flights. **Default: 30**.
   - When the script if finished, we are done with the python part and can safely deactivate the virtual environment by running `deactivate`
 
 > NPM
@@ -91,7 +92,7 @@ From the root of the project follow the steps below:
 | Authentication Middleware   | Passport.js                              |
 | In-memory caching/Datastore | Redis                                    |
 | Transactional Emails        | Mailgun                                  |
-| Database                    | MySQL (WAMP/MAMP/LAMP Bundle)            |
+| Database                    | MySQL (MAMP Bundle)                      |
 | Deployment                  | Local/Remote                             |
 
 ## Authors
