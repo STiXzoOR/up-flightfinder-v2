@@ -3588,7 +3588,6 @@ ul {
 	text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.75);
 }
 
-
 .flight-card .card-body {
 	padding: 1.5rem;
 }
@@ -18817,4 +18816,234 @@ button.bg-gray:focus {
 	button.bg-xl-gray:focus {
 		background-color: #c7d5e8 !important;
 	}
+}
+
+/*-------------------------------------------*\
+    2.18.11 Dividers
+\*-------------------------------------------*/
+
+.vr {
+	position: relative;
+}
+
+.vr::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	height: 100%;
+	border-right: 1px solid #e7eaf3;
+}
+
+/*-------------------------------------------*\
+    2.18.12 Animations
+\*-------------------------------------------*/
+
+.fadeIn {
+	animation: fadeIn;
+	animation-duration: 0.8s;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+.fadeInDown {
+	animation: fadeInDown;
+	animation-duration: 0.4s;
+}
+
+@keyframes fadeInDown {
+	from {
+		opacity: 0;
+		transform: translate3d(0, -100%, 0);
+	}
+
+	to {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+.fadeInLeft {
+	animation: fadeInLeft;
+	animation-duration: 0.4s;
+}
+
+@keyframes fadeInLeft {
+	from {
+		opacity: 0;
+		transform: translate3d(-100%, 0, 0);
+	}
+
+	to {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+.fadeInRight {
+	animation: fadeInRight;
+	animation-duration: 0.4s;
+}
+
+@keyframes fadeInRight {
+	from {
+		opacity: 0;
+		transform: translate3d(100%, 0, 0);
+	}
+
+	to {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+.fadeInUp {
+	animation: fadeInUp;
+	animation-duration: 0.4s;
+}
+
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translate3d(0, 100%, 0);
+	}
+
+	to {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+.fadeInZoom {
+	animation: fadeInZoom;
+	animation-duration: 0.6s;
+}
+
+@keyframes fadeInZoom {
+	from {
+		transform: scale(0);
+	}
+	to {
+		transform: scale(1);
+	}
+}
+
+.animation-infinite {
+	animation-iteration-count: infinite;
+}
+
+.animation-duration-0dot2s {
+	animation-duration: 0.2s;
+}
+
+.animation-duration-0dot3s {
+	animation-duration: 0.3s;
+}
+
+.animation-duration-0dot4s {
+	animation-duration: 0.4s;
+}
+
+.animation-duration-0dot5s {
+	animation-duration: 0.5s;
+}
+
+.animation-duration-0dot6s {
+	animation-duration: 0.6s;
+}
+
+.animation-duration-1s {
+	animation-duration: 1s;
+}
+
+.animate-duration-2s {
+	animation-duration: 2s;
+}
+
+.animation-duration-3s {
+	animation-duration: 3s;
+}
+
+.animation-duration-4s {
+	animation-duration: 4s;
+}
+
+.animation-duration-5s {
+	animation-duration: 5s;
+}
+
+.animation-delay-0dot2s {
+	animation-delay: 0.2s;
+}
+
+.animation-delay-0dot3s {
+	animation-delay: 0.3s;
+}
+
+.animation-delay-0dot4s {
+	animation-delay: 0.4s;
+}
+
+.animation-delay-0dot5s {
+	animation-delay: 0.5s;
+}
+
+.animation-delay-0dot6s {
+	animation-delay: 0.6s;
+}
+
+.animation-delay-1s {
+	animation-delay: 1s;
+}
+
+.animate-delay-2s {
+	animation-delay: 2s;
+}
+
+.animation-delay-3s {
+	animation-delay: 3s;
+}
+
+.animation-delay-4s {
+	animation-delay: 4s;
+}
+
+.animation-delay-5s {
+	animation-delay: 5s;
+}
+
+/*-------------------------------------------*\
+    2.18.13 Font Awesome
+\*-------------------------------------------*/
+
+:root .fa-rotate-45,
+:root .fa-rotate-135,
+:root .fa-rotate-225,
+:root .fa-rotate-315 {
+	filter: none;
+}
+
+.fa-rotate-45 {
+	transform: rotate(45deg);
+}
+
+.fa-rotate-135 {
+	transform: rotate(135deg);
+}
+
+.fa-rotate-225 {
+	transform: rotate(225deg);
+}
+
+.fa-rotate-315 {
+	transform: rotate(315deg);
 }
