@@ -5305,7 +5305,7 @@ ul {
 \*-------------------------------------------*/
 
 .nav-link {
-	transition: color 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
 }
 
 .navbar-toggler {
@@ -5381,6 +5381,41 @@ ul {
 	color: inherit;
 }
 
+.nav-tabs + .tab-content .card {
+	margin-top: -1px;
+}
+
+.nav-tabs .nav-item {
+	z-index: 1;
+}
+
+.nav-tabs .nav-link,
+.nav-pills .nav-link {
+	color: #3b444f;
+}
+
+.nav-tabs .nav-link:hover,
+.nav-pills .nav-link:hover {
+	color: #297cbb;
+}
+
+.nav-tabs .nav-link:hover {
+	border-color: transparent;
+}
+
+.nav-tabs .nav-link.active {
+	color: #297cbb;
+	pointer-events: none;
+}
+
+.nav-tabs .nav-link.active:hover {
+	border-color: #e7eaf3 #e7eaf3 #fff;
+}
+
+.nav-pills .nav-link.active {
+	color: #fff;
+	pointer-events: none;
+}
 .nav-unjustified .nav-item {
 	-ms-flex-preferred-size: auto;
 	flex-basis: auto;
@@ -5462,20 +5497,10 @@ ul {
 }
 
 .search-flights-card .nav-pills .nav-link {
-	color: #3b444f;
 	font-size: 0.875rem;
 	font-weight: 500;
 	padding: 0.25rem 0.75rem;
 	border-radius: 6.125rem;
-}
-
-.search-flights-card .nav-pills .nav-link:hover {
-	color: #297cbb;
-}
-
-.search-flights-card .nav-pills .nav-link.active {
-	color: #fff;
-	pointer-events: none;
 }
 
 @media (max-width: 575.98px) {
