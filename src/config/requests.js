@@ -1,6 +1,48 @@
+const bcrypt = require('bcrypt');
 const mysql = new (require('./mysql'))();
 
-// TODO convert common actions to a single function
+const getUser = async (email = '', password = '') => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const query = 'SELECT customer_id, first_name, last_name, password, customer_type FROM customer WHERE email=:email';
+
+  try {
+    const data = await mysql.fetch(query, { email });
+
+    if (data === null) {
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    } else if (data.length === 0) {
+      response.status = 400;
+      response.error = true;
+      response.message = 'Email does not exist. Please sign up.';
+    } else if (bcrypt.compareSync(password, data[0].password)) {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Sign in success.';
+      response.result = {
+        id: data[0].customer_id,
+        firstName: data[0].first_name,
+        lastName: data[0].last_name,
+        fullname: `${data[0].first_name} ${data[0].last_name}`,
+        role: data[0].customer_type,
+      };
+    } else {
+      response.status = 401;
+      response.error = true;
+      response.message = 'Password is incorrect. Please try again.';
+    }
+
+    return response;
+  } catch (err) {
+    return err;
+  }
+};
 
 const getPopularDestinations = async () => {
   const response = {
@@ -120,8 +162,62 @@ const getFlights = async ({
   }
 };
 
+const insertUser = async (data) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const salt = bcrypt.genSaltSync(10);
+  const password = bcrypt.hashSync(data.password, salt);
+
+  const userExistsQuery = 'SELECT email FROM customer WHERE email=:email';
+  const userInsertQuery =
+    'INSERT INTO customer (first_name, last_name, email, password, mobile, gender, joined_date, status, customer_type) VALUES (:firstName, :lastName, :email, :password, :mobile, :gender, NOW(), :status, "USER")';
+
+  try {
+    const result = await mysql.fetch(userExistsQuery, { email: data.email });
+
+    if (result.length !== 0) {
+      response.status = 401;
+      response.error = true;
+      response.message = 'The user already exists. Please sign in.';
+      return response;
+    }
+
+    const fields = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      password,
+      mobile: data.mobile,
+      gender: data.gender,
+      status: 'CONFIRMED',
+    };
+
+    await mysql
+      .commit(userInsertQuery, fields)
+      .then(() => {
+        response.status = 200;
+        response.error = false;
+        response.message = 'Sign up success. Please sign in.';
+      })
+      .catch(() => {
+        response.status = 500;
+        response.error = true;
+        response.message = 'Something went wrong while signing you up. Please try again.';
+      });
+
+    return response;
+  } catch (err) {
+    return err;
+  }
+};
 module.exports = {
+  getUser,
   getPopularDestinations,
   getAirports,
   getFlights,
+  insertUser,
 };

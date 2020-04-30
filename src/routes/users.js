@@ -1,8 +1,7 @@
 const express = require('express');
 const createError = require('http-errors');
-const bcrypt = require('bcrypt');
 const passport = require('passport');
-const mysql = new (require('../config/mysql'))();
+const { insertUser } = require('../config/requests');
 
 require('../config/passport')(passport);
 
@@ -34,15 +33,14 @@ router.post('/sign-in', (req, res, next) => {
     }
 
     if (response.error) {
-      const error = response.message;
-      return res.render('sign-in', { error });
+      return res.status(response.status).render('sign-in', { error: response.message });
     }
 
-    req.login(response.user, (err) => {
+    req.login(response.result, (err) => {
       if (err) {
         return next(err);
       }
-      req.session.user = response.user;
+      req.session.user = response.result;
       req.session.user.isAuthenticated = req.isAuthenticated();
       return res.redirect('/');
     });
@@ -50,58 +48,18 @@ router.post('/sign-in', (req, res, next) => {
 });
 
 router.post('/sign-up', async (req, res, next) => {
-  const data = req.body;
-  const response = {
-    status: 400,
-    error: true,
-    message: '',
-  };
+  try {
+    const response = await insertUser(req.body);
 
-  const salt = bcrypt.genSaltSync(10);
-  const password = bcrypt.hashSync(data.password, salt);
+    if (response.error) {
+      return res.status(response.status).render('sign-up', { error: response.message });
+    }
 
-  const userExistsQuery = 'SELECT email FROM customer WHERE email=:email';
-  const userInsertQuery =
-    'INSERT INTO customer (first_name, last_name, email, password, mobile, gender, joined_date, status, customer_type) VALUES (:firstName, :lastName, :email, :password, :mobile, :gender, NOW(), :status, "USER")';
-
-  await mysql
-    .fetch(userExistsQuery, { email: data.email })
-    .then((result) => {
-      if (result.length !== 0) throw new Error();
-      const fields = {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        password,
-        mobile: data.mobile,
-        gender: data.gender,
-        status: 'CONFIRMED',
-      };
-      return mysql.commit(userInsertQuery, fields);
-    })
-    .catch(() => {
-      response.status = 401;
-      response.error = true;
-      response.message = 'The user already exists. Please sign in.';
-    })
-    .then(() => {
-      if (response.status === 401) return;
-      response.status = 200;
-      response.error = false;
-      response.message = 'Sign up success. Please sign in.';
-    })
-    .catch(() => {
-      response.status = 500;
-      response.error = true;
-      response.message = 'Something went wrong while signing you up. Please try again.';
-    });
-
-  if (response.error) {
-    return res.status(response.status).render('sign-up', { error: response.message });
+    res.flash('success', response.message);
+    return res.redirect('/user/sign-in');
+  } catch (err) {
+    return next(err);
   }
-
-  res.flash('success', response.message);
-  return res.redirect('/user/sign-in');
 });
 
 module.exports = router;
