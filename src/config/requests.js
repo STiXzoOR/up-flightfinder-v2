@@ -316,10 +316,16 @@ const insertBooking = async (args = {}) => {
       response.message = 'Database internal error.';
     });
 
-  const queryFlight = 'UPDATE flight SET occupied_capacity=occupied_capacity+:quantity WHERE flight_id=:flightID';
+  const queryFlight =
+    'UPDATE flight SET occupied_capacity=occupied_capacity+:quantity WHERE flight_id=:flightID and dep_date=:departDate and class=:class';
 
   await mysql
-    .commit(queryFlight, { quantity: args.quantity, flightID: args.departFlightID })
+    .commit(queryFlight, {
+      quantity: args.quantity,
+      class: args.class,
+      flightID: args.departFlightID,
+      departDate: args.departDate,
+    })
     .then(() => {
       response.status = 200;
       response.error = false;
@@ -334,7 +340,12 @@ const insertBooking = async (args = {}) => {
 
   if (args.flightType === 'Roundtrip') {
     await mysql
-      .commit(queryFlight, { quantity: args.quantity, flightID: args.returnFlightID })
+      .commit(queryFlight, {
+        quantity: args.quantity,
+        class: args.class,
+        flightID: args.returnFlightID,
+        departDate: args.returnDate,
+      })
       .then(() => {
         response.status = 200;
         response.error = false;
