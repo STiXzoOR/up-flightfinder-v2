@@ -3735,6 +3735,30 @@ ul {
 	vertical-align: middle;
 }
 
+.flight-airline-details {
+	display: flex;
+	bottom: 0.25rem;
+	position: absolute;
+	opacity: 0;
+	-ms-flex-align: center;
+	align-items: center;
+	font-size: 0.875rem;
+	font-weight: 400;
+	line-height: 1;
+	color: #8c98a4;
+	transition: opacity 0.3s ease-in-out;
+}
+
+.btn-section[aria-expanded='true'] .flight-airline-details {
+	opacity: 1;
+}
+
+@media (min-width: 768px) {
+	.flight-airline-details {
+		display: none;
+	}
+}
+
 .section-header {
 	color: #3b444f;
 	font-size: 1.125rem;
@@ -3858,6 +3882,40 @@ ul {
 		padding: 2rem;
 	}
 }
+
+.edit-contact-details {
+	position: absolute;
+	top: 50%;
+	right: 1.75rem;
+	z-index: 2;
+	opacity: 0;
+	transition: opacity 0.3s ease-in-out, color 0.3s ease-in-out;
+	transform: translateY(-50%);
+}
+
+.edit-contact-details.active,
+.edit-contact-details.active:hover,
+.edit-contact-details.active:focus {
+	color: #297cbb !important;
+	pointer-events: none;
+}
+
+@media (min-width: 576px) {
+	.edit-contact-details {
+		right: 2.25rem;
+	}
+}
+
+@media (min-width: 768px) {
+	.edit-contact-details {
+		right: 2.75rem;
+	}
+}
+
+.btn[aria-expanded='true'] + .edit-contact-details {
+	opacity: 1;
+}
+
 /*-------------------------------------------*\
     2.6. Modal
 \*-------------------------------------------*/
@@ -5473,12 +5531,18 @@ ul {
 	color: inherit;
 }
 
-.nav-tabs + .tab-content .card {
+.nav-tabs + .card {
 	margin-top: -1px;
 }
 
 .nav-tabs .nav-item {
 	z-index: 1;
+}
+
+.bg-gray .nav-tabs .nav-link {
+	background-color: #e7eaf3;
+	border-left: 1px solid #dee2e6;
+	border-right: 1px solid #dee2e6;
 }
 
 .nav-tabs .nav-link,
@@ -5497,6 +5561,7 @@ ul {
 
 .nav-tabs .nav-link.active {
 	color: #297cbb;
+	background-color: #fff;
 	pointer-events: none;
 }
 

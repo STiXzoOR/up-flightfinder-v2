@@ -162,6 +162,83 @@ const getFlights = async ({
   }
 };
 
+const getBooking = async ({ bookingID = '', customerID = '', lastName = '', byID = false, byLastName = true } = {}) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  let query =
+    'SELECT booking_id as id, depart_flight_id as departFlightID, depart_flight_date as departDate, return_flight_id as returnFlightID, return_flight_date as returnDate, flight_class as class, DATE_FORMAT(booking_date, "%a, %d %b") as bookedDate, first_name as contactFirstName, last_name as contactLastName, email as contactEmail, mobile as contactMobile, total_passengers as quantity, price_per_passenger as pricePerPassenger, total_price as totalPrice, flight_type as flightType, status FROM booking WHERE booking_id=:bookingID';
+
+  if (byID) {
+    query += ' and customer_id=:customerID';
+  }
+
+  if (byLastName) {
+    query += ' and last_name=:lastName';
+  }
+
+  try {
+    const data = await mysql.fetch(query, { bookingID, customerID, lastName });
+
+    if (data === null) {
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    } else if (data.length === 0) {
+      response.status = 400;
+      response.error = true;
+      response.message = 'No results found for the requested query.';
+    } else {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Booking retrieved.';
+      response.result = data;
+    }
+
+    return response;
+  } catch (err) {
+    return err;
+  }
+};
+
+const getBookingPassengers = async (bookingID = '') => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const query =
+    'SELECT p.passenger_id as id, p.first_name as firstName, p.last_name as lastName, hb.insurance as insurance, hb.chkd_cabin_bag_dep_amount as departCabinBagQuantity, hb.chkd_small_bag_dep_amount as departSmallBagQuantity, hb.chkd_large_bag_dep_amount as departLargeBagQuantity, hb.chkd_cabin_bag_ret_amount as returnCabinBagQuantity, hb.chkd_small_bag_ret_amount as returnSmallBagQuantity, hb.chkd_large_bag_ret_amount as returnLargeBagQuantity, IF(i.price <> 0, i.price, "free") as insurancePrice, IF(b1.price <> 0, b1.price, "free") as cabinBagPrice, b2.price as smallBagPrice, b3.price as largeBagPrice, (b1.price*(hb.chkd_cabin_bag_dep_amount + hb.chkd_cabin_bag_ret_amount) + b2.price*(hb.chkd_small_bag_dep_amount + hb.chkd_small_bag_ret_amount) + b3.price*(hb.chkd_large_bag_dep_amount + hb.chkd_large_bag_ret_amount) + i.price) as totalPaidPrice FROM passenger as p, has_booking as hb, insurance as i, baggage as b1, baggage as b2, baggage as b3 WHERE p.passenger_id=hb.passenger_id and hb.booking_id=:bookingID and i.insurance_id=hb.insurance and b1.bag_id=hb.chkd_cabin_bag_dep and b2.bag_id=hb.chkd_small_bag_dep and b3.bag_id=hb.chkd_large_bag_dep';
+
+  try {
+    const data = await mysql.fetch(query, { bookingID });
+
+    if (data === null) {
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    } else if (data.length === 0) {
+      response.status = 400;
+      response.error = true;
+      response.message = 'No results found for the requested query.';
+    } else {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Passengers retrieved.';
+      response.result = data;
+    }
+
+    return response;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
 const insertUser = async (data) => {
   const response = {
     status: 400,
@@ -328,6 +405,8 @@ module.exports = {
   getPopularDestinations,
   getAirports,
   getFlights,
+  getBooking,
+  getBookingPassengers,
   insertUser,
   insertBooking,
   insertPassenger,

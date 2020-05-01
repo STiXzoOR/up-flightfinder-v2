@@ -1,0 +1,446 @@
+extends layout
+include mixins/_preloader
+
+block title
+	title New booking - Flight Finder
+
+block preloader
+	+preLoader
+
+block content
+	main.bg-gray(role='main')
+		.container.py-5.py-lg-12
+			.row.justify-content-center
+				.col-lg-10.col-xl-9
+					ul.nav.nav-tabs.justify-content-center
+						li.nav-item
+							a#navMyBookingTab.nav-link.active(
+								data-toggle='tab',
+								href='#navMyBooking',
+								role='tab',
+								aria-controls='navMyBooking',
+								aria-selected='true'
+							)
+								i.fas.fa-book.fa-fw
+								span.d-none.d-md-inline-block.ml-2 My Booking
+						li.nav-item
+							a#navPassengersContactTab.nav-link(
+								data-toggle='tab',
+								href='#navPassengersContact',
+								role='tab',
+								aria-controls='navPassengersContact',
+								aria-selected='false'
+							)
+								i.fas.fa-address-card.fa-fw
+								span.d-none.d-md-inline-block.ml-2 Passengers &amp; Contact
+						li.nav-item
+							a#navPaymentHistoryTab.nav-link(
+								data-toggle='tab',
+								href='#navPaymentHistory',
+								role='tab',
+								aria-controls='navPaymentHistory',
+								aria-selected='false'
+							)
+								i.fas.fa-money-check.fa-fw
+								span.d-none.d-md-inline-block.ml-2 Payment History
+					.card.shadow-soft
+						#navTabsContent.tab-content
+							#navMyBooking.tab-pane.show.fade.active(role='tabpanel')
+								#bookingDetails.accordion.rounded-0
+									.card-collapse
+										h3.mb-0
+											button.btn.btn-link.btn-block.card-btn.btn-section.collapsed.px-3.px-sm-4.px-md-5(
+												type='button',
+												data-toggle='collapse',
+												data-target='#bookingDetailsSection',
+												aria-expanded='true',
+												aria-controls='bookingDetailsSection'
+											)
+												span.section-header Booking details
+												span.card-btn-caret
+													i.fas.fa-chevron-down
+									#bookingDetailsSection.collapse.show(aria-labelledby='Booking details section', data-parent='#bookingDetails')
+										.card-body.pt-0.px-3.px-sm-4.px-md-5.pb-4
+											ul.font-size-15
+												li.flex-center-between.pb-1
+													span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 Booking reference
+													span.text-secondary.text-right.text-truncate #{booking.id}
+												li.flex-center-between.py-1
+													span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 Booked date
+													span.text-secondary.text-right.text-truncate #{booking.bookedDate}
+												li.flex-center-between.pt-1
+													span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 Status
+													span.text-secondary.text-right.text-truncate #{booking.status.charAt(0) + booking.status.slice(1).toLowerCase()}
+								#departFlightDetails.accordion.rounded-0.border-top
+									.card-collapse
+										h3.mb-0
+											button.btn.btn-link.btn-block.card-btn.btn-section.collapsed.px-3.px-sm-4.px-md-5(
+												type='button',
+												data-toggle='collapse',
+												data-target='#departFlightDetailsSection',
+												aria-expanded='true',
+												aria-controls='departFlightDetailsSection'
+											)
+												span.section-header
+													span #{flight.departFromCity}
+													span.fas.fa-plane.fa-fw.text-muted.mx-2
+													span #{flight.departToCity}
+													ul.flight-airline-details
+														li.border-right.pr-2 #{flight.departFlightID}
+														li.border-right.px-2 #{flight.departAirlineName}
+														li.pl-2 #{flight.departAirplaneName}
+												span.card-btn-caret
+													i.fas.fa-chevron-down
+									#departFlightDetailsSection.collapse.show(
+										aria-labelledby='Depart flight details section',
+										data-parent='#departFlightDetails'
+									)
+										.card-body.mt-3.mt-md-1.pt-0.px-3.px-sm-4.px-md-5.pb-4
+											.row.align-items-center.text-center
+												.d-none.d-md-block.col-auto.col-lg
+													.flex-vertical-center
+														img.img-fluid.mr-3(src=`/static/images/airlines/${flight.departAirlineCode}.png`)
+														ul.d-flex.flex-column.font-size-14.text-left
+															li #{flight.departFlightID}
+															li #{flight.departAirlineName}
+															li #{flight.departAirplaneName}
+												.col.col-sm-auto
+													.d-flex.flex-column.text-center.text-md-right
+														span.font-weight-bold.font-size-19.mb-0 #{flight.departTime}
+														span.font-size-14 #{flight.departDate}
+														span.font-size-13.text-gray-1 #{flight.departFromCity}, #{flight.departFromCountry}
+												.col.px-1.px-sm-3
+													.d-flex.flex-column
+														span.font-size-14.font-weight-bold.mb-0 #{flight.departClass}
+														.border-top.border-primary.border-width-2.my-1
+														span.font-size-14.text-gray-1 #{flight.departDuration.startsWith('0')? flight.departDuration.slice(1): flight.departDuration}
+												.col.col-sm-auto
+													.d-flex.flex-column.text-center.text-md-left
+														span.font-weight-bold.font-size-19.mb-0 #{flight.departArrivalTime}
+														span.font-size-14 #{flight.departArrivalDate}
+														span.font-size-13.text-gray-1 #{flight.departToCity}, #{flight.departToCountry}
+									if flight.isRoundtrip
+										#returnFlightDetails.accordion.rounded-0.border-top
+											.card-collapse
+												h3.mb-0
+													button.btn.btn-link.btn-block.card-btn.btn-section.collapsed.px-3.px-sm-4.px-md-5(
+														type='button',
+														data-toggle='collapse',
+														data-target='#returnFlightDetailsSection',
+														aria-expanded='true',
+														aria-controls='returnFlightDetailsSection'
+													)
+														span.section-header
+															span #{flight.returnFromCity}
+															span.fas.fa-plane.fa-fw.text-muted.mx-2
+															span #{flight.returnToCity}
+															ul.flight-airline-details
+																li.border-right.pr-2 #{flight.returnFlightID}
+																li.border-right.px-2 #{flight.returnAirlineName}
+																li.pl-2 #{flight.returnAirplaneName}
+														span.card-btn-caret
+															i.fas.fa-chevron-down
+											#returnFlightDetailsSection.collapse.show(
+												aria-labelledby='Return flight details section',
+												data-parent='#returnFlightDetails'
+											)
+												.card-body.mt-3.mt-md-1.pt-0.px-3.px-sm-4.px-md-5.pb-4
+													.row.align-items-center.text-center
+														.d-none.d-md-block.col-auto.col-lg
+															.flex-vertical-center
+																img.img-fluid.mr-3(src=`/static/images/airlines/${flight.returnAirlineCode}.png`)
+																ul.d-flex.flex-column.font-size-14.text-left
+																	li #{flight.returnFlightID}
+																	li #{flight.returnAirlineName}
+																	li #{flight.returnAirplaneName}
+														.col.col-sm-auto
+															.d-flex.flex-column.text-center.text-md-right
+																span.font-weight-bold.font-size-19.mb-0 #{flight.returnTime}
+																span.font-size-14 #{flight.returnDate}
+																span.font-size-13.text-gray-1 #{flight.returnFromCity}, #{flight.returnFromCountry}
+														.col.px-1.px-sm-3
+															.d-flex.flex-column
+																span.font-size-14.font-weight-bold.mb-0 #{flight.returnClass}
+																.border-top.border-primary.border-width-2.my-1
+																span.font-size-14.text-gray-1 #{flight.returnDuration.startsWith('0')? flight.returnDuration.slice(1): flight.returnDuration}
+														.col.col-sm-auto
+															.d-flex.flex-column.text-center.text-md-left
+																span.font-weight-bold.font-size-19.mb-0 #{flight.returnArrivalTime}
+																span.font-size-14 #{flight.returnArrivalDate}
+																span.font-size-13.text-gray-1 #{flight.returnToCity}, #{flight.returnToCountry}
+							#navPassengersContact.tab-pane.fade(role='tabpanel')
+								#passengerDetails.accordion.rounded-0
+									.card-collapse
+										h3.mb-0
+											button.btn.btn-link.btn-block.card-btn.btn-section.collapsed.px-3.px-sm-4.px-md-5(
+												type='button',
+												data-toggle='collapse',
+												data-target='#passengerDetailsSection',
+												aria-expanded='true',
+												aria-controls='passengerDetailsSection'
+											)
+												span.section-header Passengers Details
+												span.card-btn-caret
+													i.fas.fa-chevron-down
+									#passengerDetailsSection.collapse.show(
+										aria-labelledby='Passengers details section',
+										data-parent='#passengerDetails'
+									)
+										.card-body.pt-0.px-3.px-sm-4.px-md-5.pb-1
+											each passenger, i in passengers
+												.accordion.rounded-0(id=`passenger-${i}`, class=`${i !== 0 ? "border-top" : ""}`)
+													.card-collapse
+														h5.mb-0
+															button.btn.btn-link.btn-block.card-btn.btn-section.collapsed.p-3(
+																type='button',
+																data-toggle='collapse',
+																data-target=`#passengerDetails-${i}`,
+																aria-expanded='false',
+																aria-controls=`passengerDetails-${i}`
+															)
+																span.section-header.font-size-16.font-weight-medium.text-lh-1 #{passenger.firstName} #{passenger.lastName}
+																span.card-btn-caret.text-lh-1
+																	i.fas.fa-chevron-down
+													.passenger-details-card.collapse(id=`passengerDetails-${i}`, data-parent='#passengerDetailsSection')
+														.card-body.mt-2.pt-0.px-3.pb-2
+															ul.font-size-15
+																li.flex-center-between.pb-1
+																	span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 ID
+																	span.text-secondary.text-right #{passenger.id}
+																li.flex-center-between.py-1
+																	span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 Insurance package
+																	span.text-secondary.text-right #{passenger.insurance.charAt(0).toUpperCase() + passenger.insurance.slice(1)}
+																li.pt-1
+																	span.font-weight-normal Baggage
+																	ul.pt-1
+																		if flight.isRoundtrip
+																			li.ml-3.py-1
+																				span.font-weight-normal #{flight.departFromCity} to #{flight.departToCity}
+																		li(class=`${flight.isRoundtrip ? "ml-5" : "ml-3"}`)
+																			ul
+																				li.flex-center-between.py-1
+																					span.font-weight-normal Cabin
+																					span.text-secondary.text-right #{passenger.departCabinBagQuantity}
+																				li.flex-center-between.py-1
+																					span.font-weight-normal Small
+																					span.text-secondary.text-right #{passenger.departSmallBagQuantity}
+																				li.flex-center-between.py-1
+																					span.font-weight-normal Large
+																					span.text-secondary.text-right #{passenger.departLargeBagQuantity}
+																	if flight.isRoundtrip
+																		ul
+																			li.ml-3.py-1
+																				span.font-weight-normal #{flight.returnFromCity} to #{flight.returnToCity}
+																			li.ml-5
+																				ul
+																					li.flex-center-between.py-1
+																						span.font-weight-normal Cabin
+																						span.text-secondary.text-right #{passenger.returnCabinBagQuantity}
+																					li.flex-center-between.py-1
+																						span.font-weight-normal Small
+																						span.text-secondary.text-right #{passenger.returnSmallBagQuantity}
+																					li.flex-center-between.py-1
+																						span.font-weight-normal Large
+																						span.text-secondary.text-right #{passenger.returnLargeBagQuantity}
+								#contactDetails.accordion.rounded-0.border-top
+									.card-collapse
+										h3.position-relative.mb-0
+											button.btn.btn-link.btn-block.card-btn.btn-section.collapsed.px-3.px-sm-4.px-md-5(
+												type='button',
+												data-toggle='collapse',
+												data-target='#contactDetailsSection',
+												aria-expanded='true',
+												aria-controls='contactDetailsSection'
+											)
+												span.section-header Contact Details
+												span.card-btn-caret
+													i.fas.fa-chevron-down
+											a.edit-contact-details.btn.btn-link.text-secondary.font-size-14(
+												data-toggle='tab',
+												href='#navEditContactDetails',
+												role='tab',
+												aria-controls='navEditContactDetails',
+												aria-selected='false'
+											) Edit
+									#contactDetailsSection.collapse.show(aria-labelledby='Contact details section', data-parent='#contactDetails')
+										.card-body.pt-0.px-3.px-sm-4.px-md-5.pb-4
+											#navContactTabsContent.tab-content
+												#navContactDetails.tab-pane.show.fade.active(role='tabpanel')
+													ul.font-size-15
+														li.flex-center-between.pb-1
+															span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 First name
+															span.text-secondary.text-right.text-truncate #{booking.contactFirstName}
+														li.flex-center-between.py-1
+															span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 Last name
+															span.text-secondary.text-right.text-truncate #{booking.contactLastName}
+														li.flex-center-between.py-1
+															span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 Email
+															span.text-secondary.text-right.text-truncate #{booking.contactEmail}
+														li.flex-center-between.pt-1
+															span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 Mobile
+															span.text-secondary.text-right.text-truncate #{booking.contactMobile}
+												#navEditContactDetails.tab-pane.fade(role='tabpanel')
+													form#editContactForm.needs-validation(method='POST', action='/booking/manage-booking/edit', novalidate='')
+														.row
+															.form-group.col-sm-6.col-xl.mb-xl-0
+																label.font-size-15.text-muted.required(for='contactFirstName') First name
+																input#contactFirstName.form-control(
+																	type='text',
+																	name='contactFirstName',
+																	placeholder='John',
+																	value=`${booking.contactFirstName}`,
+																	required=''
+																)
+																.invalid-feedback First name is required.
+															.form-group.col-sm-6.col-xl.mb-xl-0
+																label.font-size-15.text-muted.required(for='contactLastName') First name
+																input#contactLastName.form-control(
+																	type='text',
+																	name='contactLastName',
+																	placeholder='Doe',
+																	value=`${booking.contactLastName}`,
+																	required=''
+																)
+																.invalid-feedback Last name is required.
+															.form-group.col-sm-6.col-xl.mb-sm-0
+																label.font-size-15.text-muted.required(for='contactEmail') Email address
+																input#contactEmail.form-control(
+																	type='email',
+																	name='contactEmail',
+																	placeholder='john@placeholder.com',
+																	value=`${booking.contactEmail}`,
+																	required=''
+																)
+																.invalid-feedback Email address is required.
+															.col-sm-6.col-xl
+																label.font-size-15.text-muted.required(for='contactMobile') Mobile number
+																input#contactMobile.form-control(
+																	type='tel',
+																	pattern='[0-9]{6,10}',
+																	maxlength='10',
+																	name='contactMobile',
+																	placeholder='0123456789',
+																	value=`${booking.contactMobile}`,
+																	required=''
+																)
+																.invalid-feedback Mobile number is required.
+														.flex-vertical-center.justify-content-end.flex-column.flex-sm-row.mt-3
+															button.btn.btn-sm.btn-primary.w-100.w-sm-auto.mb-3.mb-sm-0.mr-sm-3(type='submit') Save
+															a.btn.btn-sm.btn-danger.w-100.w-sm-auto(
+																data-toggle='tab',
+																href='#navContactDetails',
+																role='tab',
+																aria-controls='navContactDetails',
+																aria-selected='true'
+															) Cancel
+							#navPaymentHistory.tab-pane.fade(role='tabpanel')
+								#flightsSummary.accordion.rounded-0
+									.card-collapse
+										h3.mb-0
+											button.btn.btn-link.btn-block.card-btn.btn-section.collapsed.px-3.px-sm-4.px-md-5(
+												type='button',
+												data-toggle='collapse',
+												data-target='#flightsSummarySection',
+												aria-expanded='true',
+												aria-controls='flightsSummarySection'
+											)
+												span.section-header Flights
+												span.flex-vertical-center.justify-content-end
+													span.section-price &euro;#{flight.totalPrice}
+													span.card-btn-caret
+														i.fas.fa-chevron-down
+									#flightsSummarySection.collapse.show(aria-labelledby='Flights summary section', data-parent='#flightsSummary')
+										.card-body.pt-0.px-3.px-sm-4.px-md-5.pb-4
+											h5.font-size-16.text-truncate
+												span #{flight.departFromCity}
+												span.fas.fa-plane.fa-fw.text-muted.mx-2
+												span #{flight.departToCity}
+											ul.font-size-15
+												li.flex-center-between.pb-1
+													span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 #{booking.quantity}x passenger(s)
+													span.text-secondary.text-right.text-truncate &euro;#{flight.departPrice*booking.quantity}
+												li.flex-center-between.pt-1
+													span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 Taxes
+													span.text-secondary.text-right.text-truncate &euro;#{flight.departTaxes*booking.quantity}
+											if flight.isRoundtrip
+												hr
+												h5.font-size-16.text-truncate
+													span #{flight.returnFromCity}
+													span.fas.fa-plane.fa-fw.text-muted.mx-2
+													span #{flight.returnToCity}
+												ul.font-size-15
+													li.flex-center-between.pb-1
+														span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 #{booking.quantity}x passenger(s)
+														span.text-secondary.text-right.text-truncate &euro;#{flight.returnPrice*booking.quantity}
+													li.flex-center-between.pt-1
+														span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 Taxes
+														span.text-secondary.text-right.text-truncate &euro;#{flight.returnTaxes*booking.quantity}
+								#baggageAndInsuranceSummary.accordion.rounded-0.border-top
+									.card-collapse
+										h3.mb-0
+											button.btn.btn-link.btn-block.card-btn.btn-section.collapsed.px-3.px-sm-4.px-md-5(
+												type='button',
+												data-toggle='collapse',
+												data-target='#baggageAndInsuranceSummarySection',
+												aria-expanded='true',
+												aria-controls='baggageAndInsuranceSummarySection'
+											)
+												span.section-header Baggage &amp; Insurance
+												span.flex-vertical-center.justify-content-end
+													span.section-price &euro;#{passengers.reduce((acc, {totalPaidPrice}) => acc + totalPaidPrice,0)}
+													span.card-btn-caret
+														i.fas.fa-chevron-down
+									#baggageAndInsuranceSummarySection.collapse.show(
+										aria-labelledby='Passengers summary section',
+										data-parent='#baggageAndInsuranceSummary'
+									)
+										.card-body.pt-0.px-3.px-sm-4.px-md-5.pb-4
+											each passenger, i in passengers
+												div(id=`passengerSummary-${i}`, class=`${i === 0 ? "" : "mt-3"}`)
+													h5.font-size-16.text-truncate
+														i.fas.fa-user.fa-fw.text-muted
+														span.section-subtitle.ml-2(id=`passengerFullname-${i}`) #{passenger.firstName} #{passenger.lastName}
+													ul.font-size-15
+														if passenger.insurance !== 'none'
+															li.flex-center-between.pb-1
+																span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 insurance (#{passenger.insurance})
+																span.text-secondary.text-right &euro;#{passenger.insurancePrice}
+														li(class=`${passenger.insurance !== "none" ? "pt-1" : "pb-1"}`)
+															ul
+																if flight.isRoundtrip
+																	li.pb-1
+																		span.font-weight-normal #{flight.departFromCity} to #{flight.departToCity}
+																li(class=`${flight.isRoundtrip ? "ml-3" : ""}`)
+																	ul
+																		li.flex-center-between(class=`${flight.isRoundtrip ? "py-1" : "pb-1"}`)
+																			span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 #{passenger.departCabinBagQuantity}x cabin bag
+																			span.text-secondary.text-right #{passenger.cabinBagPrice}
+																		if passenger.departSmallBagQuantity > 0
+																			li.flex-center-between.py-1
+																				span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 #{passenger.departSmallBagQuantity}x small bag
+																				span.text-secondary.text-right &euro;#{passenger.smallBagPrice}
+																		if passenger.departLargeBagQuantity > 0
+																			li.flex-center-between(class=`${flight.isRoundtrip ? "py-1" : "pt-1"}`)
+																				span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 #{passenger.departLargeBagQuantity}x large bag
+																				span.text-secondary.text-right &euro;#{passenger.largeBagPrice}
+															if flight.isRoundtrip
+																ul
+																	li.py-1
+																		span.font-weight-normal #{flight.returnFromCity} to #{flight.returnToCity}
+																	li.ml-3
+																		ul
+																			li.flex-center-between.py-1
+																				span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 #{passenger.returnCabinBagQuantity}x cabin bag
+																				span.text-secondary.text-right #{passenger.cabinBagPrice}
+																			if passenger.returnSmallBagQuantity > 0
+																				li.flex-center-between.py-1
+																					span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 #{passenger.returnSmallBagQuantity}x small bag
+																					span.text-secondary.text-right &euro;#{passenger.smallBagPrice}
+																			if passenger.returnLargeBagQuantity > 0
+																				li.flex-center-between.pt-1
+																					span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 #{passenger.returnLargeBagQuantity}x large bag
+																					span.text-secondary.text-right &euro;#{passenger.largeBagPrice}
+								#totalSummary.rounded-0.border-top
+									h3.flex-center-between.font-size-18.text-lh-3.mb-0.px-3.px-sm-4.px-md-5.py-2
+										span.section-header Total
+										span.section-price.text-dark &euro;#{booking.totalPrice}

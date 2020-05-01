@@ -58,6 +58,7 @@ router.post('/sign-up', async (req, res, next) => {
     res.flash('success', response.message);
     return res.redirect('/user/sign-in');
   } catch (err) {
+    console.log(err);
     return next(err);
   }
 });

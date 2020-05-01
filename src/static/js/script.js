@@ -3,6 +3,10 @@
 let roundTripSelectedDates;
 let oneWaySelectedDate;
 
+function isEmpty() {
+  return /^(function\s?[^(]*(\(.*\))|(\(.*\))\s?(=>))\s?\{\s*\}/m.test(this.toString());
+}
+
 function formatAirports(airport) {
   if (!airport.id) {
     return airport.text;
@@ -869,6 +873,17 @@ $('#navCreditCardTab').on('click', () => {
 $('#navPayPalTab').on('click', () => {
   $('#navTabsContent').find('input[name="paymentType"]').val('paypal');
 });
+
+$('a[href="#navContactDetails"]').on('click', function clicked(e) {
+  e.preventDefault();
+  $('a[href="#navEditContactDetails"]').removeClass('active').attr('aria-selected', false);
+  $(this).tab('show');
+});
+
+$('a[href="#navEditContactDetails"]').on('click', function clicked(e) {
+  e.preventDefault();
+  $('a[href="#navContactDetails"]').removeClass('active').attr('aria-selected', false);
+  $(this).tab('show');
 });
 
 $(() => {

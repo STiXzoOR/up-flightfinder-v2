@@ -2,6 +2,8 @@ const express = require('express');
 const createError = require('http-errors');
 const {
   getFlights,
+  getBooking,
+  getBookingPassengers,
   insertBooking,
   insertPassenger,
   checkBookingExists,
@@ -150,7 +152,83 @@ router.post('/new-booking/thank-you', async (req, res, next) => {
 });
 
 router.get('/manage-booking', (req, res, next) => {
-  res.render('manage-booking');
+  return res.render('manage-booking');
+});
+
+router.post('/manage-booking', async (req, res, next) => {
+  const { bookingID, lastName } = req.body;
+
+  return res.redirect(`/manage-booking/bookingID=${bookingID}&lastName=${lastName}`);
+});
+
+router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req, res, next) => {
+  const { bookingID, lastName } = req.params;
+
+  try {
+    if (!(await checkBookingExists({ bookingID, lastName, chkOnlyBookingID: false }))) {
+      res.flash(
+        'error',
+        'We are unable to find the booking reference you provided. Please validate that your information is correct and try again.'
+      );
+      return res.redirect('/booking/manage-booking');
+    }
+
+    let booking = await getBooking({ bookingID, customerID: req.session.user.id, lastName, byID: true });
+
+    if (booking.err) {
+      return next(createError(booking.status));
+    }
+
+    [booking] = booking.result;
+
+    let WHERE =
+      'f.flight_id=:departFlightID and f.dep_date=:departDate and f.class=:class and al.airline_code=f.airline and ap.airplane_model=f.airplane and aprt1.airport_code=f.from_airport and aprt2.airport_code=f.to_airport';
+
+    let args = {
+      departFlightID: booking.departFlightID,
+      departDate: booking.departDate,
+      class: booking.class,
+      quantity: booking.quantity,
+    };
+
+    if (booking.flightType === 'Roundtrip') {
+      WHERE =
+        'f1.flight_id=:departFlightID and f1.dep_date=:departDate and f1.class=:class and f2.flight_id=:returnFlightID and f2.dep_date=:returnDate and f2.class=:class and al1.airline_code=f1.airline and ap1.airplane_model=f1.airplane and aprt1.airport_code=f1.from_airport and aprt2.airport_code=f1.to_airport and al2.airline_code=f2.airline and ap2.airplane_model=f2.airplane and aprt3.airport_code=f2.from_airport and aprt4.airport_code=f2.to_airport';
+
+      args = {
+        ...args,
+        returnFlightID: booking.returnFlightID,
+        returnDate: booking.returnDate,
+      };
+    }
+
+    let flight = await getFlights({
+      isRoundtrip: booking.flightType === 'Roundtrip',
+      args,
+      WHERE,
+      FETCH_ALL: false,
+    });
+
+    if (flight.error) {
+      return next(createError(flight.status));
+    }
+
+    [flight] = flight.result;
+    flight.isRoundtrip = booking.flightType === 'Roundtrip';
+
+    let passengers = await getBookingPassengers(booking.id);
+
+    if (passengers.error) {
+      return next(createError(passengers.status));
+    }
+
+    passengers = passengers.result;
+
+    return res.render('manage-booking-post', { booking, flight, passengers });
+  } catch (err) {
+    console.log(err);
+    return next(err);
+  }
 });
 
 module.exports = router;
