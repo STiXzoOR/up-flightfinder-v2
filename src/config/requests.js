@@ -299,11 +299,11 @@ const insertBooking = async (args = {}) => {
     message: '',
   };
 
-  const query =
+  const queryBooking =
     'INSERT INTO booking (booking_id, customer_id, depart_flight_id, return_flight_id, depart_flight_date, return_flight_date, flight_class, first_name, last_name, email, mobile, booking_date, last_modify_date, total_passengers, total_baggage, price_per_passenger, total_price, payment_type, flight_type, status) VALUES (:bookingID, :customerID, :departFlightID, :returnFlightID, :departDate, :returnDate, :class, :contactFirstName, :contactLastName, :contactEmail, :contactMobile, NOW(), NOW(), :quantity, :baggageQuantity, :pricePerPassenger, :totalPrice, :paymentType, :flightType, "UPCOMING")';
 
   await mysql
-    .commit(query, args)
+    .commit(queryBooking, args)
     .then(() => {
       response.status = 200;
       response.error = false;
@@ -315,6 +315,38 @@ const insertBooking = async (args = {}) => {
       response.error = true;
       response.message = 'Database internal error.';
     });
+
+  const queryFlight = 'UPDATE flight SET occupied_capacity=occupied_capacity+:quantity WHERE flight_id=:flightID';
+
+  await mysql
+    .commit(queryFlight, { quantity: args.quantity, flightID: args.departFlightID })
+    .then(() => {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Flight updated.';
+    })
+    .catch((err) => {
+      console.log(err);
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    });
+
+  if (args.flightType === 'Roundtrip') {
+    await mysql
+      .commit(queryFlight, { quantity: args.quantity, flightID: args.returnFlightID })
+      .then(() => {
+        response.status = 200;
+        response.error = false;
+        response.message = 'Flight updated.';
+      })
+      .catch((err) => {
+        console.log(err);
+        response.status = 500;
+        response.error = true;
+        response.message = 'Database internal error.';
+      });
+  }
 
   return response;
 };
@@ -378,6 +410,33 @@ const insertPassenger = async (args = {}) => {
   return response;
 };
 
+const updateBooking = async (args = {}) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const query =
+    'UPDATE booking SET first_name=:contactFirstName, last_name=:contactLastName, email=:contactEmail, mobile=:contactMobile, last_modify_date=NOW() WHERE booking_id=:bookingID and last_name=:lastName';
+
+  await mysql
+    .commit(query, args)
+    .then(() => {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Booking updated successfully. Navigate to passengers & contact to see the changes.';
+    })
+    .catch((err) => {
+      console.log(err);
+      response.status = 500;
+      response.error = true;
+      response.message = 'Something went wrong while updating your booking. Please contact our support team.';
+    });
+
+  return response;
+};
+
 const checkBookingExists = async ({ bookingID = '', lastName = '', chkOnlyBookingID = true } = {}) => {
   let found = false;
 
@@ -410,5 +469,6 @@ module.exports = {
   insertUser,
   insertBooking,
   insertPassenger,
+  updateBooking,
   checkBookingExists,
 };

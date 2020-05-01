@@ -6,6 +6,7 @@ const {
   getBookingPassengers,
   insertBooking,
   insertPassenger,
+  updateBooking,
   checkBookingExists,
 } = require('../config/requests');
 
@@ -158,7 +159,7 @@ router.get('/manage-booking', (req, res, next) => {
 router.post('/manage-booking', async (req, res, next) => {
   const { bookingID, lastName } = req.body;
 
-  return res.redirect(`/manage-booking/bookingID=${bookingID}&lastName=${lastName}`);
+  return res.redirect(`/booking/manage-booking/bookingID=${bookingID}&lastName=${lastName}`);
 });
 
 router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req, res, next) => {
@@ -225,6 +226,25 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
     passengers = passengers.result;
 
     return res.render('manage-booking-post', { booking, flight, passengers });
+  } catch (err) {
+    console.log(err);
+    return next(err);
+  }
+});
+
+router.post('/manage-booking/bookingID=:bookingID&lastName=:lastName/edit', async (req, res, next) => {
+  const { params } = req;
+  const { body } = req;
+
+  try {
+    const response = await updateBooking({ ...params, ...body });
+
+    res.flash(response.error ? 'error' : 'success', response.message);
+    return res.redirect(
+      `/booking/manage-booking/bookingID=${params.bookingID}&lastName=${
+        response.error ? params.lastName : body.contactLastName
+      }`
+    );
   } catch (err) {
     console.log(err);
     return next(err);

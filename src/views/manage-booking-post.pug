@@ -1,5 +1,6 @@
 extends layout
 include mixins/_preloader
+include mixins/_alert
 
 block title
 	title New booking - Flight Finder
@@ -12,6 +13,7 @@ block content
 		.container.py-5.py-lg-12
 			.row.justify-content-center
 				.col-lg-10.col-xl-9
+					+showAlert
 					ul.nav.nav-tabs.justify-content-center
 						li.nav-item
 							a#navMyBookingTab.nav-link.active(
@@ -280,7 +282,11 @@ block content
 															span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 Mobile
 															span.text-secondary.text-right.text-truncate #{booking.contactMobile}
 												#navEditContactDetails.tab-pane.fade(role='tabpanel')
-													form#editContactForm.needs-validation(method='POST', action='/booking/manage-booking/edit', novalidate='')
+													form#editContactForm.needs-validation(
+														method='POST',
+														action=`/booking/manage-booking/bookingID=${booking.id}&lastName=${booking.contactLastName}/edit`,
+														novalidate=''
+													)
 														.row
 															.form-group.col-sm-6.col-xl.mb-xl-0
 																label.font-size-15.text-muted.required(for='contactFirstName') First name
