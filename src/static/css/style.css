@@ -3038,8 +3038,23 @@ ul {
 }
 
 /*-------------------------------------------*\
-    2.3. Input Group
+    2.3. Badge
 \*-------------------------------------------*/
+.badge-counter {
+	display: flex;
+	width: 1.5rem;
+	height: 1.5rem;
+	font-size: 0.9375rem;
+	font-weight: 700;
+	vertical-align: middle;
+	text-align: center;
+	white-space: nowrap;
+	align-items: center;
+	color: #fff;
+	border-radius: 0.3125rem;
+	background-color: #3b444f;
+	justify-content: center;
+}
 
 /*-------------------------------------------*\
     2.4. Button
@@ -3411,7 +3426,17 @@ ul {
 .btn-section {
 	line-height: 3;
 	padding: 0.5rem 2rem;
+	position: relative;
 }
+
+.btn-remove-insurance {
+	display: none;
+	position: absolute;
+	right: -2px;
+	top: -2px;
+	transform: translate(50%, -50%);
+}
+
 /*-------------------------------------------*\
     2.5. Card
 \*-------------------------------------------*/
@@ -3587,11 +3612,6 @@ ul {
 	position: absolute;
 	text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.75);
 }
-
-.flight-card .card-body {
-	padding: 1.5rem;
-}
-
 .flight-card {
 	box-shadow: none;
 	transition: box-shadow 0.3s ease-in-out;
@@ -3599,6 +3619,33 @@ ul {
 
 .flight-card:hover {
 	box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.1);
+}
+
+.flight-card .card-body {
+	padding: 1.5rem;
+}
+
+.flight-card .route-title {
+	position: relative;
+	font-size: 1.125rem;
+	text-align: left;
+	line-height: 1;
+	margin-bottom: 2rem;
+}
+
+.flight-card .route-title .route {
+	margin-left: 0.75rem;
+}
+
+.flight-card .route-title::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	width: 5px;
+	height: 125%;
+	border-radius: 1.75px;
+	background-color: #297cbb;
+	transform: translateY(-50%);
 }
 
 @media (min-width: 768px) {
@@ -3743,6 +3790,74 @@ ul {
 	transform: translateY(-50%);
 }
 
+.section-price {
+	color: #67747c;
+	font-size: 1.125rem;
+	font-weight: 500;
+}
+
+.summary .flight-id {
+	color: #8c98a4;
+	font-size: 0.6875rem;
+	font-weight: 500;
+}
+
+.summary .item-name {
+	font-size: 0.9375rem;
+	font-weight: 400;
+	margin-bottom: 0;
+}
+
+.summary .item-price {
+	font-size: 0.875rem;
+}
+
+.insurance-card {
+	display: inline-flex;
+	flex-direction: column;
+	border-radius: 0.3125rem;
+	border: 2px solid #e7eaf3;
+	transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.insurance-card.selected {
+	border-color: #297cbb;
+	box-shadow: 0 3px 6px 0 rgba(140, 152, 164, 0.25);
+}
+
+.insurance-card.selected .btn-remove-insurance {
+	display: flex;
+}
+
+.insurance-card-body {
+	padding: 2.5rem;
+}
+
+@media (min-width: 576px) {
+	.insurance-card-body {
+		padding-left: 3.5rem;
+		padding-right: 3.5rem;
+	}
+}
+
+@media (min-width: 768px) {
+	.insurance-card-body {
+		padding: 1.25rem;
+		width: 100%;
+	}
+}
+
+@media (min-width: 992px) {
+	.insurance-card-body {
+		padding: 1rem 0.5rem;
+	}
+}
+
+@media (min-width: 1200px) {
+	.insurance-card-body {
+		padding: 2rem;
+	}
+}
 /*-------------------------------------------*\
     2.6. Modal
 \*-------------------------------------------*/
@@ -3775,29 +3890,6 @@ ul {
 	.modal-flight-details .modal-content {
 		border-radius: 0;
 	}
-}
-
-.modal-flight-details .modal-body .route-title {
-	position: relative;
-	font-size: 1.125rem;
-	text-align: left;
-	line-height: 1;
-	margin-bottom: 2rem;
-}
-
-.modal-flight-details .modal-body .route-title .route {
-	margin-left: 0.75rem;
-}
-
-.modal-flight-details .modal-body .route-title::before {
-	content: '';
-	position: absolute;
-	top: 50%;
-	width: 5px;
-	height: 125%;
-	border-radius: 1.75px;
-	background-color: #297cbb;
-	transform: translateY(-50%);
 }
 
 /*-------------------------------------------*\
@@ -5416,6 +5508,39 @@ ul {
 	color: #fff;
 	pointer-events: none;
 }
+
+.nav-choose .nav-link {
+	border-radius: 0.3125rem;
+	border: 2px solid #e7eaf3;
+	padding-top: 2rem;
+	padding-bottom: 2rem;
+	height: 7.875rem;
+	position: relative;
+	transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.nav-choose .nav-link.active {
+	border-color: #297cbb;
+	box-shadow: 0 3px 6px 0 rgba(140, 152, 164, 0.25);
+}
+
+.nav-choose .nav-link .nav-selected-icon {
+	position: absolute;
+	top: -2px;
+	left: -2px;
+	margin-top: 0.75rem;
+	margin-left: 0.75rem;
+	line-height: 1;
+	opacity: 0;
+	transform: scale(0);
+	transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.nav-choose .nav-link.active .nav-selected-icon {
+	opacity: 1;
+	transform: scale(1);
+}
+
 .nav-unjustified .nav-item {
 	-ms-flex-preferred-size: auto;
 	flex-basis: auto;
@@ -5530,6 +5655,43 @@ ul {
 
 	.search-flights-card .nav-pills .nav-link.active:hover {
 		background-color: #297cbb;
+	}
+}
+
+.payment-card .nav-choose .nav-link {
+	padding: 0 2.5rem;
+	height: 3rem;
+}
+
+.payment-card .nav-choose .nav-selected-icon {
+	margin-top: 0;
+	top: calc(50% + 1px);
+	transform: translateY(-50%) scale(0);
+}
+
+.payment-card .nav-choose .nav-link.active .nav-selected-icon {
+	transform: translateY(-50%) scale(1);
+}
+
+@media (min-width: 490px) and (max-width: 1199.98px) {
+	.payment-card .nav-choose .nav-link {
+		border-radius: 0;
+	}
+
+	.payment-card .nav-choose .nav-link.active {
+		z-index: 1;
+	}
+
+	.payment-card .nav-choose .nav-item:first-child .nav-link {
+		border-top-left-radius: 0.3125rem;
+		border-bottom-left-radius: 0.3125rem;
+		margin-right: -1px;
+	}
+
+	.payment-card .nav-choose .nav-item:last-child .nav-link {
+		border-top-right-radius: 0.3125rem;
+		border-bottom-right-radius: 0.3125rem;
+		margin-left: -1px;
 	}
 }
 

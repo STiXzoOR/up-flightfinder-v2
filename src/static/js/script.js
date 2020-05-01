@@ -547,6 +547,228 @@ const rangeSlider = {
     });
   },
 };
+
+function initCheckedBaggage() {
+  const BaggageObj = function BaggageObj(el) {
+    this.element = $(el);
+    this.baggage = {
+      small: {
+        element: $(el).find('.small-bag'),
+        price: $(el).find('.small-bag').data('price'),
+        weight: $(el).find('.small-bag').data('weight'),
+        btn: $(el).find('.small-bag').find('.btn-add-bag'),
+      },
+      large: {
+        element: $(el).find('.large-bag'),
+        price: $(el).find('.large-bag').data('price'),
+        weight: $(el).find('.large-bag').data('weight'),
+        btn: $(el).find('.large-bag').find('.btn-add-bag'),
+      },
+    };
+    this.input = $($(el).closest('.baggage-info').find('input[type="hidden"]'));
+    this.baggageList = $($(el).closest('.baggage-info').find('.baggage-list'))[0];
+    this.summaryTarget = $($(el).closest('.passenger-details-card').data('summary-target'));
+    this.type = $(el).data('type');
+    this.quantity = 0;
+    this.max = 5;
+    this.added = false;
+
+    this.bindEvents();
+  };
+
+  BaggageObj.prototype = {
+    constructor: BaggageObj,
+
+    bindEvents() {
+      const self = this;
+
+      this.baggage.small.btn.on('click', () => {
+        self.add('small');
+      });
+
+      this.baggage.large.btn.on('click', () => {
+        self.add('large');
+      });
+    },
+
+    evaluateButtons() {
+      this.baggage.small.btn.prop('disabled', this.quantity === this.max);
+      this.baggage.large.btn.prop('disabled', this.quantity === this.max);
+    },
+
+    add(bag) {
+      const self = this;
+      const itemsList = this.summaryTarget.find('.items');
+      const passengersPrice = $('#passengersSummary').find('#totalPassengersPrice');
+      const totalPrice = $('#totalSummary').find('#totalPrice');
+      let item = null;
+      let itemNameWrapper = null;
+      let itemQuantity = null;
+      let itemName = null;
+      let itemPrice = null;
+
+      if (this.added || itemsList.find('.checked-bag').length) {
+        item = itemsList.find('.checked-bag');
+        itemNameWrapper = item.find('.item-name');
+        itemQuantity = itemNameWrapper.find('.quantity');
+        itemName = itemNameWrapper.children().last();
+        itemPrice = item.find('.item-price');
+      } else {
+        item = $('<li/>').addClass('checked-bag flex-center-between mt-2');
+        itemNameWrapper = $('<h6/>').addClass('item-name');
+        itemQuantity = $('<span/>').addClass('quantity').text(0);
+        itemName = $('<span/>').text('x checked bag');
+        itemPrice = $('<span/>').addClass('item-price').text(0);
+
+        itemQuantity.appendTo(itemNameWrapper);
+        itemName.appendTo(itemNameWrapper);
+        itemNameWrapper.appendTo(item);
+        itemPrice.appendTo(item);
+        item.appendTo(itemsList);
+      }
+
+      const row = this.baggageList.insertRow(-1);
+      const cell1 = row.insertCell(-1);
+      const cell2 = row.insertCell(-1);
+      const cell3 = row.insertCell(-1);
+      const cell4 = row.insertCell(-1);
+
+      $(cell1).addClass('font-weight-medium text-left w-sm-25').attr('scope', 'row').text('Checked bag');
+      $(cell2).text(`${this.baggage[bag].weight}kg`);
+      $(cell3).text(`€${this.baggage[bag].price}`);
+      $(cell4).addClass('py-0').attr('align', 'middle');
+
+      const btn = $('<button/>')
+        .addClass('btn btn-icon btn-xs btn-remove-bag btn-secondary rounded-circle')
+        .attr('type', 'button');
+      btn.append($('<i/>').addClass('fas fa-times fa-fw'));
+      btn.appendTo(cell4);
+
+      btn.on('click', () => {
+        self.remove(row, bag);
+      });
+
+      this.added = true;
+      this.quantity += 1;
+      this.summaryItem = item;
+      itemQuantity.text(parseInt(itemQuantity.text(), 10) + 1);
+      this.updatePrice(itemPrice, this.baggage[bag].price);
+      this.updatePrice(passengersPrice, this.baggage[bag].price);
+      this.updatePrice(totalPrice, this.baggage[bag].price);
+      this.updateInput(bag, 1);
+      this.evaluateButtons();
+    },
+
+    remove(row, bag) {
+      const itemsList = this.summaryTarget.find('.items');
+      const passengersPrice = $('#passengersSummary').find('#totalPassengersPrice');
+      const totalPrice = $('#totalSummary').find('#totalPrice');
+      const item = itemsList.find('.checked-bag');
+      const itemQuantity = item.find('.quantity');
+      const itemPrice = item.find('.item-price');
+
+      $(row).remove();
+
+      if (parseInt(itemQuantity.text(), 10) === 1) {
+        this.summaryItem.remove();
+        this.summaryItem = null;
+      } else {
+        itemQuantity.text(parseInt(itemQuantity.text(), 10) - 1);
+        this.updatePrice(itemPrice, -this.baggage[bag].price);
+      }
+
+      this.quantity -= 1;
+      if (this.quantity === 0) {
+        this.added = false;
+      }
+
+      this.updatePrice(passengersPrice, -this.baggage[bag].price);
+      this.updatePrice(totalPrice, -this.baggage[bag].price);
+      this.updateInput(bag, -1);
+      this.evaluateButtons();
+    },
+
+    updatePrice(target, price) {
+      target.text(`${parseInt(target.text().replace(/,/g, ''), 10) + price}`).trigger('change');
+    },
+
+    updateInput(bag, quantity) {
+      const inputData = JSON.parse(this.input.val());
+
+      inputData[this.type][bag] += quantity;
+      this.input.val(JSON.stringify(inputData));
+    },
+  };
+
+  $('.add-baggage').each((i, el) => new BaggageObj(el));
+}
+
+// TODO: reimplement the insurance method
+function initInsuranceCard() {
+  $('.insurance-card').each(function init() {
+    const self = this;
+
+    this.element = $(this);
+    this.selected = false;
+    this.selectBtn = $(this).find('.btn-select-insurance');
+    this.removeBtn = $(this).find('.btn-remove-insurance');
+    this.type = $(this).data('type');
+    this.price = parseInt($(this).data('price'), 10);
+    this.input = $($(this).closest('.insurance-info').find('input[type="hidden"]'));
+    this.summaryTarget = $($(this).closest('.passenger-details-card').data('summary-target'));
+
+    this.selectBtn.on('click', function clicked() {
+      const active = self.element.closest('.insurance-info').find('.selected');
+      if (active.length) {
+        active[0].removeBtn.trigger('click');
+      }
+
+      $(this).prop('disabled', true);
+
+      const itemsList = self.summaryTarget.find('.items');
+      const passengersPrice = $('#passengersSummary').find('#totalPassengersPrice');
+      const totalPrice = $('#totalSummary').find('#totalPrice');
+      const item = $('<li/>').addClass('insurance flex-center-between mt-2');
+      const itemName = $('<h6/>').addClass('item-name').text('insurance');
+      const itemPrice = $('<span/>')
+        .addClass('item-price')
+        .text(`${self.price ? `€${self.price}` : 'free'}`);
+
+      itemName.appendTo(item);
+      itemPrice.appendTo(item);
+      item.appendTo(itemsList);
+
+      passengersPrice.text(`${parseInt(passengersPrice.text().replace(/,/g, ''), 10) + self.price}`);
+      totalPrice.text(`${parseInt(totalPrice.text().replace(/,/g, ''), 10) + self.price}`).trigger('change');
+
+      self.item = item;
+      self.input.val(self.type);
+      self.element.addClass('selected');
+
+      self.selected = true;
+    });
+
+    this.removeBtn.on('click', function clicked() {
+      if (!self.selected) return;
+      self.selectBtn.prop('disabled', false);
+
+      const passengersPrice = $('#passengersSummary').find('#totalPassengersPrice');
+      const totalPrice = $('#totalSummary').find('#totalPrice');
+
+      self.item.remove();
+      self.item = null;
+
+      passengersPrice.text(`${parseInt(passengersPrice.text().replace(/,/g, ''), 10) - self.price}`);
+      totalPrice.text(`${parseInt(totalPrice.text().replace(/,/g, ''), 10) - self.price}`).trigger('change');
+
+      self.input.val('');
+      self.element.removeClass('selected');
+
+      self.selected = false;
+    });
+  });
+}
+
 $('.needs-validation').on('submit', function validateForm(e) {
   if ($(this)[0].checkValidity() === false) {
     e.preventDefault();
@@ -639,6 +861,14 @@ $('.btn-reverse-destinations').on('click', function reverse() {
   $from.val(toVal).trigger('change');
   $to.val(fromVal).trigger('change');
 });
+
+$('#navCreditCardTab').on('click', () => {
+  $('#navTabsContent').find('input[name="paymentType"]').val('credit');
+});
+
+$('#navPayPalTab').on('click', () => {
+  $('#navTabsContent').find('input[name="paymentType"]').val('paypal');
+});
 });
 
 $(() => {
@@ -652,6 +882,8 @@ $(() => {
   $('.class-list').classCheckList();
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();
+  $('[data-toggle="sync-text"]').syncText();
+
   setTimeout(() => {
     $('#preloader').fadeOut(500);
   }, 3000);

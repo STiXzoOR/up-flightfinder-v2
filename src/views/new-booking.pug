@@ -1,0 +1,874 @@
+extends layout
+include mixins/_preloader
+
+block title
+	title New booking - Flight Finder
+
+block preloader
+	+preLoader
+
+block content
+	main.bg-gray(role='main')
+		.container.py-5
+			.row.justify-content-center
+				.col-lg-8.col-xl-9.mt-lg-1
+					form#newBookingForm.needs-validation(method='POST', action='/booking/new-booking/thank-you', novalidate='')
+						input#totalPriceInput(type='hidden', name='finalPrice', value=`${data.flight.totalPrice}`, required='')
+						#whosIsTravelling.mb-3
+							.bg-dark.text-white.border.rounded-5.px-3.py-2.mb-3
+								h4.text-center.font-size-22.font-weight-bold.mb-0 Who&apos;s travelling?
+							each _, i in Array(data.query.passengers.adults)
+								.card.shadow-soft.mt-2(id=`passenger-${i}`)
+									.card-collapse
+										h5.mb-0
+											button.btn.btn-link.btn-block.card-btn.px-4.py-3(
+												type='button',
+												data-toggle='collapse',
+												data-target=`#passengerDetails-${i}`,
+												aria-expanded='false',
+												aria-controls=`passengerDetails-${i}`
+											)
+												span.flex-vertical-center
+													.badge-counter #{i + 1}
+													span.section-header.font-size-19.font-weight-medium.ml-2 Passenger
+												span.card-btn-caret
+													i.fas.fa-chevron-down
+									.passenger-details-card.collapse(
+										id=`passengerDetails-${i}`,
+										data-parent='#whosIsTravelling',
+										data-summary-target=`#passengerSummary-${i}`
+									)
+										.card-body.px-4.pb-4.pt-0
+											.personal-info
+												h5.section-subtitle.section-subtitle-tab.font-size-18 Personal information
+												.row
+													.col-md-12.col-xl
+														.row
+															.form-group.col-sm-6
+																label.font-size-15.text-muted.required(for=`firstNamePassenger-${i}`) First name
+																input.form-control(
+																	id=`firstNamePassenger-${i}`,
+																	type='text',
+																	name=`firstNamePassenger-${i}`,
+																	placeholder='John',
+																	data-toggle='sync-text',
+																	data-sync-controls='first-name',
+																	data-sync-placeholder='Passenger',
+																	data-sync-parent=`passengerFullname-${i}`,
+																	required=''
+																)
+																.invalid-feedback First name is required.
+															.form-group.col-sm-6
+																label.font-size-15.text-muted.required(for=`lastNamePassenger-${i}`) Last name
+																input.form-control(
+																	id=`lastNamePassenger-${i}`,
+																	type='text',
+																	name=`lastNamePassenger-${i}`,
+																	placeholder='Doe',
+																	data-toggle='sync-text',
+																	data-sync-controls='last-name',
+																	data-sync-placeholder='',
+																	data-sync-parent=`passengerFullname-${i}`,
+																	required=''
+																)
+																.invalid-feedback Last name is required.
+													.col-md-12.col-xl
+														.row
+															.form-group.col-sm-6
+																label.font-size-15.text-muted.required(for=`birthDatePassenger-${i}`) Date of Birth
+																.custom-datepicker
+																	input.form-control.text-truncate.flatpickr-input(
+																		id=`birthDatePassenger-${i}`,
+																		type='date',
+																		name=`birthDatePassenger-${i}`,
+																		data-mode='single',
+																		data-min-date='1950-1-1',
+																		data-max-date='2005-12-31',
+																		data-alt-format='d M Y',
+																		data-date-format='Y-m-d',
+																		data-month-selector-type='dropdown',
+																		data-year-selector-type='dropdown',
+																		placeholder='dd mm yyyy',
+																		required=''
+																	)
+																	.invalid-feedback Date of birth is required.
+															.form-group.col-sm-6
+																label.font-size-15.text-muted.required(for=`genderPassenger-${i}`) Gender
+																.custom-select2
+																	select.select2-input.form-control.custom-select(
+																		id=`genderPassenger-${i}`,
+																		name=`genderPassenger-${i}`,
+																		data-minimum-results-for-search='Infinity',
+																		data-placeholder='Male',
+																		required=''
+																	)
+																		option(selected='', value='', disabled='', hidden='')
+																		option(value='male') Male
+																		option(value='female') Female
+																	.invalid-feedback Gender is required.
+												.row
+													.col-md.col-lg-12.col-xl
+														.row
+															.form-group.col-sm-6
+																label.font-size-15.text-muted.required(for=`nationalityPassenger-${i}`) Nationality
+																.custom-select2
+																	select.select2-input.form-control.custom-select(
+																		id=`nationalityPassenger-${i}`,
+																		name=`nationalityPassenger-${i}`,
+																		data-placeholder='Greece',
+																		required=''
+																	)
+																		option(selected='', value='', disabled='', hidden='')
+																		optgroup(label='A')
+																			option(value='AF') Afghanistan
+																			option(value='AX') &angst;land Islands
+																			option(value='AL') Albania
+																			option(value='DZ') Algeria
+																			option(value='AS') American Samoa
+																			option(value='AD') Andorra
+																			option(value='AO') Angola
+																			option(value='AI') Anguilla
+																			option(value='AQ') Antarctica
+																			option(value='AG') Antigua and Barbuda
+																			option(value='AR') Argentina
+																			option(value='AM') Armenia
+																			option(value='AW') Aruba
+																			option(value='AU') Australia
+																			option(value='AT') Austria
+																			option(value='AZ') Azerbaijan
+																		optgroup(label='B')
+																			option(value='BS') Bahamas
+																			option(value='BH') Bahrain
+																			option(value='BD') Bangladesh
+																			option(value='BB') Barbados
+																			option(value='BY') Belarus
+																			option(value='BE') Belgium
+																			option(value='BZ') Belize
+																			option(value='BJ') Benin
+																			option(value='BM') Bermuda
+																			option(value='BT') Bhutan
+																			option(value='BO') Bolivia, Plurinational State of
+																			option(value='BQ') Bonaire, Sint Eustatius and Saba
+																			option(value='BA') Bosnia and Herzegovina
+																			option(value='BW') Botswana
+																			option(value='BV') Bouvet Island
+																			option(value='BR') Brazil
+																			option(value='IO') British Indian Ocean Territory
+																			option(value='BN') Brunei Darussalam
+																			option(value='BG') Bulgaria
+																			option(value='BF') Burkina Faso
+																			option(value='BI') Burundi
+																		optgroup(label='C')
+																			option(value='KH') Cambodia
+																			option(value='CM') Cameroon
+																			option(value='CA') Canada
+																			option(value='CV') Cape Verde
+																			option(value='KY') Cayman Islands
+																			option(value='CF') Central African Republic
+																			option(value='TD') Chad
+																			option(value='CL') Chile
+																			option(value='CN') China
+																			option(value='CX') Christmas Island
+																			option(value='CC') Cocos (Keeling) Islands
+																			option(value='CO') Colombia
+																			option(value='KM') Comoros
+																			option(value='CG') Congo
+																			option(value='CD') Congo, the Democratic Republic of the
+																			option(value='CK') Cook Islands
+																			option(value='CR') Costa Rica
+																			option(value='CI') C&ocirc;te d&apos;Ivoire
+																			option(value='HR') Croatia
+																			option(value='CU') Cuba
+																			option(value='CW') Cura&ccedil;ao
+																			option(value='CY') Cyprus
+																			option(value='CZ') Czech Republic
+																		optgroup(label='D')
+																			option(value='DK') Denmark
+																			option(value='DJ') Djibouti
+																			option(value='DM') Dominica
+																			option(value='DO') Dominican Republic
+																		optgroup(label='E')
+																			option(value='EC') Ecuador
+																			option(value='EG') Egypt
+																			option(value='SV') El Salvador
+																			option(value='GQ') Equatorial Guinea
+																			option(value='ER') Eritrea
+																			option(value='EE') Estonia
+																			option(value='ET') Ethiopia
+																		optgroup(label='F')
+																			option(value='FK') Falkland Islands (Malvinas)
+																			option(value='FO') Faroe Islands
+																			option(value='FJ') Fiji
+																			option(value='FI') Finland
+																			option(value='FR') France
+																			option(value='GF') French Guiana
+																			option(value='PF') French Polynesia
+																			option(value='TF') French Southern Territories
+																		optgroup(label='G')
+																			option(value='GA') Gabon
+																			option(value='GM') Gambia
+																			option(value='GE') Georgia
+																			option(value='DE') Germany
+																			option(value='GH') Ghana
+																			option(value='GI') Gibraltar
+																			option(value='GR') Greece
+																			option(value='GL') Greenland
+																			option(value='GD') Grenada
+																			option(value='GP') Guadeloupe
+																			option(value='GU') Guam
+																			option(value='GT') Guatemala
+																			option(value='GG') Guernsey
+																			option(value='GN') Guinea
+																			option(value='GW') Guinea-Bissau
+																			option(value='GY') Guyana
+																		optgroup(label='H')
+																			option(value='HT') Haiti
+																			option(value='HM') Heard Island and McDonald Islands
+																			option(value='VA') Holy See (Vatican City State)
+																			option(value='HN') Honduras
+																			option(value='HK') Hong Kong
+																			option(value='HU') Hungary
+																		optgroup(label='I')
+																			option(value='IS') Iceland
+																			option(value='IN') India
+																			option(value='ID') Indonesia
+																			option(value='IR') Iran, Islamic Republic of
+																			option(value='IQ') Iraq
+																			option(value='IE') Ireland
+																			option(value='IM') Isle of Man
+																			option(value='IL') Israel
+																			option(value='IT') Italy
+																		optgroup(label='J')
+																			option(value='JM') Jamaica
+																			option(value='JP') Japan
+																			option(value='JE') Jersey
+																			option(value='JO') Jordan
+																		optgroup(label='K')
+																			option(value='KZ') Kazakhstan
+																			option(value='KE') Kenya
+																			option(value='KI') Kiribati
+																			option(value='KP') Korea, Democratic People&apos;s Republic of
+																			option(value='KR') Korea, Republic of
+																			option(value='KW') Kuwait
+																			option(value='KG') Kyrgyzstan
+																		optgroup(label='L')
+																			option(value='LA') Lao People&apos;s Democratic Republic
+																			option(value='LV') Latvia
+																			option(value='LB') Lebanon
+																			option(value='LS') Lesotho
+																			option(value='LR') Liberia
+																			option(value='LY') Libya
+																			option(value='LI') Liechtenstein
+																			option(value='LT') Lithuania
+																			option(value='LU') Luxembourg
+																		optgroup(label='M')
+																			option(value='MO') Macao
+																			option(value='MK') Macedonia, the former Yugoslav Republic of
+																			option(value='MG') Madagascar
+																			option(value='MW') Malawi
+																			option(value='MY') Malaysia
+																			option(value='MV') Maldives
+																			option(value='ML') Mali
+																			option(value='MT') Malta
+																			option(value='MH') Marshall Islands
+																			option(value='MQ') Martinique
+																			option(value='MR') Mauritania
+																			option(value='MU') Mauritius
+																			option(value='YT') Mayotte
+																			option(value='MX') Mexico
+																			option(value='FM') Micronesia, Federated States of
+																			option(value='MD') Moldova, Republic of
+																			option(value='MC') Monaco
+																			option(value='MN') Mongolia
+																			option(value='ME') Montenegro
+																			option(value='MS') Montserrat
+																			option(value='MA') Morocco
+																			option(value='MZ') Mozambique
+																			option(value='MM') Myanmar
+																			option(value='NA') Namibia
+																		optgroup(label='N')
+																			option(value='NR') Nauru
+																			option(value='NP') Nepal
+																			option(value='NL') Netherlands
+																			option(value='NC') New Caledonia
+																			option(value='NZ') New Zealand
+																			option(value='NI') Nicaragua
+																			option(value='NE') Niger
+																			option(value='NG') Nigeria
+																			option(value='NU') Niue
+																			option(value='NF') Norfolk Island
+																			option(value='MP') Northern Mariana Islands
+																			option(value='NO') Norway
+																		optgroup(label='O')
+																			option(value='OM') Oman
+																		optgroup(label='P')
+																			option(value='PK') Pakistan
+																			option(value='PW') Palau
+																			option(value='PS') Palestinian Territory, Occupied
+																			option(value='PA') Panama
+																			option(value='PG') Papua New Guinea
+																			option(value='PY') Paraguay
+																			option(value='PE') Peru
+																			option(value='PH') Philippines
+																			option(value='PN') Pitcairn
+																			option(value='PL') Poland
+																			option(value='PT') Portugal
+																			option(value='PR') Puerto Rico
+																		optgroup(label='Q')
+																			option(value='QA') Qatar
+																		optgroup(label='R')
+																			option(value='RE') R&eacute;union
+																			option(value='RO') Romania
+																			option(value='RU') Russian Federation
+																			option(value='RW') Rwanda
+																		optgroup(label='S')
+																			option(value='BL') Saint Barth&eacute;lemy
+																			option(value='SH') Saint Helena, Ascension and Tristan da Cunha
+																			option(value='KN') Saint Kitts and Nevis
+																			option(value='LC') Saint Lucia
+																			option(value='MF') Saint Martin (French part)
+																			option(value='PM') Saint Pierre and Miquelon
+																			option(value='VC') Saint Vincent and the Grenadines
+																			option(value='WS') Samoa
+																			option(value='SM') San Marino
+																			option(value='ST') Sao Tome and Principe
+																			option(value='SA') Saudi Arabia
+																			option(value='SN') Senegal
+																			option(value='RS') Serbia
+																			option(value='SC') Seychelles
+																			option(value='SL') Sierra Leone
+																			option(value='SG') Singapore
+																			option(value='SX') Sint Maarten (Dutch part)
+																			option(value='SK') Slovakia
+																			option(value='SI') Slovenia
+																			option(value='SB') Solomon Islands
+																			option(value='SO') Somalia
+																			option(value='ZA') South Africa
+																			option(value='GS') South Georgia and the South Sandwich Islands
+																			option(value='SS') South Sudan
+																			option(value='ES') Spain
+																			option(value='LK') Sri Lanka
+																			option(value='SD') Sudan
+																			option(value='SR') Suriname
+																			option(value='SJ') Svalbard and Jan Mayen
+																			option(value='SZ') Swaziland
+																			option(value='SE') Sweden
+																			option(value='CH') Switzerland
+																			option(value='SY') Syrian Arab Republic
+																		optgroup(label='T')
+																			option(value='TW') Taiwan, Province of China
+																			option(value='TJ') Tajikistan
+																			option(value='TZ') Tanzania, United Republic of
+																			option(value='TH') Thailand
+																			option(value='TL') Timor-Leste
+																			option(value='TG') Togo
+																			option(value='TK') Tokelau
+																			option(value='TO') Tonga
+																			option(value='TT') Trinidad and Tobago
+																			option(value='TN') Tunisia
+																			option(value='TR') Turkey
+																			option(value='TM') Turkmenistan
+																			option(value='TC') Turks and Caicos Islands
+																			option(value='TV') Tuvalu
+																		optgroup(label='U')
+																			option(value='UG') Uganda
+																			option(value='UA') Ukraine
+																			option(value='AE') United Arab Emirates
+																			option(value='GB') United Kingdom
+																			option(value='US') United States
+																			option(value='UM') United States Minor Outlying Islands
+																			option(value='UY') Uruguay
+																			option(value='UZ') Uzbekistan
+																		optgroup(label='V')
+																			option(value='VU') Vanuatu
+																			option(value='VE') Venezuela, Bolivarian Republic of
+																			option(value='VN') Viet Nam
+																			option(value='VG') Virgin Islands, British
+																			option(value='VI') Virgin Islands, U.S.
+																		optgroup(label='W')
+																			option(value='WF') Wallis and Futuna
+																			option(value='EH') Western Sahara
+																		optgroup(label='Y')
+																			option(value='YE') Yemen
+																		optgroup(label='Z')
+																			option(value='ZM') Zambia
+																			option(value='ZW') Zimbabwe
+																	.invalid-feedback Nationality is required.
+															.form-group.col-sm-6
+																label.font-size-15.text-muted.required(for=`idTypePassenger-${i}`) ID Type
+																.custom-select2
+																	select.select2-input.form-control.custom-select(
+																		id=`idTypePassenger-${i}`,
+																		name=`idTypePassenger-${i}`,
+																		data-minimum-results-for-search='Infinity',
+																		required=''
+																	)
+																		option(value='passport', selected='') Passport
+																		option(value='card') ID card
+																	.invalid-feedback ID type is required.
+													.col-md.col-lg-12.col-xl
+														.row
+															.form-group.col-sm-6
+																label.font-size-15.text-muted.required(for=`idPassenger-${i}`) ID number
+																input.form-control(
+																	id=`idPassenger-${i}`,
+																	type='text',
+																	pattern='[\\w\\d]{6,10}',
+																	maxlength='10',
+																	name=`idPassenger-${i}`,
+																	placeholder='0123456789',
+																	required=''
+																)
+																.invalid-feedback ID number is required.
+															.form-group.col-sm-6
+																label.font-size-15.text-muted.required(for=`idExpirationDatePassenger-${i}`) Expiration date
+																.custom-datepicker
+																	input.form-control.text-truncate.flatpickr-input(
+																		id=`idExpirationDatePassenger-${i}`,
+																		type='date',
+																		name=`idExpirationDatePassenger-${i}`,
+																		data-mode='single',
+																		data-min-date='today',
+																		data-max-date='2050-12-31',
+																		data-alt-format='d M Y',
+																		data-date-format='Y-m-d',
+																		data-month-selector-type='dropdown',
+																		data-year-selector-type='dropdown',
+																		placeholder='dd mm yyyy',
+																		required=''
+																	)
+																	.invalid-feedback Expiration date is required.
+											.baggage-info
+												input(
+													type='hidden',
+													name=`checkedBaggagePassenger-${i}`,
+													value='{"oneway":{"cabin":1,"small":0,"large":0},"roundtrip":{"cabin":1,"small":0,"large":0}}'
+												)
+												h5.section-subtitle.section-subtitle-tab.font-size-18 Baggage
+												.border.border-width-2.rounded-5.mb-3.mt-4
+													table.baggage-list.table.table-responsive-sm.table-borderless.font-size-16.text-gray-1.text-center.align-cells-middle.mb-0
+														tbody
+															tr
+																th.text-left.w-sm-25(scope='row') Cabin bag
+																td 42x32x20cm
+																td Free
+												.row
+													.col-md
+														.form-group.add-baggage(data-type='oneway')
+															if data.query.isRoundtrip
+																h6.text-gray-1 #{data.flight.departFromCity} to #{data.flight.departToCity}
+															.form-row.align-items-end
+																.col
+																	.small-bag.d-flex.align-items-end.justify-content-center(data-weight='23', data-price='25')
+																		i.fas.fa-suitcase-rolling.fa-3x.text-primary.mr-2
+																		.text-center
+																			h6.text-gray-1.mb-0 23 kg
+																			button.btn.btn-sm.btn-outline-secondary.btn-add-bag.py-1.px-2.px-sm-3(type='button') + &euro;25
+																.col
+																	.large-bag.d-flex.align-items-end.justify-content-center(data-weight='32', data-price='50')
+																		i.fas.fa-suitcase-rolling.fa-3x.text-primary.mr-2
+																		.text-center
+																			h6.text-gray-1.mb-0 32 kg
+																			button.btn.btn-sm.btn-outline-secondary.btn-add-bag.py-1.px-2.px-sm-3(type='button') + &euro;50
+													if data.query.isRoundtrip
+														.col-md.border-md-left-dashed.border-width-2
+															hr.d-md-none.border-top-dashed.border-width-2
+															.form-group.add-baggage(data-type='roundtrip')
+																h6.text-gray-1 #{data.flight.returnFromCity} to #{data.flight.returnToCity}
+																.form-row.align-items-end
+																	.col
+																		.small-bag.d-flex.align-items-end.justify-content-center(data-weight='23', data-price='25')
+																			i.fas.fa-suitcase-rolling.fa-3x.text-primary.mr-2
+																			.text-center
+																				h6.text-gray-1.mb-0 23 kg
+																				button.btn.btn-sm.btn-outline-secondary.btn-add-bag.py-1.px-2.px-sm-3(type='button') + &euro;25
+																	.col
+																		.large-bag.d-flex.align-items-end.justify-content-center(data-weight='32', data-price='50')
+																			i.fas.fa-suitcase-rolling.fa-3x.text-primary.mr-2
+																			.text-center
+																				h6.text-gray-1.mb-0 32 kg
+																				button.btn.btn-sm.btn-outline-secondary.btn-add-bag.py-1.px-2.px-sm-3(type='button') + &euro;50
+											.insurance-info
+												input(type='hidden', name=`insurancePassenger-${i}`, value='')
+												h5.section-subtitle.section-subtitle-tab.font-size-18 Insurance
+												.row.align-items-center.justify-content-center.mt-3
+													.form-group.col-md.text-center.pr-md-2.pr-xl-3.mb-md-0
+														.insurance-card(data-type='none', data-price='0')
+															.position-relative
+																button.btn.btn-icon.btn-xs.btn-remove-insurance.btn-secondary.rounded-circle(type='button')
+																	i.fas.fa-times.fa-fw
+															.insurance-card-body
+																h6.font-size-18.flex-center.flex-column
+																	i.fas.fa-heart-broken.fa-fw.fa-lg.mb-3
+																	span No insurance
+																ul.font-size-16.text-muted.mb-4
+																	li.flex-vertical-center
+																		i.fas.fa-times.fa-fw.mr-2
+																		span Medical bills
+																	li.flex-vertical-center
+																		i.fas.fa-times.fa-fw.mr-2
+																		span Trip cancellation
+																	li.flex-vertical-center
+																		i.fas.fa-times.fa-fw.mr-2
+																		span Lost baggage
+																	li.flex-vertical-center
+																		i.fas.fa-times.fa-fw.mr-2
+																		span Travel insurance
+																	li.flex-vertical-center
+																		i.fas.fa-times.fa-fw.mr-2
+																		span Liability
+																button.btn.btn-secondary.btn-select-insurance.w-75.py-2.mx-auto(type='button') &euro;0
+													.form-group.col-md.text-center.px-md-2.px-xl-3.mb-md-0
+														.insurance-card(data-type='basic', data-price='15')
+															.position-relative
+																button.btn.btn-icon.btn-xs.btn-remove-insurance.btn-secondary.rounded-circle(type='button')
+																	i.fas.fa-times.fa-fw
+															.insurance-card-body
+																h6.font-size-18.flex-center.flex-column
+																	i.fas.fa-star.fa-fw.fa-lg.mb-3
+																	span Travel basic
+																ul.font-size-16.text-muted.mb-4
+																	li.flex-vertical-center
+																		i.fas.fa-check.fa-fw.text-primary.mr-2
+																		span.text-dark Medical bills
+																	li.flex-vertical-center
+																		i.fas.fa-check.fa-fw.text-primary.mr-2
+																		span.text-dark Trip cancellation
+																	li.flex-vertical-center
+																		i.fas.fa-times.fa-fw.mr-2
+																		span Lost baggage
+																	li.flex-vertical-center
+																		i.fas.fa-times.fa-fw.mr-2
+																		span Travel insurance
+																	li.flex-vertical-center
+																		i.fas.fa-times.fa-fw.mr-2
+																		span Liability
+																button.btn.btn-secondary.btn-select-insurance.w-75.py-2.mx-auto(type='button') &euro;15
+													.col-md.text-center.pl-md-2.pl-xl-3
+														.insurance-card(data-type='plus', data-price='25')
+															.position-relative
+																button.btn.btn-icon.btn-xs.btn-remove-insurance.btn-secondary.rounded-circle(type='button')
+																	i.fas.fa-times.fa-fw
+															.insurance-card-body
+																h6.font-size-18.flex-center.flex-column
+																	i.fas.fa-briefcase-medical.fa-fw.fa-lg.mb-3
+																	span Travel plus
+																ul.font-size-16.text-dark.mb-4
+																	li.flex-vertical-center
+																		i.fas.fa-check.fa-fw.text-primary.mr-2
+																		span Medical bills
+																	li.flex-vertical-center
+																		i.fas.fa-check.fa-fw.text-primary.mr-2
+																		span Trip cancellation
+																	li.flex-vertical-center
+																		i.fas.fa-check.fa-fw.text-primary.mr-2
+																		span Lost baggage
+																	li.flex-vertical-center
+																		i.fas.fa-check.fa-fw.text-primary.mr-2
+																		span Travel insurance
+																	li.flex-vertical-center
+																		i.fas.fa-check.fa-fw.text-primary.mr-2
+																		span Liability
+																button.btn.btn-secondary.btn-select-insurance.w-75.py-2.mx-auto(type='button') &euro;25
+						#whereToContact.mb-3
+							.bg-dark.text-white.border.rounded-5.px-3.py-2.mb-3
+								h4.text-center.font-size-22.font-weight-bold.mb-0 Where do we contact you?
+							.card.shadow-soft
+								.card-body.p-4
+									.row
+										.form-group.col-sm-6.col-xl.mb-xl-0
+											label.font-size-15.text-muted.required(for='contactFirstName') First name
+											input#contactFirstName.form-control(type='text', name='contactFirstName', placeholder='John', required='')
+											.invalid-feedback First name is required.
+										.form-group.col-sm-6.col-xl.mb-xl-0
+											label.font-size-15.text-muted.required(for='contactLastName') First name
+											input#contactLastName.form-control(type='text', name='contactLastName', placeholder='Doe', required='')
+											.invalid-feedback Last name is required.
+										.form-group.col-sm-6.col-xl.mb-sm-0
+											label.font-size-15.text-muted.required(for='contactEmail') Email address
+											input#contactEmail.form-control(
+												type='email',
+												name='contactEmail',
+												placeholder='john@placeholder.com',
+												required=''
+											)
+											.invalid-feedback Email address is required.
+										.col-sm-6.col-xl
+											label.font-size-15.text-muted.required(for='contactMobile') Mobile number
+											input#contactMobile.form-control(
+												type='tel',
+												pattern='[0-9]{6,10}',
+												maxlength='10',
+												name='contactMobile',
+												placeholder='0123456789',
+												required=''
+											)
+											.invalid-feedback Mobile number is required.
+						#howToPay.mb-3
+							.bg-dark.text-white.border.rounded-5.px-3.py-2.mb-3
+								h4.text-center.font-size-22.font-weight-bold.mb-0 How would you pay?
+							.payment-card.card.shadow-soft
+								.card-body.p-4
+									ul.nav.nav-choose.nav-justified.nav-xl-unjustified
+										li.nav-item
+											a#navCreditCardTab.nav-link.mr-xl-3.mb-4.active(
+												data-toggle='tab',
+												href='#navCreditCard',
+												role='tab',
+												aria-controls='navCreditCard',
+												aria-selected='true'
+											)
+												.nav-selected-icon
+													i.fas.fa-check-circle.font-size-22.text-primary
+												.flex-center.font-size-28.text-gray-1.h-100
+													i.fab.fa-cc-visa.fa-fw.mr-1
+													i.fab.fa-cc-amex.fa-fw.mr-1
+													i.fab.fa-cc-mastercard.fa-fw
+										li.nav-item
+											a#navPayPalTab.nav-link.mb-4(
+												data-toggle='tab',
+												href='#navPayPal',
+												role='tab',
+												aria-controls='navPayPal',
+												aria-selected='false'
+											)
+												.nav-selected-icon
+													i.fas.fa-check-circle.font-size-22.text-primary
+												.flex-center.text-gray-1.h-100
+													i.fab.fa-paypal.fa-fw.font-size-28.mr-1
+													span.font-size-22.font-weight-bold
+														em PayPal
+									#navTabsContent.tab-content
+										input(type='hidden', name='paymentType', value='credit', required='')
+										#navCreditCard.tab-pane.show.fade.active(role='tabpanel')
+											.row
+												.form-group.col-12.col-xl-6
+													label.font-size-15.text-muted.required(for='cardOwnerName') Owner name
+													input#cardOwnerName.form-control(type='text', name='cardOwnerName', placeholder='John Doe', required='')
+													.invalid-feedback Owner name is required.
+												.form-group.col-12.col-xl-6
+													label.font-size-15.text-muted.required(for='cardNumber') Card number
+													input#cardNumber.form-control(
+														type='text',
+														name='cardNumber',
+														pattern='^\\d{4}([ \\-]?)((\\d{6}\\1?\\d{5})|(\\d{4}\\1?\\d{4}\\1?\\d{4}))$',
+														placeholder='0000-0000-0000-0000',
+														required=''
+													)
+													.invalid-feedback Card number is required.
+											.row
+												.form-group.col-sm.mb-sm-0
+													label.font-size-15.text-muted.required(for='cardMonth') Month
+													.custom-select2
+														select#cardMonth.select2-input.form-control(
+															name='cardMonth',
+															data-minimum-results-for-search='Infinity',
+															data-placeholder='MM',
+															required=''
+														)
+															option(selected='', disabled='', hidden='')
+															each _, i in Array(12)
+																option(value=`${i + 1}`) #{i < 9 ? "0" : ""}#{i+1}
+														.invalid-feedback Month is required.
+												.form-group.col-sm.mb-sm-0
+													label.font-size-15.text-muted.required(for='cardYear') Year
+													.custom-select2
+														select#cardYear.select2-input.form-control(
+															name='cardYear',
+															data-minimum-results-for-search='Infinity',
+															data-placeholder='YYYY',
+															required=''
+														)
+															option(selected='', disabled='', hidden='')
+															each _, i in Array(31)
+																option(value=`${new Date().getFullYear() + i}`) #{new Date().getFullYear()+i}
+														.invalid-feedback Year is required.
+												.col-sm
+													.flex-vertical-center.text-muted.mb-2
+														label.font-size-15.required.mr-1.mb-0(for='cardCVV') CVV
+														i.fas.fa-question-circle.font-size-18(
+															data-toggle='popover',
+															data-trigger='hover',
+															data-html='true',
+															data-placement='top',
+															data-content='<div class="flex-vertical-center"><img class="w-auto mr-2" src="/static/images/svg/cc-cvv-back.svg" width="42" height="30" alt="Credit card security image"/><span class="font-size-13 font-weight-medium text-gray-1">This is the 3-digit number printed on the signature panel on the back of your card.</span></div>'
+														)
+													input#cardCVV.form-control(
+														type='text',
+														pattern='[0-9]{3,4}',
+														maxlength='4',
+														name='cardCVV',
+														placeholder='000',
+														required=''
+													)
+													.invalid-feedback CVV is required.
+										#navPayPal.tab-pane.fade(role='tabpanel')
+											.p-5
+												h5.font-size-24
+													.flex-center.flex-column
+														i.fas.fa-exclamation-triangle.fa-fw.fa-2x.mb-2
+														span Paypal service comming soon...
+												p.mb-0 Paypal service is still under development. Once we fine tune everything, the service will be available for use.
+								.card-footer
+									.form-group.custom-control.custom-checkbox
+										input#acceptTOU.custom-control-input(type='checkbox', name='acceptTOU', required='')
+										label.custom-control-label.font-size-15(for='acceptTOU')
+											| By continuing, you agree to the
+											a(href='#!') &nbsp;Terms of Use
+									button.btn.btn-sm.btn-primary.w-100.w-md-auto.w-lg-100.w-xl-auto(type='submit') Book now
+				.col-lg-4.col-xl-3.mt-lg-1
+					.d-none.d-lg-block.bg-dark.text-white.border.border-bottom-0.rounded-top-5.shadow-soft.px-3.py-2
+						h4.text-lg-center.font-size-22.font-weight-bold.mb-0 SUMMARY
+					a.d-lg-none.btn.btn-white.btn-floating(
+						href='#summaryList',
+						aria-controls='summaryList',
+						aria-expanded='false',
+						aria-label='Toggle Filters',
+						data-breakpoint='lg',
+						data-toggle='navdrawer',
+						data-type='permanent'
+					)
+						i.fas.fa-list-ul.fa-fw.mr-2
+						| Summary
+					#summaryList.navdrawer.navdrawer-right.navdrawer-permanent-lg.position-lg-relative.border-lg.border-lg-top-0.rounded-lg-bottom-5.w-lg-100.shadow-soft
+						.summary.navdrawer-content.position-lg-relative
+							#flightsSummary.accordion.rounded-0
+								.card-collapse
+									h3.mb-0
+										button.btn.btn-link.btn-block.card-btn.btn-section.px-xl-4(
+											type='button',
+											data-toggle='collapse',
+											data-target='#flightsSummarySection',
+											aria-expanded='true',
+											aria-controls='flightsSummarySection'
+										)
+											span.section-header Flights
+											span.flex-vertical-center.justify-content-end
+												span.section-price &euro;#{data.flight.totalPrice}
+												span.card-btn-caret
+													i.fas.fa-chevron-down.text-dark
+								#flightsSummarySection.collapse.show(aria-labelledby='Flights summary section', data-parent='#flightsSummary')
+									.card-body.pt-0.mt-2.px-5.px-xl-4.pb-4
+										#departureFlight
+											h5.flex-center-between
+												span
+													i.fas.fa-plane.fa-fw.fa-rotate-315.text-muted
+													span.section-subtitle.ml-2 Departure
+												span.flight-id(
+													data-toggle='popover',
+													data-trigger='hover',
+													data-html='true',
+													data-placement='bottom',
+													data-content=`<span class="font-size-13 font-weight-medium text-gray-1">${data.flight.departAirlineName} | ${data.flight.departAirplaneName}</span>`
+												) (#{data.flight.departFlightID})
+											ul.mt-3
+												li.flex-vertical-center
+													h6.font-weight-bold.font-size-16.text-lh-1.border-right.border-gray-2.border-width-2.mb-0.pr-2 #{data.flight.departTime}
+													span.text-lh-1.pl-2 #{data.flight.departDate}
+												li.font-size-15.text-gray-1.mt-1 #{data.flight.departFromCity}, #{data.flight.departFromCountry}
+											ul.mt-3
+												li.flex-vertical-center
+													h6.font-weight-bold.font-size-16.text-lh-1.border-right.border-gray-2.border-width-2.mb-0.pr-2 #{data.flight.departArrivalTime}
+													span.text-lh-1.pl-2 #{data.flight.departArrivalDate}
+												li.font-size-15.text-gray-1.mt-1 #{data.flight.departToCity}, #{data.flight.departToCountry}
+										if data.query.isRoundtrip
+											hr
+											#returnFlight
+												h5.flex-center-between
+													span
+														i.fas.fa-plane.fa-fw.fa-rotate-225.text-muted
+														span.section-subtitle.ml-2 Return
+													span.flight-id(
+														data-toggle='popover',
+														data-trigger='hover',
+														data-html='true',
+														data-placement='bottom',
+														data-content=`<span class="font-size-13 font-weight-medium text-gray-1">${data.flight.returnAirlineName} | ${data.flight.returnAirplaneName}</span>`
+													) (#{data.flight.returnFlightID})
+												ul.mt-3
+													li.flex-vertical-center
+														h6.font-weight-bold.font-size-16.text-lh-1.border-right.border-gray-2.border-width-2.mb-0.pr-2 #{data.flight.returnTime}
+														span.text-lh-1.pl-2 #{data.flight.returnDate}
+													li.font-size-15.text-gray-1.mt-1 #{data.flight.returnFromCity}, #{data.flight.returnFromCountry}
+												ul.mt-3
+													li.flex-vertical-center
+														h6.font-weight-bold.font-size-16.text-lh-1.border-right.border-gray-2.border-width-2.mb-0.pr-2 #{data.flight.returnArrivalTime}
+														span.text-lh-1.pl-2 #{data.flight.returnArrivalDate}
+													li.font-size-15.text-gray-1.mt-1 #{data.flight.returnToCity}, #{data.flight.returnToCountry}
+							#passengersSummary.accordion.rounded-0.border-top
+								.card-collapse
+									h3.mb-0
+										button.btn.btn-link.btn-block.card-btn.btn-section.px-xl-4(
+											type='button',
+											data-toggle='collapse',
+											data-target='#passengersSummarySection',
+											aria-expanded='true',
+											aria-controls='passengersSummarySection'
+										)
+											span.section-header Passengers
+											span.flex-vertical-center.justify-content-end
+												span.section-price &euro;
+													span#totalPassengersPrice 0
+												span.card-btn-caret
+													i.fas.fa-chevron-down.text-dark
+								#passengersSummarySection.collapse.show(
+									aria-labelledby='Passengers summary section',
+									data-parent='#passengersSummary'
+								)
+									.card-body.pt-0.px-5.px-xl-4.pb-4
+										each _, i in Array(data.query.passengers.adults)
+											div(id=`passengerSummary-${i}`, class=i === 0 ? "mt-2" : "mt-3")
+												h5.text-truncate.mb-0
+													i.fas.fa-user.fa-fw.text-muted
+													span.section-subtitle.ml-2(id=`passengerFullname-${i}`)
+														span.first-name.mr-1
+														span.last-name
+												ul.items.text-gray-1.mt-2
+													li.flex-center-between
+														h6.item-name 1x cabin bag
+														span.item-price free
+							#totalSummary.accordion.rounded-0.border-top
+								.card-collapse
+									h3.mb-0
+										button.btn.btn-link.btn-block.card-btn.btn-section.px-xl-4(
+											type='button',
+											data-toggle='collapse',
+											data-target='#totalSummarySection',
+											aria-expanded='false',
+											aria-controls='totalSummarySection'
+										)
+											span.section-header Total
+											span.flex-vertical-center.justify-content-end
+												span.section-price.text-dark &euro;
+													span#totalPrice(
+														data-toggle='sync-text',
+														data-sync-controls='totalPriceInput',
+														data-sync-placeholder=`${data.flight.totalPrice}`,
+														data-sync-parent='newBookingForm'
+													) #{data.flight.totalPrice}
+												span.card-btn-caret
+													i.fas.fa-chevron-down.text-dark
+								#totalSummarySection.collapse(aria-labelledby='Total summary section', data-parent='#totalSummary')
+									.card-body.pt-0.mt-2.px-5.px-xl-4.pb-4
+										ul.text-gray-1
+											li.flex-center-between.mb-2
+												h6.item-name taxes
+												span.item-price &euro;#{data.flight.totalTaxes}
+
+block append scripts
+	script.
+		$(() => {
+			$('#cardYear').on('change', function fixMonth() {
+				const value = parseInt($(this).val(), 10);
+				const currentYear = new Date().getFullYear();
+				const currentMonth = new Date().getMonth() + 1;
+				const disableMonth = value === currentYear ? true : false;
+		
+				if (disableMonth && parseInt($('#cardMonth').val(), 10) < currentMonth) {
+					$('#cardMonth').find('option:selected').prop('selected', false);
+					$('#cardMonth').find(`option[value="${currentMonth}"]`).prop('selected', true).trigger('change');
+				}
+		
+				$('#cardMonth option').each((i,el) => $(el).prop('disabled', parseInt($(el).val(), 10) < currentMonth && disableMonth));
+			})
+		})
