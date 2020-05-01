@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
-const uuid = require('uuid/v4');
+const { v4: uuid } = require('uuid');
 const favicon = require('serve-favicon');
 const path = require('path');
 const logger = require('morgan');
