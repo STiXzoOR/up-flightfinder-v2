@@ -81,7 +81,12 @@ From the root of the project follow the steps below:
     - NOTE: you need to run `gulp init` to reinitialize the resources after running the clean commands.
 
 - To run the app in production mode:
-  - Run `npm start prod`
+
+  - Run `npm run prod`
+
+- To update the packages:
+  - Run `npm run update-packages`
+  - Run `gulp clean && gulp init`
 
 ## Technologies Used
 
