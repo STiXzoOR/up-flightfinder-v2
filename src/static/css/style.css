@@ -3040,6 +3040,176 @@ ul {
 /*-------------------------------------------*\
     2.3. Badge
 \*-------------------------------------------*/
+.badge-white {
+	color: #3b444f;
+	background-color: #fff;
+}
+
+a.badge-white:hover,
+a.badge-white:focus {
+	color: #3b444f;
+	background-color: #e6e6e6;
+}
+
+a.badge-white:focus,
+a.badge-white.focus {
+	outline: 0;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.badge-soft-primary {
+	color: #297cbb;
+	background: rgba(41, 124, 187, 0.1);
+}
+
+a.badge-soft-primary:hover,
+a.badge-soft-primary:focus {
+	color: #fff;
+	background: #297cbb;
+}
+
+a.badge-soft-primary:focus,
+a.badge-soft-primary.focus {
+	outline: 0;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.badge-soft-secondary {
+	color: #77838f;
+	background: rgba(119, 131, 143, 0.1);
+}
+
+a.badge-soft-secondary:hover,
+a.badge-soft-secondary:focus {
+	color: #fff;
+	background: #77838f;
+}
+
+a.badge-secondary:focus,
+a.badge-secondary.focus {
+	outline: 0;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.badge-soft-success {
+	color: #00c9a7;
+	background: rgba(0, 201, 167, 0.1);
+}
+
+a.badge-soft-success:hover,
+a.badge-soft-success:focus {
+	color: #fff;
+	background: #00c9a7;
+}
+
+a.badge-soft-success:focus,
+a.badge-soft-success.focus {
+	outline: 0;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.badge-soft-info {
+	color: #00dffc;
+	background: rgba(0, 223, 252, 0.1);
+}
+
+a.badge-soft-info:hover,
+a.badge-soft-info:focus {
+	color: #3b444f;
+	background: #00dffc;
+}
+
+a.badge-soft-info:focus,
+a.badge-soft-info.focus {
+	outline: 0;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.badge-soft-warning {
+	color: #ffc107;
+	background: rgba(255, 193, 7, 0.1);
+}
+
+a.badge-soft-warning:hover,
+a.badge-soft-warning:focus {
+	color: #3b444f;
+	background: #ffc107;
+}
+
+a.badge-soft-warning:focus,
+a.badge-soft-warning.focus {
+	outline: 0;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.badge-soft-danger {
+	color: #de4437;
+	background: rgba(222, 68, 55, 0.1);
+}
+
+a.badge-soft-danger:hover,
+a.badge-soft-danger:focus {
+	color: #fff;
+	background: #de4437;
+}
+
+a.badge-soft-danger:focus,
+a.badge-soft-danger.focus {
+	outline: 0;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.badge-soft-light {
+	color: #f8f9fa;
+	background: rgba(248, 249, 250, 0.1);
+}
+
+a.badge-soft-light:hover,
+a.badge-soft-light:focus {
+	color: #3b444f;
+	background: #f8f9fa;
+}
+
+a.badge-soft-light:focus,
+a.badge-soft-light.focus {
+	outline: 0;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.badge-soft-dark {
+	color: #3b444f;
+	background: rgba(59, 68, 79, 0.1);
+}
+
+a.badge-soft-dark:hover,
+a.badge-soft-dark:focus {
+	color: #fff;
+	background: #3b444f;
+}
+
+a.badge-soft-dark:focus,
+a.badge-soft-dark.focus {
+	outline: 0;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.badge-soft-white {
+	color: #fff;
+	background: rgba(255, 255, 255, 0.1);
+}
+
+a.badge-soft-white:hover,
+a.badge-soft-white:focus {
+	color: #3b444f;
+	background: #fff;
+}
+
+a.badge-soft-white:focus,
+a.badge-soft-white.focus {
+	outline: 0;
+	box-shadow: 0 0 0 0 transparent;
+}
+
 .badge-counter {
 	display: flex;
 	width: 1.5rem;
@@ -3070,6 +3240,384 @@ ul {
 .btn.disabled,
 .btn:disabled {
 	pointer-events: none;
+}
+
+.btn-soft-primary {
+	color: #297cbb;
+	background: rgba(41, 124, 187, 0.1);
+	border-color: transparent;
+}
+
+.btn-soft-primary[href]:hover,
+.btn-soft-primary[href]:focus,
+.btn-soft-primary[href]:active,
+.btn-soft-primary[href].active,
+.btn-soft-primary[type]:hover,
+.btn-soft-primary[type]:focus,
+.btn-soft-primary[type]:active,
+.btn-soft-primary[type].active {
+	color: #fff;
+	background: #297cbb;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.btn-soft-primary[href].disabled,
+.btn-soft-primary[href]:disabled,
+.btn-soft-primary[type].disabled,
+.btn-soft-primary[type]:disabled {
+	color: #297cbb;
+	background-color: rgba(41, 124, 187, 0.1);
+	box-shadow: none;
+}
+
+.btn-soft-primary[href]:not(:disabled):not(.disabled):active,
+.btn-soft-primary[href]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-primary[href].dropdown-toggle,
+.btn-soft-primary[type]:not(:disabled):not(.disabled):active,
+.btn-soft-primary[type]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-primary[type].dropdown-toggle {
+	color: #fff;
+	background-color: #297cbb;
+}
+
+.btn.btn-soft-primary {
+	color: #297cbb;
+}
+
+.btn-soft-secondary {
+	color: #77838f;
+	background: rgba(119, 131, 143, 0.1);
+	border-color: transparent;
+}
+
+.btn-soft-secondary[href]:hover,
+.btn-soft-secondary[href]:focus,
+.btn-soft-secondary[href]:active,
+.btn-soft-secondary[href].active,
+.btn-soft-secondary[type]:hover,
+.btn-soft-secondary[type]:focus,
+.btn-soft-secondary[type]:active,
+.btn-soft-secondary[type].active {
+	color: #fff;
+	background: #77838f;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.btn-soft-secondary[href].disabled,
+.btn-soft-secondary[href]:disabled,
+.btn-soft-secondary[type].disabled,
+.btn-soft-secondary[type]:disabled {
+	color: #77838f;
+	background-color: rgba(119, 131, 143, 0.1);
+	box-shadow: none;
+}
+
+.btn-soft-secondary[href]:not(:disabled):not(.disabled):active,
+.btn-soft-secondary[href]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-secondary[href].dropdown-toggle,
+.btn-soft-secondary[type]:not(:disabled):not(.disabled):active,
+.btn-soft-secondary[type]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-secondary[type].dropdown-toggle {
+	color: #fff;
+	background-color: #77838f;
+}
+
+.btn.btn-soft-secondary {
+	color: #77838f;
+}
+
+.btn-soft-success {
+	color: #00c9a7;
+	background: rgba(0, 201, 167, 0.1);
+	border-color: transparent;
+}
+
+.btn-soft-success[href]:hover,
+.btn-soft-success[href]:focus,
+.btn-soft-success[href]:active,
+.btn-soft-success[href].active,
+.btn-soft-success[type]:hover,
+.btn-soft-success[type]:focus,
+.btn-soft-success[type]:active,
+.btn-soft-success[type].active {
+	color: #fff;
+	background: #00c9a7;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.btn-soft-success[href].disabled,
+.btn-soft-success[href]:disabled,
+.btn-soft-success[type].disabled,
+.btn-soft-success[type]:disabled {
+	color: #00c9a7;
+	background-color: rgba(0, 201, 167, 0.1);
+	box-shadow: none;
+}
+
+.btn-soft-success[href]:not(:disabled):not(.disabled):active,
+.btn-soft-success[href]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-success[href].dropdown-toggle,
+.btn-soft-success[type]:not(:disabled):not(.disabled):active,
+.btn-soft-success[type]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-success[type].dropdown-toggle {
+	color: #fff;
+	background-color: #00c9a7;
+}
+
+.btn.btn-soft-success {
+	color: #00c9a7;
+}
+
+.btn-soft-info {
+	color: #00dffc;
+	background: rgba(0, 223, 252, 0.1);
+	border-color: transparent;
+}
+
+.btn-soft-info[href]:hover,
+.btn-soft-info[href]:focus,
+.btn-soft-info[href]:active,
+.btn-soft-info[href].active,
+.btn-soft-info[type]:hover,
+.btn-soft-info[type]:focus,
+.btn-soft-info[type]:active,
+.btn-soft-info[type].active {
+	color: #3b444f;
+	background: #00dffc;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.btn-soft-info[href].disabled,
+.btn-soft-info[href]:disabled,
+.btn-soft-info[type].disabled,
+.btn-soft-info[type]:disabled {
+	color: #00dffc;
+	background-color: rgba(0, 223, 252, 0.1);
+	box-shadow: none;
+}
+
+.btn-soft-info[href]:not(:disabled):not(.disabled):active,
+.btn-soft-info[href]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-info[href].dropdown-toggle,
+.btn-soft-info[type]:not(:disabled):not(.disabled):active,
+.btn-soft-info[type]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-info[type].dropdown-toggle {
+	color: #3b444f;
+	background-color: #00dffc;
+}
+
+.btn.btn-soft-info {
+	color: #00dffc;
+}
+
+.btn-soft-warning {
+	color: #ffc107;
+	background: rgba(255, 193, 7, 0.1);
+	border-color: transparent;
+}
+
+.btn-soft-warning[href]:hover,
+.btn-soft-warning[href]:focus,
+.btn-soft-warning[href]:active,
+.btn-soft-warning[href].active,
+.btn-soft-warning[type]:hover,
+.btn-soft-warning[type]:focus,
+.btn-soft-warning[type]:active,
+.btn-soft-warning[type].active {
+	color: #3b444f;
+	background: #ffc107;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.btn-soft-warning[href].disabled,
+.btn-soft-warning[href]:disabled,
+.btn-soft-warning[type].disabled,
+.btn-soft-warning[type]:disabled {
+	color: #ffc107;
+	background-color: rgba(255, 193, 7, 0.1);
+	box-shadow: none;
+}
+
+.btn-soft-warning[href]:not(:disabled):not(.disabled):active,
+.btn-soft-warning[href]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-warning[href].dropdown-toggle,
+.btn-soft-warning[type]:not(:disabled):not(.disabled):active,
+.btn-soft-warning[type]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-warning[type].dropdown-toggle {
+	color: #3b444f;
+	background-color: #ffc107;
+}
+
+.btn.btn-soft-warning {
+	color: #ffc107;
+}
+
+.btn-soft-danger {
+	color: #de4437;
+	background: rgba(222, 68, 55, 0.1);
+	border-color: transparent;
+}
+
+.btn-soft-danger[href]:hover,
+.btn-soft-danger[href]:focus,
+.btn-soft-danger[href]:active,
+.btn-soft-danger[href].active,
+.btn-soft-danger[type]:hover,
+.btn-soft-danger[type]:focus,
+.btn-soft-danger[type]:active,
+.btn-soft-danger[type].active {
+	color: #fff;
+	background: #de4437;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.btn-soft-danger[href].disabled,
+.btn-soft-danger[href]:disabled,
+.btn-soft-danger[type].disabled,
+.btn-soft-danger[type]:disabled {
+	color: #de4437;
+	background-color: rgba(222, 68, 55, 0.1);
+	box-shadow: none;
+}
+
+.btn-soft-danger[href]:not(:disabled):not(.disabled):active,
+.btn-soft-danger[href]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-danger[href].dropdown-toggle,
+.btn-soft-danger[type]:not(:disabled):not(.disabled):active,
+.btn-soft-danger[type]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-danger[type].dropdown-toggle {
+	color: #fff;
+	background-color: #de4437;
+}
+
+.btn.btn-soft-danger {
+	color: #de4437;
+}
+
+.btn-soft-light {
+	color: #f8f9fa;
+	background: rgba(248, 249, 250, 0.1);
+	border-color: transparent;
+}
+
+.btn-soft-light[href]:hover,
+.btn-soft-light[href]:focus,
+.btn-soft-light[href]:active,
+.btn-soft-light[href].active,
+.btn-soft-light[type]:hover,
+.btn-soft-light[type]:focus,
+.btn-soft-light[type]:active,
+.btn-soft-light[type].active {
+	color: #3b444f;
+	background: #f8f9fa;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.btn-soft-light[href].disabled,
+.btn-soft-light[href]:disabled,
+.btn-soft-light[type].disabled,
+.btn-soft-light[type]:disabled {
+	color: #f8f9fa;
+	background-color: rgba(248, 249, 250, 0.1);
+	box-shadow: none;
+}
+
+.btn-soft-light[href]:not(:disabled):not(.disabled):active,
+.btn-soft-light[href]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-light[href].dropdown-toggle,
+.btn-soft-light[type]:not(:disabled):not(.disabled):active,
+.btn-soft-light[type]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-light[type].dropdown-toggle {
+	color: #3b444f;
+	background-color: #f8f9fa;
+}
+
+.btn.btn-soft-light {
+	color: #f8f9fa;
+}
+
+.btn-soft-dark {
+	color: #3b444f;
+	background: rgba(59, 68, 79, 0.1);
+	border-color: transparent;
+}
+
+.btn-soft-dark[href]:hover,
+.btn-soft-dark[href]:focus,
+.btn-soft-dark[href]:active,
+.btn-soft-dark[href].active,
+.btn-soft-dark[type]:hover,
+.btn-soft-dark[type]:focus,
+.btn-soft-dark[type]:active,
+.btn-soft-dark[type].active {
+	color: #fff;
+	background: #3b444f;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.btn-soft-dark[href].disabled,
+.btn-soft-dark[href]:disabled,
+.btn-soft-dark[type].disabled,
+.btn-soft-dark[type]:disabled {
+	color: #3b444f;
+	background-color: rgba(59, 68, 79, 0.1);
+	box-shadow: none;
+}
+
+.btn-soft-dark[href]:not(:disabled):not(.disabled):active,
+.btn-soft-dark[href]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-dark[href].dropdown-toggle,
+.btn-soft-dark[type]:not(:disabled):not(.disabled):active,
+.btn-soft-dark[type]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-dark[type].dropdown-toggle {
+	color: #fff;
+	background-color: #3b444f;
+}
+
+.btn.btn-soft-dark {
+	color: #3b444f;
+}
+
+.btn-soft-white {
+	color: #fff;
+	background: rgba(255, 255, 255, 0.1);
+	border-color: transparent;
+}
+
+.btn-soft-white[href]:hover,
+.btn-soft-white[href]:focus,
+.btn-soft-white[href]:active,
+.btn-soft-white[href].active,
+.btn-soft-white[type]:hover,
+.btn-soft-white[type]:focus,
+.btn-soft-white[type]:active,
+.btn-soft-white[type].active {
+	color: #3b444f;
+	background: #fff;
+	box-shadow: 0 0 0 0 transparent;
+}
+
+.btn-soft-white[href].disabled,
+.btn-soft-white[href]:disabled,
+.btn-soft-white[type].disabled,
+.btn-soft-white[type]:disabled {
+	color: #fff;
+	background-color: rgba(255, 255, 255, 0.1);
+	box-shadow: none;
+}
+
+.btn-soft-white[href]:not(:disabled):not(.disabled):active,
+.btn-soft-white[href]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-white[href].dropdown-toggle,
+.btn-soft-white[type]:not(:disabled):not(.disabled):active,
+.btn-soft-white[type]:not(:disabled):not(.disabled).active,
+.show > .btn-soft-white[type].dropdown-toggle {
+	color: #3b444f;
+	background-color: #fff;
+}
+
+.btn.btn-soft-white {
+	color: #fff;
 }
 
 .btn-xs {
@@ -18727,6 +19275,10 @@ button.bg-gray:focus {
 }
 
 @media (min-width: 576px) {
+	.bg-sm-primary {
+		background-color: #297cbb !important;
+	}
+
 	a.bg-sm-primary:hover,
 	a.bg-sm-primary:focus,
 	button.bg-sm-primary:hover,
@@ -18756,7 +19308,7 @@ button.bg-gray:focus {
 		background-color: #00967d !important;
 	}
 
-	.bg-info {
+	.bg-sm-info {
 		background-color: #00dffc !important;
 	}
 
@@ -18813,6 +19365,10 @@ button.bg-gray:focus {
 }
 
 @media (min-width: 768px) {
+	.bg-md-primary {
+		background-color: #297cbb !important;
+	}
+
 	a.bg-md-primary:hover,
 	a.bg-md-primary:focus,
 	button.bg-md-primary:hover,
@@ -18899,6 +19455,10 @@ button.bg-gray:focus {
 }
 
 @media (min-width: 992px) {
+	.bg-lg-primary {
+		background-color: #297cbb !important;
+	}
+
 	a.bg-lg-primary:hover,
 	a.bg-lg-primary:focus,
 	button.bg-lg-primary:hover,
@@ -18985,6 +19545,10 @@ button.bg-gray:focus {
 }
 
 @media (min-width: 1200px) {
+	.bg-xl-primary {
+		background-color: #297cbb !important;
+	}
+
 	a.bg-xl-primary:hover,
 	a.bg-xl-primary:focus,
 	button.bg-xl-primary:hover,
@@ -19067,6 +19631,454 @@ button.bg-gray:focus {
 	button.bg-xl-gray:hover,
 	button.bg-xl-gray:focus {
 		background-color: #c7d5e8 !important;
+	}
+}
+
+.bg-soft-primary {
+	background-color: rgba(41, 124, 187, 0.1) !important;
+}
+
+a.bg-soft-primary:hover,
+a.bg-soft-primary:focus,
+button.bg-soft-primary:hover,
+button.bg-soft-primary:focus {
+	background-color: rgba(32, 96, 145, 0.1) !important;
+}
+
+.bg-soft-secondary {
+	background-color: rgba(119, 131, 143, 0.1) !important;
+}
+
+a.bg-soft-secondary:hover,
+a.bg-soft-secondary:focus,
+button.bg-soft-secondary:hover,
+button.bg-soft-secondary:focus {
+	background-color: rgba(95, 106, 116, 0.1) !important;
+}
+
+.bg-soft-success {
+	background-color: rgb(0, 201, 167, 0.1) !important;
+}
+
+a.bg-soft-success:hover,
+a.bg-soft-success:focus,
+button.bg-soft-success:hover,
+button.bg-soft-success:focus {
+	background-color: rgb(0, 150, 125, 0.1) !important;
+}
+
+.bg-soft-info {
+	background-color: rgb(0, 223, 252, 0.1) !important;
+}
+
+a.bg-soft-info:hover,
+a.bg-soft-info:focus,
+button.bg-soft-info:hover,
+button.bg-soft-info:focus {
+	background-color: rgb(0, 178, 201, 0.1) !important;
+}
+
+.bg-soft-danger {
+	background-color: rgb(222, 68, 55, 0.1) !important;
+}
+
+a.bg-soft-danger:hover,
+a.bg-soft-danger:focus,
+button.bg-soft-danger:hover,
+button.bg-soft-danger:focus {
+	background-color: rgb(194, 45, 32, 0.1) !important;
+}
+
+.bg-soft-light {
+	background-color: rgb(248, 249, 250, 0.1) !important;
+}
+
+a.bg-soft-light:hover,
+a.bg-soft-light:focus,
+button.bg-soft-light:hover,
+button.bg-soft-light:focus {
+	background-color: rgb(218, 224, 229, 0.1) !important;
+}
+
+.bg-soft-dark {
+	background-color: rgb(59, 68, 79, 0.1) !important;
+}
+
+a.bg-soft-dark:hover,
+a.bg-soft-dark:focus,
+button.bg-soft-dark:hover,
+button.bg-soft-dark:focus {
+	background-color: rgb(37, 43, 50, 0.1) !important;
+}
+
+.bg-soft-gray {
+	background-color: rgb(235, 240, 247, 0.1) !important;
+}
+
+a.bg-soft-gray:hover,
+a.bg-soft-gray:focus,
+button.bg-soft-gray:hover,
+button.bg-soft-gray:focus {
+	background-color: rgb(199, 213, 232, 0.1) !important;
+}
+
+@media (min-width: 576px) {
+	.bg-sm-soft-primary {
+		background-color: rgba(41, 124, 187, 0.1) !important;
+	}
+
+	a.bg-sm-soft-primary:hover,
+	a.bg-sm-soft-primary:focus,
+	button.bg-sm-soft-primary:hover,
+	button.bg-sm-soft-primary:focus {
+		background-color: rgba(32, 96, 145, 0.1) !important;
+	}
+
+	.bg-sm-soft-secondary {
+		background-color: rgba(119, 131, 143, 0.1) !important;
+	}
+
+	a.bg-sm-soft-secondary:hover,
+	a.bg-sm-soft-secondary:focus,
+	button.bg-sm-soft-secondary:hover,
+	button.bg-sm-soft-secondary:focus {
+		background-color: rgba(95, 106, 116, 0.1) !important;
+	}
+
+	.bg-sm-soft-success {
+		background-color: rgb(0, 201, 167, 0.1) !important;
+	}
+
+	a.bg-sm-soft-success:hover,
+	a.bg-sm-soft-success:focus,
+	button.bg-sm-soft-success:hover,
+	button.bg-sm-soft-success:focus {
+		background-color: rgb(0, 150, 125, 0.1) !important;
+	}
+
+	.bg-sm-soft-info {
+		background-color: rgb(0, 223, 252, 0.1) !important;
+	}
+
+	a.bg-sm-soft-info:hover,
+	a.bg-sm-soft-info:focus,
+	button.bg-sm-soft-info:hover,
+	button.bg-sm-soft-info:focus {
+		background-color: rgb(0, 178, 201, 0.1) !important;
+	}
+
+	.bg-sm-soft-danger {
+		background-color: rgb(222, 68, 55, 0.1) !important;
+	}
+
+	a.bg-sm-soft-danger:hover,
+	a.bg-sm-soft-danger:focus,
+	button.bg-sm-soft-danger:hover,
+	button.bg-sm-soft-danger:focus {
+		background-color: rgb(194, 45, 32, 0.1) !important;
+	}
+
+	.bg-sm-soft-light {
+		background-color: rgb(248, 249, 250, 0.1) !important;
+	}
+
+	a.bg-sm-soft-light:hover,
+	a.bg-sm-soft-light:focus,
+	button.bg-sm-soft-light:hover,
+	button.bg-sm-soft-light:focus {
+		background-color: rgb(218, 224, 229, 0.1) !important;
+	}
+
+	.bg-sm-soft-dark {
+		background-color: rgb(59, 68, 79, 0.1) !important;
+	}
+
+	a.bg-sm-soft-dark:hover,
+	a.bg-sm-soft-dark:focus,
+	button.bg-sm-soft-dark:hover,
+	button.bg-sm-soft-dark:focus {
+		background-color: rgb(37, 43, 50, 0.1) !important;
+	}
+
+	.bg-sm-soft-gray {
+		background-color: rgb(235, 240, 247, 0.1) !important;
+	}
+
+	a.bg-sm-soft-gray:hover,
+	a.bg-sm-soft-gray:focus,
+	button.bg-sm-soft-gray:hover,
+	button.bg-sm-soft-gray:focus {
+		background-color: rgb(199, 213, 232, 0.1) !important;
+	}
+}
+
+@media (min-width: 768px) {
+	.bg-md-soft-primary {
+		background-color: rgba(41, 124, 187, 0.1) !important;
+	}
+
+	a.bg-md-soft-primary:hover,
+	a.bg-md-soft-primary:focus,
+	button.bg-md-soft-primary:hover,
+	button.bg-md-soft-primary:focus {
+		background-color: rgba(32, 96, 145, 0.1) !important;
+	}
+
+	.bg-md-soft-secondary {
+		background-color: rgba(119, 131, 143, 0.1) !important;
+	}
+
+	a.bg-md-soft-secondary:hover,
+	a.bg-md-soft-secondary:focus,
+	button.bg-md-soft-secondary:hover,
+	button.bg-md-soft-secondary:focus {
+		background-color: rgba(95, 106, 116, 0.1) !important;
+	}
+
+	.bg-md-soft-success {
+		background-color: rgb(0, 201, 167, 0.1) !important;
+	}
+
+	a.bg-md-soft-success:hover,
+	a.bg-md-soft-success:focus,
+	button.bg-md-soft-success:hover,
+	button.bg-md-soft-success:focus {
+		background-color: rgb(0, 150, 125, 0.1) !important;
+	}
+
+	.bg-md-soft-info {
+		background-color: rgb(0, 223, 252, 0.1) !important;
+	}
+
+	a.bg-md-soft-info:hover,
+	a.bg-md-soft-info:focus,
+	button.bg-md-soft-info:hover,
+	button.bg-md-soft-info:focus {
+		background-color: rgb(0, 178, 201, 0.1) !important;
+	}
+
+	.bg-md-soft-danger {
+		background-color: rgb(222, 68, 55, 0.1) !important;
+	}
+
+	a.bg-md-soft-danger:hover,
+	a.bg-md-soft-danger:focus,
+	button.bg-md-soft-danger:hover,
+	button.bg-md-soft-danger:focus {
+		background-color: rgb(194, 45, 32, 0.1) !important;
+	}
+
+	.bg-md-soft-light {
+		background-color: rgb(248, 249, 250, 0.1) !important;
+	}
+
+	a.bg-md-soft-light:hover,
+	a.bg-md-soft-light:focus,
+	button.bg-md-soft-light:hover,
+	button.bg-md-soft-light:focus {
+		background-color: rgb(218, 224, 229, 0.1) !important;
+	}
+
+	.bg-md-soft-dark {
+		background-color: rgb(59, 68, 79, 0.1) !important;
+	}
+
+	a.bg-md-soft-dark:hover,
+	a.bg-md-soft-dark:focus,
+	button.bg-md-soft-dark:hover,
+	button.bg-md-soft-dark:focus {
+		background-color: rgb(37, 43, 50, 0.1) !important;
+	}
+
+	.bg-md-soft-gray {
+		background-color: rgb(235, 240, 247, 0.1) !important;
+	}
+
+	a.bg-md-soft-gray:hover,
+	a.bg-md-soft-gray:focus,
+	button.bg-md-soft-gray:hover,
+	button.bg-md-soft-gray:focus {
+		background-color: rgb(199, 213, 232, 0.1) !important;
+	}
+}
+
+@media (min-width: 992px) {
+	.bg-lg-soft-primary {
+		background-color: rgba(41, 124, 187, 0.1) !important;
+	}
+
+	a.bg-lg-soft-primary:hover,
+	a.bg-lg-soft-primary:focus,
+	button.bg-lg-soft-primary:hover,
+	button.bg-lg-soft-primary:focus {
+		background-color: rgba(32, 96, 145, 0.1) !important;
+	}
+
+	.bg-lg-soft-secondary {
+		background-color: rgba(119, 131, 143, 0.1) !important;
+	}
+
+	a.bg-lg-soft-secondary:hover,
+	a.bg-lg-soft-secondary:focus,
+	button.bg-lg-soft-secondary:hover,
+	button.bg-lg-soft-secondary:focus {
+		background-color: rgba(95, 106, 116, 0.1) !important;
+	}
+
+	.bg-lg-soft-success {
+		background-color: rgb(0, 201, 167, 0.1) !important;
+	}
+
+	a.bg-lg-soft-success:hover,
+	a.bg-lg-soft-success:focus,
+	button.bg-lg-soft-success:hover,
+	button.bg-lg-soft-success:focus {
+		background-color: rgb(0, 150, 125, 0.1) !important;
+	}
+
+	.bg-lg-soft-info {
+		background-color: rgb(0, 223, 252, 0.1) !important;
+	}
+
+	a.bg-lg-soft-info:hover,
+	a.bg-lg-soft-info:focus,
+	button.bg-lg-soft-info:hover,
+	button.bg-lg-soft-info:focus {
+		background-color: rgb(0, 178, 201, 0.1) !important;
+	}
+
+	.bg-lg-soft-danger {
+		background-color: rgb(222, 68, 55, 0.1) !important;
+	}
+
+	a.bg-lg-soft-danger:hover,
+	a.bg-lg-soft-danger:focus,
+	button.bg-lg-soft-danger:hover,
+	button.bg-lg-soft-danger:focus {
+		background-color: rgb(194, 45, 32, 0.1) !important;
+	}
+
+	.bg-lg-soft-light {
+		background-color: rgb(248, 249, 250, 0.1) !important;
+	}
+
+	a.bg-lg-soft-light:hover,
+	a.bg-lg-soft-light:focus,
+	button.bg-lg-soft-light:hover,
+	button.bg-lg-soft-light:focus {
+		background-color: rgb(218, 224, 229, 0.1) !important;
+	}
+
+	.bg-lg-soft-dark {
+		background-color: rgb(59, 68, 79, 0.1) !important;
+	}
+
+	a.bg-lg-soft-dark:hover,
+	a.bg-lg-soft-dark:focus,
+	button.bg-lg-soft-dark:hover,
+	button.bg-lg-soft-dark:focus {
+		background-color: rgb(37, 43, 50, 0.1) !important;
+	}
+
+	.bg-lg-soft-gray {
+		background-color: rgb(235, 240, 247, 0.1) !important;
+	}
+
+	a.bg-lg-soft-gray:hover,
+	a.bg-lg-soft-gray:focus,
+	button.bg-lg-soft-gray:hover,
+	button.bg-lg-soft-gray:focus {
+		background-color: rgb(199, 213, 232, 0.1) !important;
+	}
+}
+
+@media (min-width: 1200px) {
+	.bg-xl-soft-primary {
+		background-color: rgba(41, 124, 187, 0.1) !important;
+	}
+
+	a.bg-xl-soft-primary:hover,
+	a.bg-xl-soft-primary:focus,
+	button.bg-xl-soft-primary:hover,
+	button.bg-xl-soft-primary:focus {
+		background-color: rgba(32, 96, 145, 0.1) !important;
+	}
+
+	.bg-xl-soft-secondary {
+		background-color: rgba(119, 131, 143, 0.1) !important;
+	}
+
+	a.bg-xl-soft-secondary:hover,
+	a.bg-xl-soft-secondary:focus,
+	button.bg-xl-soft-secondary:hover,
+	button.bg-xl-soft-secondary:focus {
+		background-color: rgba(95, 106, 116, 0.1) !important;
+	}
+
+	.bg-xl-soft-success {
+		background-color: rgb(0, 201, 167, 0.1) !important;
+	}
+
+	a.bg-xl-soft-success:hover,
+	a.bg-xl-soft-success:focus,
+	button.bg-xl-soft-success:hover,
+	button.bg-xl-soft-success:focus {
+		background-color: rgb(0, 150, 125, 0.1) !important;
+	}
+
+	.bg-xl-soft-info {
+		background-color: rgb(0, 223, 252, 0.1) !important;
+	}
+
+	a.bg-xl-soft-info:hover,
+	a.bg-xl-soft-info:focus,
+	button.bg-xl-soft-info:hover,
+	button.bg-xl-soft-info:focus {
+		background-color: rgb(0, 178, 201, 0.1) !important;
+	}
+
+	.bg-xl-soft-danger {
+		background-color: rgb(222, 68, 55, 0.1) !important;
+	}
+
+	a.bg-xl-soft-danger:hover,
+	a.bg-xl-soft-danger:focus,
+	button.bg-xl-soft-danger:hover,
+	button.bg-xl-soft-danger:focus {
+		background-color: rgb(194, 45, 32, 0.1) !important;
+	}
+
+	.bg-xl-soft-light {
+		background-color: rgb(248, 249, 250, 0.1) !important;
+	}
+
+	a.bg-xl-soft-light:hover,
+	a.bg-xl-soft-light:focus,
+	button.bg-xl-soft-light:hover,
+	button.bg-xl-soft-light:focus {
+		background-color: rgb(218, 224, 229, 0.1) !important;
+	}
+
+	.bg-xl-soft-dark {
+		background-color: rgb(59, 68, 79, 0.1) !important;
+	}
+
+	a.bg-xl-soft-dark:hover,
+	a.bg-xl-soft-dark:focus,
+	button.bg-xl-soft-dark:hover,
+	button.bg-xl-soft-dark:focus {
+		background-color: rgb(37, 43, 50, 0.1) !important;
+	}
+
+	.bg-xl-soft-gray {
+		background-color: rgb(235, 240, 247, 0.1) !important;
+	}
+
+	a.bg-xl-soft-gray:hover,
+	a.bg-xl-soft-gray:focus,
+	button.bg-xl-soft-gray:hover,
+	button.bg-xl-soft-gray:focus {
+		background-color: rgb(199, 213, 232, 0.1) !important;
 	}
 }
 
