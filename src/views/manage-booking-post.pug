@@ -13,7 +13,17 @@ block content
 		.container.py-5.py-lg-12
 			.row.justify-content-center
 				.col-lg-10.col-xl-9
-					+showAlert
+					+showAlert(true)
+					if booking.isCanceled === 1
+						.card.shadow-soft.mb-5(role='alert')
+							.card-body.px-3.px-sm-4.px-md-7
+								.flex-vertical-center
+									i.fas.fa-check-circle.font-size-25.mr-3
+									.d-flex.flex-column
+										h5.alert-heading.font-size-22 Booking canceled
+										span The current booking is canceled therefore you can&apos;t modify it.
+										span.mb-3 If you have any questions, please contact our support team. We hope to see you soon on upflightfinder.live.
+										a.btn.btn-sm.btn-soft-primary.align-self-md-start(href='/') New search
 					ul.nav.nav-tabs.justify-content-center
 						li.nav-item
 							a#navMyBookingTab.nav-link.active(
@@ -24,9 +34,10 @@ block content
 								aria-selected='true'
 							)
 								i.fas.fa-book.fa-fw
-								span.d-none.d-md-inline-block.ml-2 My Booking
+								span.d-none.d-md-inline-block.ml-2 My booking
 						li.nav-item
 							a#navPassengersContactTab.nav-link(
+								class=`${booking.isCanceled === 1 ? "disabled" : ""}`,
 								data-toggle='tab',
 								href='#navPassengersContact',
 								role='tab',
@@ -44,7 +55,7 @@ block content
 								aria-selected='false'
 							)
 								i.fas.fa-money-check.fa-fw
-								span.d-none.d-md-inline-block.ml-2 Payment History
+								span.d-none.d-md-inline-block.ml-2 Payment history
 					.card.shadow-soft
 						#navTabsContent.tab-content
 							#navMyBooking.tab-pane.show.fade.active(role='tabpanel')
@@ -121,55 +132,92 @@ block content
 														span.font-weight-bold.font-size-19.mb-0 #{flight.departArrivalTime}
 														span.font-size-14 #{flight.departArrivalDate}
 														span.font-size-13.text-gray-1 #{flight.departToCity}, #{flight.departToCountry}
-									if flight.isRoundtrip
-										#returnFlightDetails.accordion.rounded-0.border-top
-											.card-collapse
-												h3.mb-0
-													button.btn.btn-link.btn-block.card-btn.btn-section.collapsed.px-3.px-sm-4.px-md-5(
-														type='button',
-														data-toggle='collapse',
-														data-target='#returnFlightDetailsSection',
-														aria-expanded='true',
-														aria-controls='returnFlightDetailsSection'
-													)
-														span.section-header
-															span #{flight.returnFromCity}
-															span.fas.fa-plane.fa-fw.text-muted.mx-2
-															span #{flight.returnToCity}
-															ul.flight-airline-details
-																li.border-right.pr-2 #{flight.returnFlightID}
-																li.border-right.px-2 #{flight.returnAirlineName}
-																li.pl-2 #{flight.returnAirplaneName}
-														span.card-btn-caret
-															i.fas.fa-chevron-down
-											#returnFlightDetailsSection.collapse.show(
-												aria-labelledby='Return flight details section',
-												data-parent='#returnFlightDetails'
-											)
-												.card-body.mt-3.mt-md-1.pt-0.px-3.px-sm-4.px-md-5.pb-4
-													.row.align-items-center.text-center
-														.d-none.d-md-block.col-auto.col-lg
-															.flex-vertical-center
-																img.img-fluid.mr-3(src=`/static/images/airlines/${flight.returnAirlineCode}.png`)
-																ul.d-flex.flex-column.font-size-14.text-left
-																	li #{flight.returnFlightID}
-																	li #{flight.returnAirlineName}
-																	li #{flight.returnAirplaneName}
-														.col.col-sm-auto
-															.d-flex.flex-column.text-center.text-md-right
-																span.font-weight-bold.font-size-19.mb-0 #{flight.returnTime}
-																span.font-size-14 #{flight.returnDate}
-																span.font-size-13.text-gray-1 #{flight.returnFromCity}, #{flight.returnFromCountry}
-														.col.px-1.px-sm-3
-															.d-flex.flex-column
-																span.font-size-14.font-weight-bold.mb-0 #{flight.returnClass}
-																.border-top.border-primary.border-width-2.my-1
-																span.font-size-14.text-gray-1 #{flight.returnDuration.startsWith('0')? flight.returnDuration.slice(1): flight.returnDuration}
-														.col.col-sm-auto
-															.d-flex.flex-column.text-center.text-md-left
-																span.font-weight-bold.font-size-19.mb-0 #{flight.returnArrivalTime}
-																span.font-size-14 #{flight.returnArrivalDate}
-																span.font-size-13.text-gray-1 #{flight.returnToCity}, #{flight.returnToCountry}
+								if flight.isRoundtrip
+									#returnFlightDetails.accordion.rounded-0.border-top
+										.card-collapse
+											h3.mb-0
+												button.btn.btn-link.btn-block.card-btn.btn-section.collapsed.px-3.px-sm-4.px-md-5(
+													type='button',
+													data-toggle='collapse',
+													data-target='#returnFlightDetailsSection',
+													aria-expanded='true',
+													aria-controls='returnFlightDetailsSection'
+												)
+													span.section-header
+														span #{flight.returnFromCity}
+														span.fas.fa-plane.fa-fw.text-muted.mx-2
+														span #{flight.returnToCity}
+														ul.flight-airline-details
+															li.border-right.pr-2 #{flight.returnFlightID}
+															li.border-right.px-2 #{flight.returnAirlineName}
+															li.pl-2 #{flight.returnAirplaneName}
+													span.card-btn-caret
+														i.fas.fa-chevron-down
+										#returnFlightDetailsSection.collapse.show(
+											aria-labelledby='Return flight details section',
+											data-parent='#returnFlightDetails'
+										)
+											.card-body.mt-3.mt-md-1.pt-0.px-3.px-sm-4.px-md-5.pb-4
+												.row.align-items-center.text-center
+													.d-none.d-md-block.col-auto.col-lg
+														.flex-vertical-center
+															img.img-fluid.mr-3(src=`/static/images/airlines/${flight.returnAirlineCode}.png`)
+															ul.d-flex.flex-column.font-size-14.text-left
+																li #{flight.returnFlightID}
+																li #{flight.returnAirlineName}
+																li #{flight.returnAirplaneName}
+													.col.col-sm-auto
+														.d-flex.flex-column.text-center.text-md-right
+															span.font-weight-bold.font-size-19.mb-0 #{flight.returnTime}
+															span.font-size-14 #{flight.returnDate}
+															span.font-size-13.text-gray-1 #{flight.returnFromCity}, #{flight.returnFromCountry}
+													.col.px-1.px-sm-3
+														.d-flex.flex-column
+															span.font-size-14.font-weight-bold.mb-0 #{flight.returnClass}
+															.border-top.border-primary.border-width-2.my-1
+															span.font-size-14.text-gray-1 #{flight.returnDuration.startsWith('0')? flight.returnDuration.slice(1): flight.returnDuration}
+													.col.col-sm-auto
+														.d-flex.flex-column.text-center.text-md-left
+															span.font-weight-bold.font-size-19.mb-0 #{flight.returnArrivalTime}
+															span.font-size-14 #{flight.returnArrivalDate}
+															span.font-size-13.text-gray-1 #{flight.returnToCity}, #{flight.returnToCountry}
+								if booking.isCanceled === 0
+									#cancelBooking.accordion.rounded-0.border-top
+										.card-collapse
+											h3.mb-0
+												button.btn.btn-link.btn-block.card-btn.btn-section.collapsed.px-3.px-sm-4.px-md-5(
+													type='button',
+													data-toggle='collapse',
+													data-target='#cancelBookingSection',
+													aria-expanded='true',
+													aria-controls='cancelBookingSection'
+												)
+													span.section-header Cancel booking
+													span.card-btn-caret
+														i.fas.fa-chevron-down
+										#cancelBookingSection.collapse.show(aria-labelledby='Booking cancel section', data-parent='#cancelBooking')
+											.card-body.pt-0.px-3.px-sm-4.px-md-5.pb-4
+												.alert.alert-primary.py-2.mb-3(role='alert')
+													.flex-vertical-center
+														i.fas.fa-exclamation-circle.fa-lg.mr-3
+														span Once you cancel the booking, we will issue full refund which will be credited to the card that was used for purchase within 15 days. Enter your last name below to confirm your request.
+												form#cancelBookingForm.needs-validation(
+													method='POST',
+													action=`/booking/manage-booking/bookingID=${booking.id}&lastName=${booking.contactLastName}/cancel`,
+													novalidate=''
+												)
+													.form-group
+														label.text-muted.required(for='cancelLastName') Last name
+														.prepend-icon
+															i.fas.fa-lock.fa-fw
+															input#cancelLastName.form-control(
+																type='text',
+																name='cancelLastName',
+																placeholder=`${booking.contactLastName}`,
+																required=''
+															)
+													.d-flex.justify-content-end
+														button.btn.btn-sm.btn-danger.w-100.w-md-auto(type='submit') Cancel
 							#navPassengersContact.tab-pane.fade(role='tabpanel')
 								#passengerDetails.accordion.rounded-0
 									.card-collapse
@@ -257,13 +305,14 @@ block content
 												span.section-header Contact Details
 												span.card-btn-caret
 													i.fas.fa-chevron-down
-											a.edit-contact-details.btn.btn-link.text-secondary.font-size-14(
-												data-toggle='tab',
-												href='#navEditContactDetails',
-												role='tab',
-												aria-controls='navEditContactDetails',
-												aria-selected='false'
-											) Edit
+											if booking.isCanceled === 0
+												a.edit-contact-details.btn.btn-link.text-secondary.font-size-14(
+													data-toggle='tab',
+													href='#navEditContactDetails',
+													role='tab',
+													aria-controls='navEditContactDetails',
+													aria-selected='false'
+												) Edit
 									#contactDetailsSection.collapse.show(aria-labelledby='Contact details section', data-parent='#contactDetails')
 										.card-body.pt-0.px-3.px-sm-4.px-md-5.pb-4
 											#navContactTabsContent.tab-content
@@ -281,64 +330,65 @@ block content
 														li.flex-center-between.pt-1
 															span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 Mobile
 															span.text-secondary.text-right.text-truncate #{booking.contactMobile}
-												#navEditContactDetails.tab-pane.fade(role='tabpanel')
-													form#editContactForm.needs-validation(
-														method='POST',
-														action=`/booking/manage-booking/bookingID=${booking.id}&lastName=${booking.contactLastName}/edit`,
-														novalidate=''
-													)
-														.row
-															.form-group.col-sm-6.col-xl.mb-xl-0
-																label.font-size-15.text-muted.required(for='contactFirstName') First name
-																input#contactFirstName.form-control(
-																	type='text',
-																	name='contactFirstName',
-																	placeholder='John',
-																	value=`${booking.contactFirstName}`,
-																	required=''
-																)
-																.invalid-feedback First name is required.
-															.form-group.col-sm-6.col-xl.mb-xl-0
-																label.font-size-15.text-muted.required(for='contactLastName') First name
-																input#contactLastName.form-control(
-																	type='text',
-																	name='contactLastName',
-																	placeholder='Doe',
-																	value=`${booking.contactLastName}`,
-																	required=''
-																)
-																.invalid-feedback Last name is required.
-															.form-group.col-sm-6.col-xl.mb-sm-0
-																label.font-size-15.text-muted.required(for='contactEmail') Email address
-																input#contactEmail.form-control(
-																	type='email',
-																	name='contactEmail',
-																	placeholder='john@placeholder.com',
-																	value=`${booking.contactEmail}`,
-																	required=''
-																)
-																.invalid-feedback Email address is required.
-															.col-sm-6.col-xl
-																label.font-size-15.text-muted.required(for='contactMobile') Mobile number
-																input#contactMobile.form-control(
-																	type='tel',
-																	pattern='[0-9]{6,10}',
-																	maxlength='10',
-																	name='contactMobile',
-																	placeholder='0123456789',
-																	value=`${booking.contactMobile}`,
-																	required=''
-																)
-																.invalid-feedback Mobile number is required.
-														.flex-vertical-center.justify-content-end.flex-column.flex-sm-row.mt-3
-															button.btn.btn-sm.btn-primary.w-100.w-sm-auto.mb-3.mb-sm-0.mr-sm-3(type='submit') Save
-															a.btn.btn-sm.btn-danger.w-100.w-sm-auto(
-																data-toggle='tab',
-																href='#navContactDetails',
-																role='tab',
-																aria-controls='navContactDetails',
-																aria-selected='true'
-															) Cancel
+												if booking.isCanceled === 0
+													#navEditContactDetails.tab-pane.fade(role='tabpanel')
+														form#editContactForm.needs-validation(
+															method='POST',
+															action=`/booking/manage-booking/bookingID=${booking.id}&lastName=${booking.contactLastName}/edit`,
+															novalidate=''
+														)
+															.row
+																.form-group.col-sm-6.col-xl.mb-xl-0
+																	label.font-size-15.text-muted.required(for='contactFirstName') First name
+																	input#contactFirstName.form-control(
+																		type='text',
+																		name='contactFirstName',
+																		placeholder=`${booking.contactFirstName}`,
+																		value=`${booking.contactFirstName}`,
+																		required=''
+																	)
+																	.invalid-feedback First name is required.
+																.form-group.col-sm-6.col-xl.mb-xl-0
+																	label.font-size-15.text-muted.required(for='contactLastName') Last name
+																	input#contactLastName.form-control(
+																		type='text',
+																		name='contactLastName',
+																		placeholder=`${booking.contactLastName}`,
+																		value=`${booking.contactLastName}`,
+																		required=''
+																	)
+																	.invalid-feedback Last name is required.
+																.form-group.col-sm-6.col-xl.mb-sm-0
+																	label.font-size-15.text-muted.required(for='contactEmail') Email address
+																	input#contactEmail.form-control(
+																		type='email',
+																		name='contactEmail',
+																		placeholder=`${booking.contactEmail}`,
+																		value=`${booking.contactEmail}`,
+																		required=''
+																	)
+																	.invalid-feedback Email address is required.
+																.col-sm-6.col-xl
+																	label.font-size-15.text-muted.required(for='contactMobile') Mobile number
+																	input#contactMobile.form-control(
+																		type='tel',
+																		pattern='[0-9]{6,10}',
+																		maxlength='10',
+																		name='contactMobile',
+																		placeholder=`${booking.contactMobile}`,
+																		value=`${booking.contactMobile}`,
+																		required=''
+																	)
+																	.invalid-feedback Mobile number is required.
+															.flex-vertical-center.justify-content-end.flex-column.flex-sm-row.mt-3
+																button.btn.btn-sm.btn-primary.w-100.w-sm-auto.mb-3.mb-sm-0.mr-sm-3(type='submit') Save
+																a.btn.btn-sm.btn-danger.w-100.w-sm-auto(
+																	data-toggle='tab',
+																	href='#navContactDetails',
+																	role='tab',
+																	aria-controls='navContactDetails',
+																	aria-selected='true'
+																) Cancel
 							#navPaymentHistory.tab-pane.fade(role='tabpanel')
 								#flightsSummary.accordion.rounded-0
 									.card-collapse

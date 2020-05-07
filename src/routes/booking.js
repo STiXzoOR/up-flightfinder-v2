@@ -8,6 +8,7 @@ const {
   insertBooking,
   insertPassenger,
   updateBooking,
+  cancelBooking,
   checkBookingExists,
 } = require('../config/requests');
 
@@ -183,8 +184,6 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
 
     let booking = await getBooking({ args: { bookingID, customerID, lastName }, byID });
 
-    console.log(booking);
-
     if (booking.error) {
       return next(createError(booking.status));
     }
@@ -254,6 +253,24 @@ router.post('/manage-booking/bookingID=:bookingID&lastName=:lastName/edit', asyn
         response.error ? params.lastName : body.contactLastName
       }`
     );
+  } catch (err) {
+    console.log(err);
+    return next(err);
+  }
+});
+
+router.post('/manage-booking/bookingID=:bookingID&lastName=:lastName/cancel', async (req, res, next) => {
+  const { params } = req;
+  const { body } = req;
+
+  try {
+    const response = await cancelBooking({ ...params, ...body });
+
+    if (response.error) {
+      res.flash('error', response.message);
+    }
+
+    return res.redirect(`/booking/manage-booking/bookingID=${params.bookingID}&lastName=${params.lastName}`);
   } catch (err) {
     console.log(err);
     return next(err);

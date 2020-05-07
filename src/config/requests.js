@@ -298,7 +298,7 @@ const getBooking = async ({ args = {}, byID = false, byLastName = true } = {}) =
   };
 
   let query =
-    'SELECT booking_id as id, depart_flight_id as departFlightID, depart_flight_date as departDate, return_flight_id as returnFlightID, return_flight_date as returnDate, flight_class as class, DATE_FORMAT(booking_date, "%a, %d %b") as bookedDate, first_name as contactFirstName, last_name as contactLastName, email as contactEmail, mobile as contactMobile, total_passengers as quantity, price_per_passenger as pricePerPassenger, total_price as totalPrice, flight_type as flightType, status FROM booking WHERE booking_id=:bookingID';
+    'SELECT booking_id as id, depart_flight_id as departFlightID, depart_flight_date as departDate, return_flight_id as returnFlightID, return_flight_date as returnDate, flight_class as class, DATE_FORMAT(booking_date, "%a, %d %b") as bookedDate, first_name as contactFirstName, last_name as contactLastName, email as contactEmail, mobile as contactMobile, total_passengers as quantity, price_per_passenger as pricePerPassenger, total_price as totalPrice, flight_type as flightType, status, status = "CANCELED" as isCanceled FROM booking WHERE booking_id=:bookingID';
 
   if (byID) {
     query += ' and customer_id=:customerID';
@@ -586,6 +586,113 @@ const updateBooking = async (args = {}) => {
   return response;
 };
 
+
+const cancelBooking = async (args = {}) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  let booking = {};
+
+  const queryBooking =
+    'SELECT depart_flight_id as departFlightID, return_flight_id as returnFlightID, depart_flight_date as departDate, return_flight_date as returnDate, flight_class as class, total_passengers as quantity, flight_type = "Roundtrip" as isRoundtrip, last_name as lastName FROM booking WHERE booking_id=:bookingID and last_name=:lastName';
+
+  try {
+    const data = await mysql.fetchOne(queryBooking, args);
+
+    if (data === null) {
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    } else if (data.length === 0) {
+      response.status = 400;
+      response.error = true;
+      response.message = 'Something went wrong while verifing your last name. Please contact our support team.';
+    } else {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Booking retrieved.';
+    }
+
+    if (response.error) return response;
+
+    if (args.cancelLastName !== data[0].lastName) {
+      response.status = 400;
+      response.error = true;
+      response.message =
+        "The provided last name doesn't match the one stored in our database. Please validate that your last name is correct.";
+      return response;
+    }
+
+    [booking] = data;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+
+  const queryUpdateBooking = 'UPDATE booking SET status="CANCELED" WHERE booking_id=:bookingID and last_name=:lastName';
+
+  await mysql
+    .commit(queryUpdateBooking, args)
+    .then(() => {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Booking status updated.';
+    })
+    .catch((err) => {
+      console.log(err);
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    });
+
+  const queryFlight =
+    'UPDATE flight SET occupied_capacity=occupied_capacity-:quantity WHERE flight_id=:flightID and dep_date=:departDate and class=:class';
+
+  await mysql
+    .commit(queryFlight, {
+      quantity: booking.quantity,
+      class: booking.class,
+      flightID: booking.departFlightID,
+      departDate: booking.departDate,
+    })
+    .then(() => {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Flight updated.';
+    })
+    .catch((err) => {
+      console.log(err);
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    });
+
+  if (booking.isRoundtrip) {
+    await mysql
+      .commit(queryFlight, {
+        quantity: booking.quantity,
+        class: booking.class,
+        flightID: booking.returnFlightID,
+        departDate: booking.returnDate,
+      })
+      .then(() => {
+        response.status = 200;
+        response.error = false;
+        response.message = 'Flight updated.';
+      })
+      .catch((err) => {
+        console.log(err);
+        response.status = 500;
+        response.error = true;
+        response.message = 'Database internal error.';
+      });
+  }
+
+  return response;
+};
 module.exports = {
   permit,
   checkPasswordMatch,
