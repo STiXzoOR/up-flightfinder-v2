@@ -1,8 +1,12 @@
 extends layout
 include mixins/_alert
+include mixins/_preloader
 
 block title
 	title Sign up - Flight Finder
+
+block preloader
+	+preLoader
 
 block content
 	main.bg-gray(role='main')
