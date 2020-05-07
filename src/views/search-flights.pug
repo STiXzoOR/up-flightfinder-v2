@@ -575,6 +575,9 @@ block content
 																		.modal-footer.flex-center-between.justify-content-md-end
 																			span.font-weight-medium.font-size-22.mr-sm-2 &euro;#{flight.totalPrice}
 																			button.btn.btn-primary.font-weight-medium.font-size-16.py-2.px-4(type='Submit') Select
+		a.btn.btn-go-up(href='#!')
+			i.fas.fa-chevron-up
+
 block append scripts
 	if flights.results
 		- var minDepartTime = (maxDepartTime = new Date(`1970-01-01 ${flights.results[0].departTime}`))

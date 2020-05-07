@@ -3882,7 +3882,7 @@ a.badge-soft-white.focus {
 .btn-floating {
 	position: fixed;
 	z-index: 4;
-	bottom: 1.5rem;
+	bottom: 1rem;
 	left: 50%;
 	font-weight: 500;
 	padding-top: 0.5rem;
@@ -3896,13 +3896,13 @@ a.badge-soft-white.focus {
 }
 
 .btn-floating-left {
-	left: 1.5rem;
+	left: 1rem;
 	transform: none;
 }
 
 .btn-floating-right {
 	left: 0;
-	right: 1.5rem;
+	right: 1rem;
 	transform: none;
 }
 
@@ -3992,6 +3992,37 @@ a.badge-soft-white.focus {
 
 .btn-link.link-collapse[aria-expanded='true'] .link-collapse-active {
 	display: inline-block;
+}
+
+.btn-go-up {
+	display: inline-flex;
+	flex-shrink: 0;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	bottom: -1rem;
+	right: 1rem;
+	z-index: 100;
+	width: 2.6875rem;
+	height: 2.6875rem;
+	background-color: #d4e5f1;
+	color: #154061;
+	font-size: 0.8125rem;
+	opacity: 0;
+	border-radius: 50%;
+	transition: 0.3s ease-out;
+}
+
+.btn-go-up.active {
+	bottom: 1rem;
+	opacity: 0.7;
+}
+
+.btn-go-up:hover,
+.btn-to-top:focus {
+	color: #fff;
+	background-color: #297cbb;
+	opacity: 1;
 }
 
 .btn-reverse-destinations-wrapper {

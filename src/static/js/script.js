@@ -98,6 +98,18 @@ $.fn.headerReveal = function headerReveal() {
   );
 };
 
+$.fn.goUp = function goUp() {
+  const $this = $(this);
+
+  this.on('click', () => {
+    $('html').scrollTop(0);
+  });
+
+  $(window).on('scroll', () => {
+    $this.toggleClass('active', window.scrollY > 400);
+  });
+};
+
 $.fn.classCheckList = function classCheckList() {
   return this.on('click', (e) => {
     if ($(e.target).hasClass('selected')) return;
@@ -928,6 +940,7 @@ $('a[href="#navEditContactDetails"]').on('click', function clicked(e) {
 
 $(() => {
   $('.page-header').headerReveal();
+  $('.btn-go-up').goUp();
   customScrollSpy.init($('.nav-scroll'));
   datePicker.init('.flatpickr-input');
   customSelect.init('.select2-input');
