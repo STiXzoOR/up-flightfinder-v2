@@ -367,13 +367,39 @@ const getBookingPassengers = async (bookingID = '') => {
   }
 };
 
-const insertUser = async (data) => {
+const getUserBookings = async (userID = '') => {
   const response = {
     status: 400,
     error: true,
     message: '',
   };
 
+  const query =
+    'SELECT b.booking_id as id, b.last_name as lastName, DATE_FORMAT(b.booking_date, "%a, %d %b") as date, b.total_passengers as quantity, b.flight_type <> "Roundtrip" as isRoundtrip, b.status <> "CANCELED" as isCanceled, a1.city as fromCity, a2.city as toCity, DATE_FORMAT(b.depart_flight_date, "%a, %d %b") as departDate FROM booking as b, flight as f, airport as a1, airport as a2 WHERE b.customer_id=:userID and f.flight_id=b.depart_flight_id and f.dep_date=b.depart_flight_date and f.class=b.flight_class and a1.airport_code=f.from_airport and a2.airport_code=f.to_airport ORDER BY departDate DESC';
+
+  try {
+    const data = await mysql.fetch(query, { userID });
+
+    if (data === null) {
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    } else if (data.length === 0) {
+      response.status = 400;
+      response.error = true;
+      response.message = 'No results found for the requested query.';
+    } else {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Bookings retrieved.';
+      response.result = data;
+    }
+
+    return response;
+  } catch (err) {
+    return err;
+  }
+};
 
 const insertUser = async (args = {}) => {
   const response = {
@@ -500,6 +526,49 @@ const insertBooking = async ({ args = {}, updateFlight = true } = {}) => {
   return response;
 };
 
+const insertUserBooking = async (args = {}) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const queryBooking =
+    'SELECT booking_id as bookingID, customer_id as customerID, depart_flight_id as departFlightID, return_flight_id as returnFlightID, depart_flight_date as departDate, return_flight_date as returnDate, flight_class as class, first_name as contactFirstName, last_name as contactLastName, email as contactEmail, mobile as contactMobile, booking_date as bookedDate, last_modify_date as lastModifyDate, total_passengers as quantity, total_baggage as baggageQuantity, price_per_passenger as pricePerPassenger, total_price as totalPrice, payment_type as paymentType, flight_type as flightType, status FROM booking WHERE booking_id=:bookingID and first_name=:firstName and last_name=:lastName';
+
+  try {
+    const data = await mysql.fetchOne(queryBooking, args);
+
+    if (data === null) {
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    } else if (data.length === 0) {
+      response.status = 400;
+      response.error = true;
+      response.message = "The booking you are trying to add doesn't exist.";
+    } else {
+      response.status = 200;
+      response.error = false;
+    }
+
+    if (response.error) return response;
+
+    const exists = await checkBookingExists({ args, byID: true });
+
+    if (exists) {
+      response.message = 'The booking you are trying to add already exists in your bookings history.';
+      return response;
+    }
+
+    data[0].customerID = args.customerID;
+
+    return await insertBooking({ args: data[0], updateFlight: false });
+  } catch (err) {
+    return err;
+  }
+};
+
 const insertPassenger = async (args = {}) => {
   const response = {
     status: 400,
@@ -586,6 +655,66 @@ const updateBooking = async (args = {}) => {
   return response;
 };
 
+const updateUserDetails = async (args = {}) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const query =
+    'UPDATE customer SET first_name=:firstName, last_name=:lastName, mobile=:mobile, gender=:gender, address_line_1=:addressLine1, address_line_2=:addressLine2, city=:city, region=:region, postal_code=:postal, country=:country WHERE customer_id=:customerID';
+
+  await mysql
+    .commit(query, args)
+    .then(() => {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Your personal information has been successfully updated.';
+    })
+    .catch((err) => {
+      console.log(err);
+      response.status = 500;
+      response.error = true;
+      response.message =
+        'Something went wrong while updating your personal information. Please contact our support team.';
+    });
+
+  return response;
+};
+
+const updateUserPassword = async (args = {}) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const responsePassword = await checkPasswordMatch(args);
+
+  if (responsePassword.error) return responsePassword;
+
+  const query = 'UPDATE customer SET password=:password WHERE customer_id=:customerID';
+
+  const salt = bcrypt.genSaltSync(10);
+  const password = bcrypt.hashSync(args.password, salt);
+
+  await mysql
+    .commit(query, { customerID: args.customerID, password })
+    .then(() => {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Your password has been successfully updated.';
+    })
+    .catch((err) => {
+      console.log(err);
+      response.status = 500;
+      response.error = true;
+      response.message = 'Something went wrong while updating your password. Please contact our support team.';
+    });
+
+  return response;
+};
 
 const cancelBooking = async (args = {}) => {
   const response = {
@@ -693,6 +822,37 @@ const cancelBooking = async (args = {}) => {
 
   return response;
 };
+
+const removeUser = async (args = {}) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const responsePassword = await checkPasswordMatch(args);
+
+  if (responsePassword.error) return responsePassword;
+
+  const query = 'DELETE FROM customer WHERE customer_id=:customerID';
+
+  await mysql
+    .commit(query, { customerID: args.customerID })
+    .then(() => {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Your account has been successfully deleted.';
+    })
+    .catch((err) => {
+      console.log(err);
+      response.status = 500;
+      response.error = true;
+      response.message = 'Something went wrong while deleting your account. Please contact our support team.';
+    });
+
+  return response;
+};
+
 module.exports = {
   permit,
   checkPasswordMatch,
@@ -705,8 +865,14 @@ module.exports = {
   getFlights,
   getBooking,
   getBookingPassengers,
+  getUserBookings,
   insertUser,
   insertBooking,
+  insertUserBooking,
   insertPassenger,
+  updateUserDetails,
+  updateUserPassword,
   updateBooking,
+  cancelBooking,
+  removeUser,
 };

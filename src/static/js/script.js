@@ -151,6 +151,46 @@ $.fn.syncText = function syncText() {
   });
 };
 
+const customScrollSpy = {
+  defaultConfig: {
+    duration: 400,
+    customOffsetTop: 0,
+    activeClass: 'active',
+    parent: '.page-header',
+  },
+
+  items: $(),
+
+  init(collection, config) {
+    const self = this;
+
+    if (!collection || !collection.length) return;
+
+    collection.each((i, el) => {
+      const $this = $(el);
+      const itemConfig =
+        config && $.isPlainObject(config)
+          ? $.extend(true, {}, self.defaultConfig, config, $this.data())
+          : $.extend(true, {}, self.defaultConfig, $this.data());
+      itemConfig.parent = $(itemConfig.parent);
+
+      if (!$this.data('BSScrollSpy')) {
+        $this.data('BSScrollSpy', new BSScrollSpy($this, itemConfig));
+
+        self.items = self.items.add($this);
+      }
+    });
+
+    $(window)
+      .on('scroll.BSScrollSpy', () => {
+        self.items.each((i, el) => {
+          $(el).data('BSScrollSpy').highlight();
+        });
+      })
+      .trigger('scroll.BSScrollSpy');
+  },
+};
+
 const datePicker = {
   defaultConfig: {
     allowInput: true,
@@ -888,6 +928,7 @@ $('a[href="#navEditContactDetails"]').on('click', function clicked(e) {
 
 $(() => {
   $('.page-header').headerReveal();
+  customScrollSpy.init($('.nav-scroll'));
   datePicker.init('.flatpickr-input');
   customSelect.init('.select2-input');
   rangeSlider.init('.ion-range-slider-input');

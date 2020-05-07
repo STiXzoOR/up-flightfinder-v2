@@ -1,11 +1,13 @@
 const express = require('express');
 const createError = require('http-errors');
 const {
+  permit,
   getCountries,
   getFlights,
   getBooking,
   getBookingPassengers,
   insertBooking,
+  insertUserBooking,
   insertPassenger,
   updateBooking,
   cancelBooking,
@@ -16,6 +18,24 @@ const router = express.Router();
 
 router.get('/', (req, res, next) => {
   return next(createError(400));
+});
+
+router.post('/add', permit('USER'), async (req, res, next) => {
+  const { body } = req;
+
+  try {
+    const response = await insertUserBooking({ customerID: req.user.id, ...body });
+
+    if (!response.error) {
+      response.message = 'The booking has been successfully added to your bookings history.';
+    }
+
+    res.flash(response.error ? 'error' : 'success', response.message);
+    return res.redirect('/user/profile');
+  } catch (err) {
+    console.log(err);
+    return next(createError(err));
+  }
 });
 
 router.get('/new-booking', async (req, res, next) => {

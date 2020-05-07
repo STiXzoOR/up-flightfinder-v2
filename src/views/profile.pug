@@ -1,0 +1,361 @@
+extends layout
+include mixins/_preloader
+include mixins/_alert
+
+block title
+	title Profile - Flight Finder
+
+block preloader
+	+preLoader
+
+block content
+	main.bg-gray(role='main')
+		.container.py-5.py-lg-12
+			.row.justify-content-center
+				.d-none.d-lg-block.col-lg-4.col-xl-3
+					.card.shadow-soft(style='position: sticky; top: 6.5rem;')
+						.card-body.p-4
+							ul#navListProfile.nav.nav-pills.nav-scroll.nav-scroll-box.nav-profile(data-custom-offset-top='-24')
+								li.nav-item.mb-2
+									a.nav-link(href='#body')
+										span
+											i.fas.fa-user.mr-2
+											span Overview
+								li.nav-item.mb-2
+									a.nav-link(href='#history')
+										span
+											i.fas.fa-history.mr-2
+											span Bookings History
+								li.nav-item.mb-2
+									a.nav-link(href='#settings')
+										span
+											i.fas.fa-cog.mr-2
+											span Settings
+								li.nav-item
+									a.nav-link(href='#delete')
+										span
+											i.fas.fa-trash.mr-2
+											span Delete Account
+				.col-lg-8.col-xl-9
+					+showAlert(true)
+					#overview.card.shadow-soft.mb-5
+						.card-body.p-4.p-sm-5
+							.media.d-block.d-md-flex
+								.d-block.avatar.avatar-soft-primary.avatar-circle.avatar-3x.mx-auto.mb-3.mb-md-0.mr-md-5
+									span.avatar-initials #{details.firstName.charAt(0).toUpperCase() + details.lastName.charAt(0).toUpperCase()}
+								.media-body
+									h1.flex-vertical-center.flex-column.flex-md-row.font-size-25.font-weight-medium.text-center.text-md-left.mb-0
+										span.mb-2.mb-md-0.mr-md-2 #{details.firstName} #{details.lastName}
+										if !details.isVerified
+											span.badge.badge-soft-danger.font-size-14.font-weight-normal(
+												data-toggle='popover',
+												data-trigger='hover',
+												data-html='true',
+												data-placement='top',
+												data-content='<span class="font-size-13 font-weight-medium text-gray-1">Please verify your email.</span'
+											) Unverified
+									hr
+									ul.font-size-16
+										li.flex-center-between.pb-1
+											span.font-weight-medium.text-nowrap.mr-2.mr-sm-0 Joined date
+											span.text-secondary.text-truncate #{details.date}
+										li.flex-center-between.py-1
+											span.font-weight-medium.text-nowrap.mr-2.mr-sm-0 Email
+											span.text-secondary.text-truncate #{details.email}
+										li.flex-center-between.py-1
+											span.font-weight-medium.text-nowrap.mr-2.mr-sm-0 Mobile
+											span.text-secondary.text-truncate #{details.mobile}
+										li.flex-center-between.py-1
+											span.font-weight-medium.text-nowrap.mr-2.mr-sm-0 Gender
+											span.text-secondary.text-truncate #{details.gender.charAt(0).toUpperCase() + details.gender.slice(1)}
+										li.flex-center-between.py-1
+											span.font-weight-medium.text-nowrap.mr-2.mr-sm-0 Address
+											span.text-secondary.text-truncate #{details.addressLine1? details.addressLine1: 'Not configured yet'}
+										li.flex-center-between.pt-1
+											span.font-weight-medium.text-nowrap.mr-2.mr-sm-0 Country
+											span.text-secondary.text-truncate #{details.country? details.country: 'Not configured yet'}
+					#history.card.shadow-soft.mb-5
+						.accordion
+							.card-collapse
+								h3.mb-0
+									button.btn.btn-link.btn-block.card-btn.btn-section.collapsed.px-4.px-sm-5(
+										type='button',
+										data-toggle='collapse',
+										data-target='#historySection',
+										aria-expanded='true',
+										aria-controls='historySection'
+									)
+										span.section-header Bookings history
+										span.card-btn-caret
+											i.fas.fa-chevron-down
+						#historySection.collapse.show(aria-labelledby='Bookings history section', data-parent='#history')
+							.card-body.pt-0.px-4.px-sm-5.pb-4
+								h5.section-subtitle.section-subtitle-tab.font-weight-medium.mb-5 Upcoming
+								if !bookings
+									.alert.alert-primary.py-3.mb-0(role='alert')
+										.flex-vertical-center
+											i.fas.fa-exclamation-circle.fa-lg.mr-3
+											span No bookings were found. If you have a booking but it is not displayed in your bookings history, you can add it below.
+								else
+									each booking, i in bookings
+										if i > 0
+											hr.my-4
+										.booking-card
+											.row.align-items-center.justify-content-center
+												.col-sm-auto
+													.card.text-center.w-30.w-sm-auto.rounded-0.border-0.mx-auto
+														if booking.isCanceled
+															- var splittedDate = booking.departDate.split(/[\s,]+/)
+															.card-header.rounded-0.border-0.bg-primary.text-white.text-lh-1.p-1
+																span.font-size-14.text-lh-1.text-uppercase #{splittedDate[2]}
+															.card-body.bg-soft-primary.flex-center.flex-column.py-2.px-4
+																span.font-size-28.font-weight-medium.text-lh-1.text-primary.mb-1 #{splittedDate[1]}
+																span.font-size-12.text-lh-1.text-uppercase.text-secondary #{splittedDate[0]}
+														else
+															.card-header.rounded-0.border-0.bg-danger.text-white.text-lh-1.p-1
+																span.font-size-14.text-lh-1.text-uppercase Canceled
+															.card-body.bg-soft-danger.flex-center.flex-column.py-3.px-4
+																i.fas.fa-times.fa-fw.font-size-28.text-danger
+												.col.text-center.mt-4.mt-sm-0
+													.border-md-right.px-md-5.pl-lg-0.pr-lg-4.px-xl-5
+														.font-size-22.font-weight-medium
+															span #{booking.fromCity}
+															span.fas.fa-plane.fa-fw.fa-sm.text-muted.mx-3
+															span #{booking.toCity}
+														ul.flex-center.font-size-14.m-0.mt-3
+															li.d-flex.flex-column.border-right.pr-2.pr-sm-3.pr-lg-2.pr-xl-4
+																strong ID
+																span.text-muted #{booking.id}
+															li.d-flex.flex-column.border-right.px-2.px-sm-3.px-lg-2.px-xl-4
+																strong Booked
+																span.text-muted #{booking.date}
+															li.d-flex.flex-column.pl-2.pl-sm-3.pl-lg-2.pl-xl-4
+																strong Passengers
+																span.text-muted #{booking.quantity}
+												.col-md-3.col-xl-2.mt-3.mt-md-0
+													a.btn.btn-sm.btn-block.btn-outline-primary.border-width-2(
+														href=`/booking/manage-booking/bookingID=${booking.id}&lastName=${booking.lastName}`
+													) #{booking.isCanceled ? 'Manage' : 'View'}
+								hr.mt-4.mb-5
+								h5.section-subtitle.section-subtitle-tab.font-weight-medium.mb-5 Add booking
+								form#addBookingForm.needs-validation(method='POST', action='/booking/add', novalidate='')
+									.row
+										.form-group.col-md
+											label.text-muted.required(for='bookingID') Booking ID
+											.prepend-icon
+												i.fas.fa-book.fa-fw
+												input#bookingID.form-control.uppercase-input(
+													type='text',
+													name='bookingID',
+													pattern='[A-Z0-9]{6}',
+													maxlength='6',
+													placeholder='WF43B9',
+													required=''
+												)
+												.invalid-feedback Booking reference is required.
+										.form-group.col-md
+											label.text-muted.required(for='bookingFirstName') First name
+											.prepend-icon
+												i.fas.fa-user.fa-fw
+												input#bookingFirstName.form-control(
+													type='text',
+													name='firstName',
+													placeholder=`${details.firstName}`,
+													required=''
+												)
+												.invalid-feedback First name is required.
+										.form-group.col-md
+											label.text-muted.required(for='bookingLastName') Last name
+											.prepend-icon
+												i.fas.fa-user.fa-fw
+												input#bookingLastName.form-control(
+													type='text',
+													name='lastName',
+													placeholder=`${details.lastName}`,
+													required=''
+												)
+												.invalid-feedback Last name is required.
+									.d-flex.justify-content-end
+										button.btn.btn-sm.btn-primary.w-100.w-md-20.w-xl-15(type='submit') Add
+					#settings.card.shadow-soft.mb-5
+						.accordion
+							.card-collapse
+								h3.mb-0
+									button.btn.btn-link.btn-block.card-btn.btn-section.collapsed.px-4.px-sm-5(
+										type='button',
+										data-toggle='collapse',
+										data-target='#settingsSection',
+										aria-expanded='true',
+										aria-controls='settingsSection'
+									)
+										span.section-header Account settings
+										span.card-btn-caret
+											i.fas.fa-chevron-down
+						#settingsSection.collapse.show(aria-labelledby='Account settings section', data-parent='#settings')
+							.card-body.pt-0.px-4.px-sm-5.pb-4
+								#changePersonalInfo
+									h5.section-subtitle.section-subtitle-tab.font-weight-medium.mb-5 Peronal information
+									form#editPersonalInfoForm.needs-validation(method='POST', action='/user/edit/personal', novalidate='')
+										.row
+											.form-group.col-sm-6
+												label.text-muted.required(for='firstName') First name
+												.prepend-icon
+													i.fas.fa-user.fa-fw
+													input#firstName.form-control(
+														type='text',
+														name='firstName',
+														placeholder=`${details.firstName}`,
+														required=''
+													)
+													.invalid-feedback First name is required.
+											.form-group.col-sm-6
+												label.text-muted.required(for='lastName') Last name
+												.prepend-icon
+													i.fas.fa-user.fa-fw
+													input#lastName.form-control(type='text', name='lastName', placeholder=`${details.lastName}`, required='')
+													.invalid-feedback Last name is required.
+										.row
+											.form-group.col-sm-6
+												label.text-muted.required(for='mobile') Mobile number
+												.prepend-icon
+													i.fas.fa-mobile.fa-fw
+													input#mobile.form-control(
+														type='tel',
+														pattern='[0-9]{6,10}',
+														maxlength='10',
+														name='mobile',
+														placeholder=`${details.mobile}`,
+														required=''
+													)
+													.invalid-feedback Mobile number is required.
+											.form-group.col-sm-6
+												label.text-muted.required(for='gender') Gender
+												.prepend-icon.custom-select2
+													i.fas.fa-venus-mars.fa-fw
+													select#gender.select2-input.form-control.custom-select(
+														name='gender',
+														data-minimum-results-for-search='Infinity',
+														data-placeholder=`${details.gender.charAt(0).toUpperCase() + details.gender.slice(1)}`,
+														required=''
+													)
+														option(selected='', value='', disabled='', hidden='')
+														option(value='male') Male
+														option(value='female') Female
+													.invalid-feedback Gender is required.
+										.form-group
+											label.text-muted(for='addressLine1') Address line 1
+											.prepend-icon
+												i.fas.fa-building.fa-fw
+												input#addressLine1.form-control(
+													type='text',
+													name='addressLine1',
+													placeholder=`${details.addressLine1 ? details.addressLine1 : "1234 Main Str."}`
+												)
+										.form-group
+											label.text-muted(for='addressLine2') Address line 2
+											.prepend-icon
+												i.fas.fa-building.fa-fw
+												input#addressLine2.form-control(
+													type='text',
+													name='addressLine2',
+													placeholder=`${details.addressLine2 ? details.addressLine2 : "Apartment, studio, or floor"}`
+												)
+										.row
+											.form-group.col-sm-6
+												label.text-muted(for='city') City
+												.prepend-icon
+													i.fas.fa-map-marker-alt.fa-fw
+													input#city.form-control(type='text', name='city', placeholder=`${details.city ? details.city : "Patras"}`)
+											.form-group.col-sm-6
+												label.text-muted(for='region') Region
+												.prepend-icon
+													i.fas.fa-globe.fa-fw
+													input#region.form-control(
+														type='text',
+														name='region',
+														placeholder=`${details.region ? details.region : "Achaia"}`
+													)
+										.row
+											.form-group.col-sm-6
+												label.text-muted(for='postal') Postal code
+												.prepend-icon
+													i.fas.fa-map-marker-alt.fa-fw
+													input#postal.form-control(
+														type='text',
+														name='postal',
+														placeholder=`${details.postalCode ? details.postalCode : "1234"}`
+													)
+											.form-group.col-sm-6
+												label.text-muted(for='country') Country
+												.prepend-icon.custom-select2
+													i.fas.fa-flag.fa-fw
+													select#country.select2-input.form-control.custom-select(
+														name='country',
+														data-placeholder=`${details.country ? details.country : "Greece"}`
+													)
+														option(selected='', value='', disabled='')
+														each country in countries
+															option(value=`${country.code}`) #{country.name}
+										.d-flex.justify-content-end
+											button.btn.btn-sm.btn-primary.w-100.w-md-20.w-xl-15(type='submit') Save
+								hr.mt-4.mb-5
+								#changePassword
+									h5.section-subtitle.section-subtitle-tab.font-weight-medium.mb-5 Change password
+									form#editPasswordForm.needs-validation(method='POST', action='/user/edit/password', novalidate='')
+										.form-group
+											label.text-muted.required(for='editCurrentPassword') Current password
+											.prepend-icon
+												i.fas.fa-lock.fa-fw
+												input#editCurrentPassword.form-control(
+													type='password',
+													name='currentPassword',
+													placeholder='Current password',
+													required=''
+												)
+										.form-group
+											label.text-muted.required(for='newPassword') New password
+											.prepend-icon
+												i.fas.fa-lock.fa-fw
+												input#newPassword.form-control(
+													type='password',
+													name='password',
+													pattern='^(?=.*[A-Za-z])[A-Za-z\\d\\W]{8,}$',
+													placeholder='New password',
+													required=''
+												)
+												.invalid-feedback Password must at least 8 characters long.
+										.d-flex.justify-content-end
+											button.btn.btn-sm.btn-primary.w-100.w-md-20.w-xl-15(type='submit') Save
+					#delete.card.shadow-soft
+						.accordion
+							.card-collapse
+								h3.mb-0
+									button.btn.btn-link.btn-block.card-btn.btn-section.collapsed.px-4.px-sm-5(
+										type='button',
+										data-toggle='collapse',
+										data-target='#deleteSection',
+										aria-expanded='true',
+										aria-controls='deleteSection'
+									)
+										span.section-header Delete account
+										span.card-btn-caret
+											i.fas.fa-chevron-down
+						#deleteSection.collapse.show(aria-labelledby='Delete account section', data-parent='#delete')
+							.card-body.pt-0.px-4.px-sm-5.pb-4
+								.alert.alert-danger.py-2.mb-3(role='alert')
+									.flex-vertical-center
+										i.fas.fa-exclamation-circle.fa-lg.mr-3
+										span Deleting your account will remove all of your information and data from our database permanently. Enter your current password below to confirm your request.
+								form#deleteAccountForm.needs-validation(method='POST', action='/user/delete', novalidate='')
+									.form-group
+										label.text-muted.required(for='currentPassword') Current password
+										.prepend-icon
+											i.fas.fa-lock.fa-fw
+											input#currentPassword.form-control(
+												type='password',
+												name='currentPassword',
+												placeholder='Current password',
+												required=''
+											)
+									.d-flex.justify-content-end
+										button.btn.btn-sm.btn-danger.w-100.w-md-15(type='submit') Delete

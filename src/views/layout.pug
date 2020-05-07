@@ -1,7 +1,7 @@
 include mixins/_header
 
 doctype html
-html
+html.smooth-scroll
 	head
 		meta(charset='utf-8')
 		meta(name='viewport', content='width=device-width, initial-scale=1')
@@ -18,7 +18,7 @@ html
 		link(rel='shortcut icon', href='/static/images/favicon.ico')
 		block title
 			title Flight Finder
-	body
+	body#body
 		block preloader
 		block header
 			header.page-header.header-dark-nav-links.border-bottom.header-md-scroll.transition-scroll(data-breakpoint='md')
@@ -105,5 +105,6 @@ html
 			script(src='/static/vendors/ion.rangeSlider/js/ion.rangeSlider.min.js')
 			script(src='/static/js/select2.full.min.js')
 			script(src='/static/js/navdrawer.min.js')
+			script(src='/static/js/scrollspy.js')
 			script(src='/static/js/quantity-counter.js')
 			script(src='/static/js/script.js')

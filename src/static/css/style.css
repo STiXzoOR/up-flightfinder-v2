@@ -2858,6 +2858,16 @@ label.required::after {
 	background-color: #fff;
 }
 
+.smooth-scroll {
+	scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.smooth-scroll {
+		scroll-behavior: auto;
+	}
+}
+
 /*-------------------------------------------*\
     2.1. List
 \*-------------------------------------------*/
@@ -3038,7 +3048,186 @@ ul {
 }
 
 /*-------------------------------------------*\
-    2.3. Badge
+    2.3. Avatar
+\*-------------------------------------------*/
+.avatar {
+	position: relative;
+	display: inline-block;
+	width: 3.125rem;
+	height: 3.125rem;
+	border-radius: 0.3125rem;
+}
+
+.avatar-img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 0.3125rem;
+}
+
+.avatar-initials {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	font-size: 1rem;
+	font-weight: 600;
+}
+
+.avatar-circle {
+	border-radius: 50%;
+}
+
+.avatar-circle .avatar-img {
+	border-radius: 50%;
+}
+
+.avatar-xs {
+	width: 1.75rem;
+	height: 1.75rem;
+}
+
+.avatar-xs .avatar-initials {
+	font-size: 0.75rem;
+}
+
+.avatar-sm {
+	width: 2.6875rem;
+	height: 2.6875rem;
+}
+
+.avatar-sm .avatar-initials {
+	font-size: 0.8125rem;
+}
+
+.avatar-lg {
+	width: 4.25rem;
+	height: 4.25rem;
+}
+
+.avatar-lg .avatar-initials {
+	font-size: 1.25rem;
+}
+
+.avatar-xl {
+	width: 5.625rem;
+	height: 5.625rem;
+}
+
+.avatar-xl .avatar-initials {
+	font-size: 2rem;
+}
+
+.avatar-2x {
+	width: 6.25rem;
+	height: 6.25rem;
+}
+
+.avatar-2x .avatar-initials {
+	font-size: 2.25rem;
+}
+
+.avatar-3x {
+	width: 9.375rem;
+	height: 9.375rem;
+}
+
+.avatar-3x .avatar-initials {
+	font-size: 2.75rem;
+}
+
+.avatar-primary {
+	color: #fff;
+	background-color: #297cbb;
+}
+
+.avatar-secondary {
+	color: #fff;
+	background-color: #77838f;
+}
+
+.avatar-success {
+	color: #fff;
+	background-color: #00c9a7;
+}
+
+.avatar-info {
+	color: #3b444f;
+	background-color: #00dffc;
+}
+
+.avatar-warning {
+	color: #3b444f;
+	background-color: #ffc107;
+}
+
+.avatar-danger {
+	color: #fff;
+	background-color: #de4437;
+}
+
+.avatar-light {
+	color: #3b444f;
+	background-color: #e2e6ea;
+}
+
+.avatar-dark {
+	color: #fff;
+	background-color: #3b444f;
+}
+
+.avatar-white {
+	color: #3b444f;
+	background-color: #fff;
+}
+
+.avatar-soft-primary {
+	color: #297cbb;
+	background: rgba(41, 124, 187, 0.1);
+}
+
+.avatar-soft-secondary {
+	color: #77838f;
+	background: rgba(119, 131, 143, 0.1);
+}
+
+.avatar-soft-success {
+	color: #00c9a7;
+	background: rgba(0, 201, 167, 0.1);
+}
+
+.avatar-soft-info {
+	color: #00dffc;
+	background: rgba(0, 223, 252, 0.1);
+}
+
+.avatar-soft-warning {
+	color: #ffc107;
+	background: rgba(255, 193, 7, 0.1);
+}
+
+.avatar-soft-danger {
+	color: #de4437;
+	background: rgba(222, 68, 55, 0.1);
+}
+
+.avatar-soft-light {
+	color: #f8f9fa;
+	background: rgba(248, 249, 250, 0.1);
+}
+
+.avatar-soft-dark {
+	color: #3b444f;
+	background: rgba(59, 68, 79, 0.1);
+}
+
+.avatar-soft-white {
+	color: #fff;
+	background: rgba(255, 255, 255, 0.1);
+}
+
+/*-------------------------------------------*\
+    2.4. Badge
 \*-------------------------------------------*/
 .badge-white {
 	color: #3b444f;
@@ -3227,8 +3416,72 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.4. Button
+    2.5. Button
 \*-------------------------------------------*/
+.close {
+	transition: all 0.3s ease-in-out;
+}
+
+.alert-dismissible .close {
+	height: 100%;
+}
+
+.close.close-circle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	top: 50%;
+	right: 1rem;
+	padding: 0;
+	height: 1.5rem;
+	width: 1.5rem;
+	color: #fff;
+	text-shadow: none;
+	border-radius: 50%;
+	background-color: #3b444f;
+	transform: translateY(-50%);
+}
+
+.alert-primary .close-circle {
+	color: #d4e5f1;
+	background-color: #154061;
+}
+
+.alert-secondary .close-circle {
+	color: #e4e6e9;
+	background-color: #3e444a;
+}
+
+.alert-success .close-circle {
+	color: #ccf4ed;
+	background-color: #006957;
+}
+
+.alert-info .close-circle {
+	color: #ccf9fe;
+	background-color: #007483;
+}
+
+.alert-warning .close-circle {
+	color: #fff3cd;
+	background-color: #856404;
+}
+
+.alert-danger .close-circle {
+	color: #f8dad7;
+	background-color: #73231d;
+}
+
+.alert-light .close-circle {
+	color: #fefefe;
+	background-color: #818182;
+}
+
+.alert-dark .close-circle {
+	color: #d8dadc;
+	background-color: #1f2329;
+}
+
 .btn[href] {
 	cursor: pointer;
 }
@@ -3986,7 +4239,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.5. Card
+    2.6. Card
 \*-------------------------------------------*/
 .card[class*='bg-'] .card-header,
 .card[class*='bg-'] .card-footer {
@@ -4465,7 +4718,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.6. Modal
+    2.7. Modal
 \*-------------------------------------------*/
 
 @media (min-width: 768px) {
@@ -4499,7 +4752,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.7. Header
+    2.8. Header
 \*-------------------------------------------*/
 .page-header {
 	position: relative;
@@ -5443,7 +5696,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.8. Footer
+    2.9. Footer
 \*-------------------------------------------*/
 .page-footer {
 	width: 100%;
@@ -5486,7 +5739,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.9. Dropdown
+    2.10. Dropdown
 \*-------------------------------------------*/
 .dropdown-menu {
 	display: block;
@@ -5879,7 +6132,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.10. Carousel
+    2.11. Carousel
 \*-------------------------------------------*/
 
 .carousel-wrapper {
@@ -5999,7 +6252,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.11. Nav
+    2.12. Nav
 \*-------------------------------------------*/
 
 .nav-link {
@@ -6152,6 +6405,16 @@ a.badge-soft-white.focus {
 .nav-choose .nav-link.active .nav-selected-icon {
 	opacity: 1;
 	transform: scale(1);
+}
+
+.nav-scroll-box .nav-link {
+	color: #77838f;
+	background: rgba(119, 131, 143, 0.1);
+}
+
+.nav-scroll-box .nav-link:hover {
+	color: #fff;
+	background: #77838f;
 }
 
 .nav-unjustified .nav-item {
@@ -6308,8 +6571,44 @@ a.badge-soft-white.focus {
 	}
 }
 
+.nav-profile {
+	flex-direction: column;
+}
+
+.nav-profile .nav-link.active {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.nav-profile .nav-link.active::after {
+	display: inline-block;
+	font-family: 'Font Awesome 5 Free';
+	font-weight: 900;
+	content: '\f054';
+	border: none;
+	vertical-align: initial;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* .nav-profile .nav-link[href='#delete'] {
+	color: #de4437;
+	background: rgba(222, 68, 55, 0.1);
+}
+
+.nav-profile .nav-link[href='#delete']:hover {
+	color: #fff;
+	background: #de4437;
+} */
+
+.nav-profile .nav-link[href='#delete'].active {
+	color: #fff;
+	background: #de4437;
+}
+
 /*-------------------------------------------*\
-    2.12. Hero
+    2.13. Hero
 \*-------------------------------------------*/
 .hero::before {
 	content: '';
@@ -6346,7 +6645,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.13. Custom Select2
+    2.14. Custom Select2
 \*-------------------------------------------*/
 .custom-select2 .select2-container--bootstrap .select2-selection,
 .custom-select2 .select2-container--bootstrap .select2-search--dropdown .select2-search__field {
@@ -6892,7 +7191,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.14. Custom Datepicker
+    2.15. Custom Datepicker
 \*-------------------------------------------*/
 .custom-datepicker {
 	position: relative;
@@ -7171,7 +7470,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.15. Custom ion.Range Slider
+    2.16. Custom ion.Range Slider
 \*-------------------------------------------*/
 .irs--bootstrap {
 	height: 1.5rem;
@@ -7308,7 +7607,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.16. Navdrawer
+    2.17. Navdrawer
 \*-------------------------------------------*/
 .navdrawer {
 	display: none;
@@ -7961,10 +8260,10 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.17. Sizing
+    2.18. Sizing
 \*-------------------------------------------*/
 /*-------------------------------------------*\
-    2.17.1. Width
+    2.18.1. Width
 \*-------------------------------------------*/
 .w-0 {
 	width: 0% !important;
@@ -8395,7 +8694,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.17.2. Height
+    2.18.2. Height
 \*-------------------------------------------*/
 .h-0 {
 	height: 0% !important;
@@ -8826,10 +9125,10 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.18. Utilities
+    2.19. Utilities
 \*-------------------------------------------*/
 /*-------------------------------------------*\
-    2.18.1. Margin
+    2.19.1. Margin
 \*-------------------------------------------*/
 .m-0 {
 	margin: 0 !important;
@@ -14000,7 +14299,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.18.2. Padding
+    2.19.2. Padding
 \*-------------------------------------------*/
 
 .p-0dot5 {
@@ -16652,7 +16951,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.18.3 Borders
+    2.19.3 Borders
 \*-------------------------------------------*/
 .rounded-xs {
 	border-radius: 0.1875rem;
@@ -17295,7 +17594,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.18.4 Font Size
+    2.19.4 Font Size
 \*-------------------------------------------*/
 .font-size-1 {
 	font-size: 0.875rem !important;
@@ -18266,14 +18565,14 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.18.5 Font Weight
+    2.19.5 Font Weight
 \*-------------------------------------------*/
 .font-weight-medium {
 	font-weight: 500 !important;
 }
 
 /*-------------------------------------------*\
-    2.18.6 Text Color
+    2.19.6 Text Color
 \*-------------------------------------------*/
 .text-white {
 	color: #fff !important;
@@ -18883,7 +19182,7 @@ a.text-dark-2:focus {
 }
 
 /*-------------------------------------------*\
-    2.18.7 Line Height
+    2.19.7 Line Height
 \*-------------------------------------------*/
 
 .text-lh-sm {
@@ -18927,7 +19226,7 @@ a.text-dark-2:focus {
 }
 
 /*-------------------------------------------*\
-    2.18.8 Text Wrap
+    2.19.8 Text Wrap
 \*-------------------------------------------*/
 
 @media (min-width: 576px) {
@@ -18995,7 +19294,7 @@ a.text-dark-2:focus {
 }
 
 /*-------------------------------------------*\
-    2.18.9 Position
+    2.19.9 Position
 \*-------------------------------------------*/
 
 @media (min-width: 576px) {
@@ -19260,7 +19559,7 @@ a.text-dark-2:focus {
 }
 
 /*-------------------------------------------*\
-    2.18.10 Background
+    2.19.10 Background
 \*-------------------------------------------*/
 
 .bg-gray {
@@ -20083,7 +20382,7 @@ button.bg-soft-gray:focus {
 }
 
 /*-------------------------------------------*\
-    2.18.11 Dividers
+    2.19.11 Dividers
 \*-------------------------------------------*/
 
 .vr {
@@ -20101,7 +20400,7 @@ button.bg-soft-gray:focus {
 }
 
 /*-------------------------------------------*\
-    2.18.12 Animations
+    2.19.12 Animations
 \*-------------------------------------------*/
 
 .fadeIn {
@@ -20286,7 +20585,7 @@ button.bg-soft-gray:focus {
 }
 
 /*-------------------------------------------*\
-    2.18.13 Font Awesome
+    2.19.13 Font Awesome
 \*-------------------------------------------*/
 
 :root .fa-rotate-45,
