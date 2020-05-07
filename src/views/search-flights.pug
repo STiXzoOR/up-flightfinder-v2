@@ -5,7 +5,6 @@ block title
 
 block content
 	main.bg-gray(role='main')
-		- var isRoundtrip = data.query.type === "RT"
 		.container.py-5
 			#changeFlightSearch.card.search-flights-card.mb-3
 				.card-collapse.bg-dark
@@ -19,12 +18,12 @@ block content
 						)
 							.search-route
 								.route.font-size-22.font-weight-medium
-									span #{data.airports.find(obj => obj.code === data.query.from).city}
+									span #{airports.find(obj => obj.code === query.from).city}
 									span.fas.fa-plane.fa-fw.mx-2
-									span #{data.airports.find(obj => obj.code === data.query.to).city}
+									span #{airports.find(obj => obj.code === query.to).city}
 								ul.flex-vertical-center.flex-wrap.font-size-16.font-weight-normal.text-left.text-muted.mt-1
-									li.border-right.border-gray-3.pr-2 #{new Date(isRoundtrip? data.query.dates.from: data.query.dates).toLocaleDateString('en-gb', {weekday: 'short', month: 'short', day: 'numeric'})}
-									li.pl-2 #{data.query.passengers.total} #{data.query.passengers.total > 1 ? 'Passengers' : 'Passenger'}
+									li.border-right.border-gray-3.pr-2 #{new Date(query.isRoundtrip? query.dates.from: query.dates).toLocaleDateString('en-gb', {weekday: 'short', month: 'short', day: 'numeric'})}
+									li.pl-2 #{query.passengers.total} #{query.passengers.total > 1 ? 'Passengers' : 'Passenger'}
 							span.card-btn-caret
 								i.fas.fa-chevron-down.text-white
 				#modifyFlightSearch.collapse(data-parent='#changeFlightSearch')
@@ -32,26 +31,26 @@ block content
 						ul.nav.nav-pills.nav-justified.nav-sm-unjustified.mb-4
 							li.nav-item
 								a#navRoundtripPillTab.nav-link(
-									class=isRoundtrip ? "active" : "",
+									class=query.isRoundtrip ? "active" : "",
 									data-toggle='tab',
 									href='#navRoundtripSearch',
 									role='tab',
 									aria-controls='navRoundtripSearch',
-									aria-selected=`${isRoundtrip ? true : false}`
+									aria-selected=`${query.isRoundtrip ? true : false}`
 								) Round Trip
 							li.nav-item
 								a#navOnewayPillTab.nav-link(
-									class=!isRoundtrip ? "active" : "",
+									class=!query.isRoundtrip ? "active" : "",
 									data-toggle='tab',
 									href='#navRoundtripSearch',
 									role='tab',
 									aria-controls='navRoundtripSearch',
-									aria-selected=`${!isRoundtrip ? true : false}`
+									aria-selected=`${!query.isRoundtrip ? true : false}`
 								) One Way
 						#navTabsContent.tab-content
 							#navRoundtripSearch.tab-pane.show.fade.active(role='tabpanel')
 								form#flightSearchForm.needs-validation(action='/flight/search-flights', novalidate)
-									input(type='hidden', name='type', value=`${data.query.type}`, required='')
+									input(type='hidden', name='type', value=`${query.type}`, required='')
 									.form-row
 										.form-group.col-12.col-lg-5.mb-3.mb-lg-0
 											.form-row.justify-content-center
@@ -65,10 +64,10 @@ block content
 														required=''
 													)
 														option(selected='', disabled='', hidden='')
-														each airport in data.airports
-															if airport.code === data.query.from
+														each airport in airports
+															if airport.code === query.from
 																option(value=`${airport.code}`, selected) #{airport.city} (#{airport.code})
-															else if airport.code === data.query.to
+															else if airport.code === query.to
 																option(value=`${airport.code}`, disabled) #{airport.city} (#{airport.code})
 															else
 																option(value=`${airport.code}`) #{airport.city} (#{airport.code})
@@ -86,10 +85,10 @@ block content
 														required=''
 													)
 														option(selected='', disabled='', hidden='')
-														each airport in data.airports
-															if airport.code === data.query.to
+														each airport in airports
+															if airport.code === query.to
 																option(value=`${airport.code}`, selected) #{airport.city} (#{airport.code})
-															else if airport.code === data.query.from
+															else if airport.code === query.from
 																option(value=`${airport.code}`, disabled) #{airport.city} (#{airport.code})
 															else
 																option(value=`${airport.code}`) #{airport.city} (#{airport.code})
@@ -100,11 +99,11 @@ block content
 												input#departReturnDatepicker.form-control.text-truncate.flatpickr-input(
 													type='date',
 													name='flightDates',
-													data-mode=`${isRoundtrip ? "range" : "single"}`,
+													data-mode=`${query.isRoundtrip ? "range" : "single"}`,
 													data-min-date='today',
 													data-alt-format='D, j M',
 													data-date-format='Y-m-d',
-													data-default-selected-dates=`${data.query.dates instanceof Object ? JSON.stringify(Object.values(data.query.dates)) : data.query.dates}`,
+													data-default-selected-dates=`${query.dates instanceof Object ? JSON.stringify(Object.values(query.dates)) : query.dates}`,
 													data-month-selector-type='static',
 													data-year-selector-type='static',
 													required=''
@@ -116,7 +115,7 @@ block content
 												input#passengersClassInput.form-control.d-none(
 													type='text',
 													name='passengersClass',
-													value=`{"passengers": ${JSON.stringify(data.query.passengers)}, "class": ${JSON.stringify(data.query.class)}}`,
+													value=`{"passengers": ${JSON.stringify(query.passengers)}, "class": ${JSON.stringify(query.class)}}`,
 													required=''
 												)
 												.dropdown-input.form-control.dropdown-toggle(
@@ -127,13 +126,13 @@ block content
 													aria-expanded='false'
 												)
 													- var passengers = ""
-													if data.query.passengers.adults > 0 && (data.query.passengers.children > 0 || data.query.passengers.infants > 0)
+													if query.passengers.adults > 0 && (query.passengers.children > 0 || query.passengers.infants > 0)
 														- passengers = "Passengers"
-													else if data.query.passengers.adults > 1
+													else if query.passengers.adults > 1
 														- passengers = "Adults"
 													else
 														- passengers = "Adult"
-													span#passengerClassResult #{data.query.passengers.total} #{passengers}, #{data.query.class}
+													span#passengerClassResult #{query.passengers.total} #{passengers}, #{query.class}
 												.invalid-feedback Passengers and class are required.
 												.dropdown-menu.keep-open(aria-labelledby='dropdownMenuLink')
 													.passengers-wrapper
@@ -148,7 +147,7 @@ block content
 																		data-counter-btn-type='minus'
 																	)
 																		i.fas.fa-minus.fa-fw.fa-sm
-																	span.counter-num #{data.query.passengers.adults}
+																	span.counter-num #{query.passengers.adults}
 																	a.btn.btn-icon.btn-sm.btn-outline-secondary.rounded-circle(
 																		href='#!',
 																		role='button',
@@ -164,7 +163,7 @@ block content
 																		data-counter-btn-type='minus'
 																	)
 																		i.fas.fa-minus.fa-fw.fa-sm
-																	span.counter-num #{data.query.passengers.children}
+																	span.counter-num #{query.passengers.children}
 																	a.btn.btn-icon.btn-sm.btn-outline-secondary.rounded-circle(
 																		href='#!',
 																		role='button',
@@ -180,7 +179,7 @@ block content
 																		data-counter-btn-type='minus'
 																	)
 																		i.fas.fa-minus.fa-fw.fa-sm
-																	span.counter-num #{data.query.passengers.infants}
+																	span.counter-num #{query.passengers.infants}
 																	a.btn.btn-icon.btn-sm.btn-outline-secondary.rounded-circle(
 																		href='#!',
 																		role='button',
@@ -192,7 +191,7 @@ block content
 														h6.font-size-18 Class
 														ul.class-list
 															each klass in ['Economy', 'Business', 'First']
-																li.class-list-item(class=`${klass === data.query.class ? "selected" : ""}`) #{klass}
+																li.class-list-item(class=`${klass === query.class ? "selected" : ""}`) #{klass}
 										.form-group.col-lg-1.mt-lg-4.mb-3.mb-sm-0
 											button#flightSearch.btn.btn-primary.btn-block(type='submit')
 												i.fas.fa-search.fa-fw.mr-1.mr-lg-0
@@ -202,7 +201,7 @@ block content
 					.spinner-grow.text-primary(style='transform: scale(1.5);', role='status')
 						span.sr-only Searching for flights...
 					h5.font-size-22.font-weight-medium.mb-0.ml-3(aria-hidden='true') Searching for flights...
-			if !data.flights.results
+			if !flights.results
 				.p-5(style='display: none;')
 					h5.font-size-24
 						.flex-center.flex-column
@@ -280,10 +279,10 @@ block content
 												data-grid='false',
 												data-hide-min-max='true',
 												data-hide-from-to='false',
-												data-min=`${data.flights.results[0].totalPrice}`,
-												data-max=`${data.flights.results[data.flights.results.length - 1].totalPrice}`,
-												data-from=`${data.flights.results[0].totalPrice + 30}`,
-												data-to=`${data.flights.results[data.flights.results.length - 1].totalPrice - 30}`,
+												data-min=`${flights.results[0].totalPrice}`,
+												data-max=`${flights.results[flights.results.length - 1].totalPrice}`,
+												data-from=`${flights.results[0].totalPrice + 30}`,
+												data-to=`${flights.results[flights.results.length - 1].totalPrice - 30}`,
 												data-prefix='€'
 											)
 								#timeFilter.accordion.rounded-0.border-top
@@ -311,7 +310,7 @@ block content
 													data-hide-min-max='true',
 													data-hide-from-to='false'
 												)
-											if isRoundtrip
+											if query.isRoundtrip
 												hr
 												div
 													label.section-subtitle.font-size-15.mb-2(for='returnTimeRange') Return Time
@@ -340,7 +339,7 @@ block content
 										.card-body.pt-0.mt-2.px-5.px-xl-4.pb-4
 											ul.text-gray-1
 												- var lastIndex = 0
-												each airline, index in data.airlines
+												each airline, index in airlines
 													if index > 4
 														- lastIndex = index
 														- break
@@ -351,16 +350,16 @@ block content
 															label.custom-control-label(for=airlineID) #{airline.name}
 														span.font-size-15 #{airline.total}
 
-												if data.airlines.length > 5
+												if airlines.length > 5
 													#moreAirlines.collapse
 														ul.text-gray-1
-															while lastIndex < data.airlines.length
-																- var airlineID = `${data.airlines[lastIndex].name.split(" ")[0].toLowerCase()}Air`
+															while lastIndex < airlines.length
+																- var airlineID = `${airlines[lastIndex].name.split(" ")[0].toLowerCase()}Air`
 																li.flex-center-between.mb-3
 																	.custom-control.custom-checkbox
 																		input.custom-control-input(id=airlineID, type='checkbox', checked='')
-																		label.custom-control-label(for=airlineID) #{data.airlines[lastIndex].name}
-																	span.font-size-15 #{data.airlines[lastIndex].total}
+																		label.custom-control-label(for=airlineID) #{airlines[lastIndex].name}
+																	span.font-size-15 #{airlines[lastIndex].total}
 																- lastIndex += 1
 													a.btn.btn-link.link-collapse(
 														data-toggle='collapse',
@@ -374,7 +373,7 @@ block content
 					.col-lg-8.col-xl-9.mt-lg-1
 						.row.align-items-center.justify-content-between.mb-3
 							.col
-								p.mb-0 #{data.flights.total} Results
+								p.mb-0 #{flights.total} Results
 							.col-auto.flex-vertical-center
 								p.d-none.d-sm-block.mb-0.mr-2 Sort by
 								.custom-select2.prepend-icon.prepend-icon-sm
@@ -387,24 +386,24 @@ block content
 										option(value='perAdult') Price per Adult
 										option(value='fastest') Fastest
 						.flights-container
-							each flight, index in data.flights.results
+							each flight, index in flights.results
 								div(id=`flight-${index}`)
 									form(id=`flightSelectForm-${index}`, action='/booking/new-booking')
-										.flight-card.card.mb-5(class=isRoundtrip ? "flight-roundtrip" : "flight-oneway")
-											input(type='hidden', name='isRoundtrip', value=`${isRoundtrip}`)
+										.flight-card.card.mb-5(class=query.isRoundtrip ? "flight-roundtrip" : "flight-oneway")
+											input(type='hidden', name='isRoundtrip', value=`${query.isRoundtrip}`)
 											input(type='hidden', name='fromCity', value=`${flight.departFromCity}`)
 											input(type='hidden', name='toCity', value=`${flight.departToCity}`)
 											input(type='hidden', name='departFlightID', value=`${flight.departFlightID}`)
-											input(type='hidden', name='departDate', value=`${isRoundtrip ? data.query.dates.from : data.query.dates}`)
+											input(type='hidden', name='departDate', value=`${query.isRoundtrip ? query.dates.from : query.dates}`)
 
-											if isRoundtrip
+											if query.isRoundtrip
 												input(type='hidden', name='returnFlightID', value=`${flight.returnFlightID}`)
-												input(type='hidden', name='returnDate', value=`${data.query.dates.to}`)
+												input(type='hidden', name='returnDate', value=`${query.dates.to}`)
 
-											input(type='hidden', name='class', value=`${data.query.class}`)
-											input(type='hidden', name='quantity', value=`${data.query.passengers.total}`)
+											input(type='hidden', name='class', value=`${query.class}`)
+											input(type='hidden', name='quantity', value=`${query.passengers.total}`)
 
-											- var totalPassengers = JSON.stringify({ adults: data.query.passengers.adults, children: data.query.passengers.children, infants: data.query.passengers.infants })
+											- var totalPassengers = JSON.stringify({ adults: query.passengers.adults, children: query.passengers.children, infants: query.passengers.infants })
 											input(type='hidden', name='passengers', value=totalPassengers)
 
 											.card-body
@@ -433,7 +432,7 @@ block content
 																			i.fas.fa-plane-arrival.fa-fw.font-size-20.text-lh-inherit.text-primary
 																			span.font-weight-bold.font-size-19 #{flight.departArrivalTime}
 																			span.font-size-14.text-gray-1 #{flight.departToAirport}
-																if isRoundtrip
+																if query.isRoundtrip
 																	hr
 																	.row.align-items-center.text-center
 																		.col-3.col-sm-auto.col-md-3.col-lg-auto.col-xl-3
@@ -465,7 +464,7 @@ block content
 																	.d-flex.flex-column
 																		span.font-size-14.font-size-md-16 Book now
 																		span.font-weight-medium.font-size-22.d-md-none &euro;#{flight.totalPrice}
-															- var modalID = `flightDetailsModal${isRoundtrip ? "Roundtrip" : "Oneway"}-${index}`
+															- var modalID = `flightDetailsModal${query.isRoundtrip ? "Roundtrip" : "Oneway"}-${index}`
 															a.btn-link.btn-flight-details.order-1.w-75.w-sm-35.w-md-auto.py-2.pr-3.pl-4.p-md-0(
 																href=`#${modalID}`,
 																data-toggle='modal',
@@ -528,7 +527,7 @@ block content
 																				li.w-100.px-1.px-sm-4
 																					i.fas.fa-shopping-bag.fa-fw.text-primary.mr-2
 																					span.font-size-15 Shopping
-																			if isRoundtrip
+																			if query.isRoundtrip
 																				hr.mx-n3.mx-sm-n4.mt-2.mb-4
 																				h5.route-title
 																					.route
@@ -577,23 +576,23 @@ block content
 																			span.font-weight-medium.font-size-22.mr-sm-2 &euro;#{flight.totalPrice}
 																			button.btn.btn-primary.font-weight-medium.font-size-16.py-2.px-4(type='Submit') Select
 block append scripts
-	if data.flights.results
-		- var minDepartTime = (maxDepartTime = new Date(`1970-01-01 ${data.flights.results[0].departTime}`))
+	if flights.results
+		- var minDepartTime = (maxDepartTime = new Date(`1970-01-01 ${flights.results[0].departTime}`))
 
-		if isRoundtrip
-			- var minReturnTime = (maxReturnTime = new Date(`1970-01-01 ${data.flights.results[0].returnTime}`))
+		if query.isRoundtrip
+			- var minReturnTime = (maxReturnTime = new Date(`1970-01-01 ${flights.results[0].returnTime}`))
 
-		each flight in data.flights.results
+		each flight in flights.results
 			- var time = new Date(`1970-01-01 ${flight.departTime}`)
 			- minDepartTime = time < minDepartTime ? time : minDepartTime
 			- maxDepartTime = time > maxDepartTime ? time : maxDepartTime
 
-			if isRoundtrip
+			if query.isRoundtrip
 				- time = new Date(`1970-01-01 ${flight.returnTime}`)
 				- minReturnTime = time < minReturnTime ? time : minReturnTime
 				- maxReturnTime = time > maxReturnTime ? time : maxReturnTime
 
-		if isRoundtrip
+		if query.isRoundtrip
 			script.
 				$(() => {
 					$('#returnTimeRange').data('ionRangeSlider').update({

@@ -10,6 +10,7 @@ function parseQuery(query) {
     from: query.fromAirport,
     to: query.toAirport,
     dates: query.flightDates,
+    isRoundtrip: query.type === 'RT',
   };
 
   if (query.type === 'RT') {
@@ -56,7 +57,7 @@ router.get('/search-flights', async (req, res, next) => {
       class: query.class,
     };
 
-    if (query.type === 'RT') {
+    if (query.isRoundtrip) {
       args = {
         ...args,
         departDate: query.dates.from,
@@ -72,7 +73,7 @@ router.get('/search-flights', async (req, res, next) => {
       }
     }
 
-    const flights = await getFlights({ isRoundtrip: query.type === 'RT', args, WHERE, ORDER });
+    const flights = await getFlights({ isRoundtrip: query.isRoundtrip, args, WHERE, ORDER });
 
     if (flights.error && flights.status === 500) {
       return next(createError(flights.status));
@@ -90,7 +91,7 @@ router.get('/search-flights', async (req, res, next) => {
               accu[index].total += 1;
             }
 
-            if (query.type === 'RT') {
+            if (query.isRoundtrip) {
               index = accu.findIndex((item) => item.name === obj.returnAirlineName);
 
               if (index === -1) {
@@ -104,14 +105,12 @@ router.get('/search-flights', async (req, res, next) => {
           }, []))(flights.result)) ||
       [];
 
-    const data = {
+    return res.render('search-flights', {
       query,
       airports: airports.result,
       airlines,
       flights: { results: flights.result, total: flights.result ? flights.result.length : 0 },
-    };
-
-    return res.render('search-flights', { data });
+    });
   } catch (err) {
     return next(err);
   }
