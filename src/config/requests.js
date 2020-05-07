@@ -77,6 +77,7 @@ const getPopularDestinations = async () => {
     return err;
   }
 };
+
 const getAirports = async () => {
   const response = {
     status: 400,
@@ -162,7 +163,7 @@ const getFlights = async ({
   }
 };
 
-const getBooking = async ({ bookingID = '', customerID = '', lastName = '', byID = false, byLastName = true } = {}) => {
+const getBooking = async ({ args = {}, byID = false, byLastName = true } = {}) => {
   const response = {
     status: 400,
     error: true,
@@ -181,7 +182,7 @@ const getBooking = async ({ bookingID = '', customerID = '', lastName = '', byID
   }
 
   try {
-    const data = await mysql.fetch(query, { bookingID, customerID, lastName });
+    const data = await mysql.fetch(query, args);
 
     if (data === null) {
       response.status = 500;
@@ -292,7 +293,7 @@ const insertUser = async (data) => {
   }
 };
 
-const insertBooking = async (args = {}) => {
+const insertBooking = async ({ args = {}, updateFlight = true } = {}) => {
   const response = {
     status: 400,
     error: true,
@@ -300,7 +301,7 @@ const insertBooking = async (args = {}) => {
   };
 
   const queryBooking =
-    'INSERT INTO booking (booking_id, customer_id, depart_flight_id, return_flight_id, depart_flight_date, return_flight_date, flight_class, first_name, last_name, email, mobile, booking_date, last_modify_date, total_passengers, total_baggage, price_per_passenger, total_price, payment_type, flight_type, status) VALUES (:bookingID, :customerID, :departFlightID, :returnFlightID, :departDate, :returnDate, :class, :contactFirstName, :contactLastName, :contactEmail, :contactMobile, NOW(), NOW(), :quantity, :baggageQuantity, :pricePerPassenger, :totalPrice, :paymentType, :flightType, "UPCOMING")';
+    'INSERT INTO booking (booking_id, customer_id, depart_flight_id, return_flight_id, depart_flight_date, return_flight_date, flight_class, first_name, last_name, email, mobile, booking_date, last_modify_date, total_passengers, total_baggage, price_per_passenger, total_price, payment_type, flight_type, status) VALUES (:bookingID, :customerID, :departFlightID, :returnFlightID, :departDate, :returnDate, :class, :contactFirstName, :contactLastName, :contactEmail, :contactMobile, :bookedDate, :lastModifyDate, :quantity, :baggageQuantity, :pricePerPassenger, :totalPrice, :paymentType, :flightType, :status)';
 
   await mysql
     .commit(queryBooking, args)
@@ -316,35 +317,16 @@ const insertBooking = async (args = {}) => {
       response.message = 'Database internal error.';
     });
 
-  const queryFlight =
-    'UPDATE flight SET occupied_capacity=occupied_capacity+:quantity WHERE flight_id=:flightID and dep_date=:departDate and class=:class';
+  if (updateFlight) {
+    const queryFlight =
+      'UPDATE flight SET occupied_capacity=occupied_capacity+:quantity WHERE flight_id=:flightID and dep_date=:departDate and class=:class';
 
-  await mysql
-    .commit(queryFlight, {
-      quantity: args.quantity,
-      class: args.class,
-      flightID: args.departFlightID,
-      departDate: args.departDate,
-    })
-    .then(() => {
-      response.status = 200;
-      response.error = false;
-      response.message = 'Flight updated.';
-    })
-    .catch((err) => {
-      console.log(err);
-      response.status = 500;
-      response.error = true;
-      response.message = 'Database internal error.';
-    });
-
-  if (args.flightType === 'Roundtrip') {
     await mysql
       .commit(queryFlight, {
         quantity: args.quantity,
         class: args.class,
-        flightID: args.returnFlightID,
-        departDate: args.returnDate,
+        flightID: args.departFlightID,
+        departDate: args.departDate,
       })
       .then(() => {
         response.status = 200;
@@ -357,6 +339,27 @@ const insertBooking = async (args = {}) => {
         response.error = true;
         response.message = 'Database internal error.';
       });
+
+    if (args.flightType === 'Roundtrip') {
+      await mysql
+        .commit(queryFlight, {
+          quantity: args.quantity,
+          class: args.class,
+          flightID: args.returnFlightID,
+          departDate: args.returnDate,
+        })
+        .then(() => {
+          response.status = 200;
+          response.error = false;
+          response.message = 'Flight updated.';
+        })
+        .catch((err) => {
+          console.log(err);
+          response.status = 500;
+          response.error = true;
+          response.message = 'Database internal error.';
+        });
+    }
   }
 
   return response;
@@ -448,17 +451,21 @@ const updateBooking = async (args = {}) => {
   return response;
 };
 
-const checkBookingExists = async ({ bookingID = '', lastName = '', chkOnlyBookingID = true } = {}) => {
+const checkBookingExists = async ({ args = {}, byID = false, byLastName = true } = {}) => {
   let found = false;
 
   let query = 'SELECT booking_id FROM booking WHERE booking_id=:bookingID';
 
-  if (!chkOnlyBookingID) {
+  if (byID) {
+    query += ' and customer_id=:customerID';
+  }
+
+  if (byLastName) {
     query += ' and last_name=:lastName';
   }
 
   try {
-    const data = await mysql.fetchOne(query, chkOnlyBookingID ? { bookingID } : { bookingID, lastName });
+    const data = await mysql.fetchOne(query, args);
 
     if (data.length !== 0) {
       found = true;
@@ -472,6 +479,7 @@ const checkBookingExists = async ({ bookingID = '', lastName = '', chkOnlyBookin
 
 module.exports = {
   getUser,
+  getCountries,
   getPopularDestinations,
   getAirports,
   getFlights,

@@ -1,6 +1,7 @@
 const express = require('express');
 const createError = require('http-errors');
 const {
+  getCountries,
   getFlights,
   getBooking,
   getBookingPassengers,
@@ -37,14 +38,15 @@ router.get('/new-booking', async (req, res, next) => {
       return next(createError(flight.status));
     }
 
-    const data = {
-      query,
-      flight: flight.result[0],
-    };
+    const countries = await getCountries();
+
+    if (countries.error) {
+      return next(createError(countries.status));
+    }
 
     req.session.flightData = query;
 
-    return res.render('new-booking', { data });
+    return res.render('new-booking', { query, flight: flight.result[0], countries: countries.result });
   } catch (err) {
     console.log(err);
     return next(err);
@@ -71,7 +73,7 @@ router.post('/new-booking/thank-you', async (req, res, next) => {
 
     do {
       bookingID = await Math.random().toString(36).toUpperCase().substr(2, 6);
-      found = await checkBookingExists({ bookingID });
+      found = await checkBookingExists({ args: { bookingID }, byLastName: false });
 
       if (typeof found !== 'boolean') return next(found);
     } while (found);
@@ -117,6 +119,8 @@ router.post('/new-booking/thank-you', async (req, res, next) => {
       contactLastName: bookingData.contactLastName,
       contactEmail: bookingData.contactEmail,
       contactMobile: bookingData.contactMobile,
+      bookedDate: new Date(),
+      lastModifyDate: new Date(),
       quantity: flightData.quantity,
       baggageQuantity: passengerInfo.reduce(
         (acc, { departSmallBag, departLargeBag, returnSmallBag, returnLargeBag }) =>
@@ -127,6 +131,7 @@ router.post('/new-booking/thank-you', async (req, res, next) => {
       totalPrice: bookingData.finalPrice,
       paymentType: bookingData.paymentType,
       flightType: flightData.isRoundtrip ? 'Roundtrip' : 'Oneway',
+      status: 'UPCOMING',
     };
 
     if (flightData.isRoundtrip) {
@@ -134,7 +139,7 @@ router.post('/new-booking/thank-you', async (req, res, next) => {
       bookingDetails.returnDate = flightData.returnDate;
     }
 
-    const bookingResponse = await insertBooking(bookingDetails);
+    const bookingResponse = await insertBooking({ args: bookingDetails });
 
     if (bookingResponse.error) {
       return next(createError(bookingResponse.status));
@@ -164,9 +169,11 @@ router.post('/manage-booking', async (req, res, next) => {
 
 router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req, res, next) => {
   const { bookingID, lastName } = req.params;
+  const customerID = req.session.user.id;
+  const byID = /(\/user\/profile)/.test(req.get('Referrer'));
 
   try {
-    if (!(await checkBookingExists({ bookingID, lastName, chkOnlyBookingID: false }))) {
+    if (!(await checkBookingExists({ args: { bookingID, customerID, lastName }, byID, byLastName: true }))) {
       res.flash(
         'error',
         'We are unable to find the booking reference you provided. Please validate that your information is correct and try again.'
@@ -174,9 +181,11 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
       return res.redirect('/booking/manage-booking');
     }
 
-    let booking = await getBooking({ bookingID, customerID: req.session.user.id, lastName, byID: true });
+    let booking = await getBooking({ args: { bookingID, customerID, lastName }, byID });
 
-    if (booking.err) {
+    console.log(booking);
+
+    if (booking.error) {
       return next(createError(booking.status));
     }
 
