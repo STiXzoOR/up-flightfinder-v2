@@ -1,17 +1,27 @@
+const createError = require('http-errors');
 const bcrypt = require('bcrypt');
 const mysql = new (require('./mysql'))();
 
-const getUser = async (email = '', password = '') => {
+const permit = (...allowed) => {
+  const isAllowed = (role) => allowed.indexOf(role) > -1;
+
+  return (req, res, next) => {
+    if (req.user && isAllowed(req.user.role)) return next();
+    return next(createError(403));
+  };
+};
+
+const checkPasswordMatch = async (args = {}) => {
   const response = {
     status: 400,
     error: true,
     message: '',
   };
 
-  const query = 'SELECT customer_id, first_name, last_name, password, customer_type FROM customer WHERE email=:email';
+  const query = 'SELECT password From customer WHERE customer_id=:customerID';
 
   try {
-    const data = await mysql.fetch(query, { email });
+    const data = await mysql.fetch(query, { customerID: args.customerID });
 
     if (data === null) {
       response.status = 500;
@@ -20,22 +30,139 @@ const getUser = async (email = '', password = '') => {
     } else if (data.length === 0) {
       response.status = 400;
       response.error = true;
-      response.message = 'Email does not exist. Please sign up.';
-    } else if (bcrypt.compareSync(password, data[0].password)) {
+      response.message = 'A user with the provided email does not exist. Please sign up.';
+    } else if (bcrypt.compareSync(args.currentPassword, data[0].password)) {
       response.status = 200;
       response.error = false;
-      response.message = 'Sign in success.';
-      response.result = {
-        id: data[0].customer_id,
-        firstName: data[0].first_name,
-        lastName: data[0].last_name,
-        fullname: `${data[0].first_name} ${data[0].last_name}`,
-        role: data[0].customer_type,
-      };
+      response.message = 'Passwords match.';
     } else {
       response.status = 401;
       response.error = true;
-      response.message = 'Password is incorrect. Please try again.';
+      response.message =
+        "The provided password doesn't match the one stored in our database. Please validate that your current password is correct.";
+    }
+
+    return response;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
+const checkBookingExists = async ({ args = {}, byID = false, byLastName = true } = {}) => {
+  let found = false;
+
+  let query = 'SELECT booking_id FROM booking WHERE booking_id=:bookingID';
+
+  if (byID) {
+    query += ' and customer_id=:customerID';
+  }
+
+  if (byLastName) {
+    query += ' and last_name=:lastName';
+  }
+
+  try {
+    const data = await mysql.fetchOne(query, args);
+
+    if (data.length !== 0) {
+      found = true;
+    }
+
+    return found;
+  } catch (err) {
+    return err;
+  }
+};
+
+const getUserDetails = async ({ args = {}, byID = true, byEmail = false, partial = false } = {}) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  let query = !partial
+    ? 'SELECT DISTINCT c.first_name as firstName, c.last_name as lastName, c.email as email, c.gender as gender, c.mobile as mobile, DATE_FORMAT(c.joined_date, "%a, %d %b") as date, c.address_line_1 as addressLine1, c.address_line_2 as addressLine2, c.city as city, c.region as region, IF(c.country IS NOT NULL, cs.name, c.country) as country, c.postal_code as postalCode, c.status <> "VERIFIED" as isVerified FROM customer as c, countries as cs WHERE IF(c.country IS NOT NULL, cs.country_code=c.country, 1)'
+    : 'SELECT c.customer_id as id, c.first_name as firstName, c.last_name as lastName, c.customer_type as role FROM customer as c WHERE 1';
+
+  if (byID && byEmail) {
+    query += ' and c.customer_id=:customerID and c.email=:email';
+  } else if (byID) {
+    query += ' and c.customer_id=:customerID';
+  } else if (byEmail) {
+    query += ' and c.email=:email';
+  }
+
+  try {
+    const data = await mysql.fetch(query, args);
+
+    if (data === null) {
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    } else if (data.length === 0) {
+      response.status = 400;
+      response.error = true;
+      response.message = 'A user with the provided email does not exist. Please sign up.';
+    } else {
+      response.status = 200;
+      response.error = false;
+      response.message = 'User details retrieved.';
+      response.result = data;
+    }
+
+    return response;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
+const getSessionUser = async (args = {}) => {
+  let response;
+
+  try {
+    response = await getUserDetails({ args, byID: false, byEmail: true, partial: true });
+
+    if (response.error) return response;
+
+    const responsePassword = await checkPasswordMatch({
+      customerID: response.result[0].id,
+      currentPassword: args.password,
+    });
+
+    return !responsePassword.error ? response : responsePassword;
+  } catch (err) {
+    return err;
+  }
+};
+
+const getCountries = async () => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const query = 'SELECT country_code as code, name, nationality from countries';
+
+  try {
+    const data = await mysql.fetch(query, null);
+
+    if (data === null) {
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    } else if (data.length === 0) {
+      response.status = 400;
+      response.error = true;
+      response.message = 'No results found for the requested query.';
+    } else {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Countries retrieved.';
+      response.result = data;
     }
 
     return response;
@@ -247,31 +374,39 @@ const insertUser = async (data) => {
     message: '',
   };
 
+
+const insertUser = async (args = {}) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
   const salt = bcrypt.genSaltSync(10);
-  const password = bcrypt.hashSync(data.password, salt);
+  const password = bcrypt.hashSync(args.password, salt);
 
   const userExistsQuery = 'SELECT email FROM customer WHERE email=:email';
   const userInsertQuery =
     'INSERT INTO customer (first_name, last_name, email, password, mobile, gender, joined_date, status, customer_type) VALUES (:firstName, :lastName, :email, :password, :mobile, :gender, NOW(), :status, "USER")';
 
   try {
-    const result = await mysql.fetch(userExistsQuery, { email: data.email });
+    const result = await mysql.fetch(userExistsQuery, { email: args.email });
 
     if (result.length !== 0) {
       response.status = 401;
       response.error = true;
-      response.message = 'The user already exists. Please sign in.';
+      response.message = 'A user with the provided email already exists. Please sign in.';
       return response;
     }
 
     const fields = {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
+      firstName: args.firstName,
+      lastName: args.lastName,
+      email: args.email,
       password,
-      mobile: data.mobile,
-      gender: data.gender,
-      status: 'CONFIRMED',
+      mobile: args.mobile,
+      gender: args.gender,
+      status: 'VERIFIED',
     };
 
     await mysql
@@ -279,12 +414,12 @@ const insertUser = async (data) => {
       .then(() => {
         response.status = 200;
         response.error = false;
-        response.message = 'Sign up success. Please sign in.';
+        response.message = 'Sign up was successfull. Please sign in.';
       })
       .catch(() => {
         response.status = 500;
         response.error = true;
-        response.message = 'Something went wrong while signing you up. Please try again.';
+        response.message = 'Something went wrong while signing you up. Please contact our support team.';
       });
 
     return response;
@@ -451,34 +586,12 @@ const updateBooking = async (args = {}) => {
   return response;
 };
 
-const checkBookingExists = async ({ args = {}, byID = false, byLastName = true } = {}) => {
-  let found = false;
-
-  let query = 'SELECT booking_id FROM booking WHERE booking_id=:bookingID';
-
-  if (byID) {
-    query += ' and customer_id=:customerID';
-  }
-
-  if (byLastName) {
-    query += ' and last_name=:lastName';
-  }
-
-  try {
-    const data = await mysql.fetchOne(query, args);
-
-    if (data.length !== 0) {
-      found = true;
-    }
-
-    return found;
-  } catch (err) {
-    return err;
-  }
-};
-
 module.exports = {
-  getUser,
+  permit,
+  checkPasswordMatch,
+  checkBookingExists,
+  getUserDetails,
+  getSessionUser,
   getCountries,
   getPopularDestinations,
   getAirports,
@@ -489,5 +602,4 @@ module.exports = {
   insertBooking,
   insertPassenger,
   updateBooking,
-  checkBookingExists,
 };

@@ -36,7 +36,7 @@ app.use(
     secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, maxAge: 1800000 },
+    cookie: { secure: false },
     store: new RedisStore({ host: 'localhost', port: 6379, client: redisClient, ttl: 260 }),
   })
 );
@@ -45,13 +45,14 @@ app.use(passport.session());
 app.use(flash());
 
 app.use((req, res, next) => {
-  if (req.session.user === undefined) {
-    req.session.user = { id: 0, isAuthenticated: false, role: 'GUEST' };
+  if (req.session.user === undefined || !req.isAuthenticated()) {
+    req.session.user = { id: 0 };
   }
 
-  if (res.locals.user === undefined) {
-    res.locals.user = req.session.user;
-  }
+  res.locals.user = {
+    ...(req.user ? req.user : req.session.user),
+    isAuthenticated: req.isAuthenticated() || false,
+  };
 
   next();
 });
