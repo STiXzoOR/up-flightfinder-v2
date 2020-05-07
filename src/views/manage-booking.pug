@@ -35,12 +35,12 @@ block content
 							form#manageBookingForm.needs-validation(method='POST', action='/booking/manage-booking', novalidate='')
 								.form-row.justify-content-center
 									.form-group.col-md.mb-md-0
-										label.text-muted.required(for='pnr') Booking reference (PNR)
+										label.text-muted.required(for='bookingID') Booking reference (PNR)
 										.prepend-icon
 											i.fas.fa-book.fa-fw
-											input#pnr.form-control.uppercase-input(
+											input#bookingID.form-control.uppercase-input(
 												type='text',
-												name='pnr',
+												name='bookingID',
 												pattern='[A-Z0-9]{6}',
 												maxlength='6',
 												placeholder='WF43B9',

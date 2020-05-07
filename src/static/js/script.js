@@ -570,7 +570,7 @@ function initCheckedBaggage() {
       },
     };
     this.input = $($(el).closest('.baggage-info').find('input[type="hidden"]'));
-    this.baggageList = $($(el).closest('.baggage-info').find('.baggage-list'))[0];
+    [this.baggageList] = $($(el).closest('.baggage-info').find('.baggage-list'));
     this.summaryTarget = $($(el).closest('.passenger-details-card').data('summary-target'));
     this.type = $(el).data('type');
     this.quantity = 0;
@@ -765,7 +765,7 @@ function initInsuranceCard() {
       passengersPrice.text(`${parseInt(passengersPrice.text().replace(/,/g, ''), 10) - self.price}`);
       totalPrice.text(`${parseInt(totalPrice.text().replace(/,/g, ''), 10) - self.price}`).trigger('change');
 
-      self.input.val('');
+      self.input.val('none');
       self.element.removeClass('selected');
 
       self.selected = false;
