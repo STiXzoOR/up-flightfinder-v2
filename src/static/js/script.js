@@ -973,8 +973,12 @@ $('a[href="#navEditContactDetails"]').on('click', function clicked(e) {
 });
 
 $(() => {
+  $('[data-toggle="tooltip"]').tooltip();
+  $('[data-toggle="popover"]').popover();
+  $('[data-toggle="sync-text"]').syncText();
   $('.page-header').headerReveal();
   $('.btn-go-up').goUp();
+  $('.class-list').classCheckList();
   customScrollSpy.init($('.nav-scroll'));
   datePicker.init('.flatpickr-input');
   customSelect.init('.select2-input');
@@ -982,10 +986,6 @@ $(() => {
   initCounters();
   initCheckedBaggage();
   initInsuranceCard();
-  $('.class-list').classCheckList();
-  $('[data-toggle="tooltip"]').tooltip();
-  $('[data-toggle="popover"]').popover();
-  $('[data-toggle="sync-text"]').syncText();
 
   setTimeout(() => {
     $('#preloader').fadeOut(500);

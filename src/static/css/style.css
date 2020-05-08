@@ -1584,12 +1584,12 @@ textarea.form-control.is-invalid {
 
 .custom-switch .custom-control-label::after {
 	top: 50%;
-	left: -2.9rem;
+	left: calc(-3rem + 2px);
 	width: 1rem;
 	height: 1rem;
 	background-color: #fff;
 	border-radius: 50%;
-	box-shadow: 0 0 0.1875rem 0.0625rem rgba(0, 0, 0, 0.2);
+	box-shadow: 0px 3px 6px 0px rgba(140, 152, 164, 0.25);
 	transform: translateY(-50%);
 }
 
@@ -1598,7 +1598,7 @@ textarea.form-control.is-invalid {
 }
 
 .custom-switch .custom-control-input:disabled ~ .custom-control-label::after {
-	background-color: #f8fafd;
+	background-color: #fff;
 }
 
 .custom-switch .custom-control-input:disabled:checked ~ .custom-control-label::before {
