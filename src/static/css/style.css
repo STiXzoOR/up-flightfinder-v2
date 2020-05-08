@@ -4262,11 +4262,13 @@ a.badge-soft-white.focus {
 }
 
 .btn-remove-insurance {
-	display: none;
+	display: flex;
 	position: absolute;
 	right: -2px;
 	top: -2px;
-	transform: translate(50%, -50%);
+	opacity: 0;
+	visibility: hidden;
+	transform: translate(50%, -50%) scale(0);
 }
 
 /*-------------------------------------------*\
@@ -4682,7 +4684,9 @@ a.badge-soft-white.focus {
 }
 
 .insurance-card.selected .btn-remove-insurance {
-	display: flex;
+	opacity: 1;
+	visibility: visible;
+	transform: translate(50%, -50%) scale(1);
 }
 
 .insurance-card-body {

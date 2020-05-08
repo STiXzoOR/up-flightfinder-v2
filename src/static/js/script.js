@@ -133,19 +133,23 @@ $.fn.syncText = function syncText() {
     const self = this;
     this.element = $(this);
     this.isInput = $(this).is('input');
+    this.valueType = $(this).data('sync-type');
     this.targetPlaceholder = $(this).data('sync-placeholder');
+
     this.evaluateValue = (target, value) => {
+      const normalizedValue = self.valueType && self.valueType === 'numeric' ? value.replace(/[,.]/g, '') : value;
+
       if (target.is('input')) {
-        target.val(value);
+        target.val(normalizedValue);
       } else {
-        target.text(value);
+        target.text(normalizedValue);
       }
     };
 
-    let target = $(this).data('sync-controls');
     let parent = $(this).data('sync-parent');
-    parent = ($(`#${parent}`).length && $(`#${parent}`)) || $(`.${parent}`);
-    target = (parent.find(`#${target}`).length && parent.find(`#${target}`)) || parent.find(`.${target}`);
+    let target = $(this).data('sync-controls');
+    parent = $(`#${parent}`).length ? $(`#${parent}`) : $(`.${parent}`);
+    target = parent.find(`#${target}`).length ? parent.find(`#${target}`) : parent.find(`.${target}`);
 
     $(this).on('change paste keyup', () => {
       let value = self.targetPlaceholder;
@@ -762,69 +766,96 @@ function initCheckedBaggage() {
   });
 }
 
-// TODO: reimplement the insurance method
 function initInsuranceCard() {
-  $('.insurance-card').each(function init() {
-    const self = this;
-
-    this.element = $(this);
+  const InsuranceObj = function InsuranceObj(element) {
+    this.element = element;
     this.selected = false;
-    this.selectBtn = $(this).find('.btn-select-insurance');
-    this.removeBtn = $(this).find('.btn-remove-insurance');
-    this.type = $(this).data('type');
-    this.price = parseInt($(this).data('price'), 10);
-    this.input = $($(this).closest('.insurance-info').find('input[type="hidden"]'));
-    this.summaryTarget = $($(this).closest('.passenger-details-card').data('summary-target'));
+    this.selectBtn = $(element).find('.btn-select-insurance');
+    this.removeBtn = $(element).find('.btn-remove-insurance');
+    this.type = $(element).data('type');
+    this.price = parseInt($(element).data('price'), 10);
+    this.input = $(element).closest('.insurance-info').find('input[type="hidden"]');
+    this.summaryTarget = $($(element).closest('.passenger-details-card').data('summary-target'));
+    this.itemsList = this.summaryTarget.find('.items');
+    this.passengersPrice = $('#passengersSummary').find('#totalPassengersPrice');
+    this.totalPrice = $('#totalSummary').find('#totalPrice');
 
-    this.selectBtn.on('click', function clicked() {
-      const active = self.element.closest('.insurance-info').find('.selected');
+    this.bindEvents();
+  };
+
+  InsuranceObj.prototype = {
+    constructor: InsuranceObj,
+
+    bindEvents() {
+      const self = this;
+
+      this.selectBtn.on('click', () => {
+        self.add();
+      });
+
+      this.removeBtn.on('click', () => {
+        self.remove();
+      });
+    },
+
+    evaluateButtons() {
+      this.selectBtn.prop('disabled', this.selected);
+    },
+
+    add() {
+      const active = $(this.element).closest('.insurance-info').find('.selected');
+
       if (active.length) {
-        active[0].removeBtn.trigger('click');
+        active.data('Insurance').remove();
       }
 
-      $(this).prop('disabled', true);
+      this.selected = true;
+      $(this.element).addClass('selected');
 
-      const itemsList = self.summaryTarget.find('.items');
-      const passengersPrice = $('#passengersSummary').find('#totalPassengersPrice');
-      const totalPrice = $('#totalSummary').find('#totalPrice');
       const item = $('<li/>').addClass('insurance flex-center-between mt-2');
       const itemName = $('<h6/>').addClass('item-name').text('insurance');
       const itemPrice = $('<span/>')
         .addClass('item-price')
-        .text(`${self.price ? `€${self.price}` : 'free'}`);
+        .text(`${this.price ? `€${this.price}` : 'free'}`);
 
       itemName.appendTo(item);
       itemPrice.appendTo(item);
-      item.appendTo(itemsList);
+      item.appendTo(this.itemsList);
 
-      passengersPrice.text(`${parseInt(passengersPrice.text().replace(/,/g, ''), 10) + self.price}`);
-      totalPrice.text(`${parseInt(totalPrice.text().replace(/,/g, ''), 10) + self.price}`).trigger('change');
+      this.item = item;
 
-      self.item = item;
-      self.input.val(self.type);
-      self.element.addClass('selected');
+      this.updatePrice(this.passengersPrice, this.price);
+      this.updatePrice(this.totalPrice, this.price);
+      this.updateInput(this.type);
+      this.evaluateButtons();
+    },
 
-      self.selected = true;
-    });
+    remove() {
+      if (!this.selected) return;
 
-    this.removeBtn.on('click', function clicked() {
-      if (!self.selected) return;
-      self.selectBtn.prop('disabled', false);
+      this.selected = false;
+      $(this.element).removeClass('selected');
 
-      const passengersPrice = $('#passengersSummary').find('#totalPassengersPrice');
-      const totalPrice = $('#totalSummary').find('#totalPrice');
+      this.item.remove();
+      this.item = null;
 
-      self.item.remove();
-      self.item = null;
+      this.updatePrice(this.passengersPrice, -this.price);
+      this.updatePrice(this.totalPrice, -this.price);
+      this.updateInput(this.type);
+      this.evaluateButtons();
+    },
 
-      passengersPrice.text(`${parseInt(passengersPrice.text().replace(/,/g, ''), 10) - self.price}`);
-      totalPrice.text(`${parseInt(totalPrice.text().replace(/,/g, ''), 10) - self.price}`).trigger('change');
+    updatePrice(target, price) {
+      target.text((parseInt(target.text().replace(/[,.]/g, ''), 10) + price).toLocaleString()).trigger('change');
+    },
 
-      self.input.val('none');
-      self.element.removeClass('selected');
+    updateInput(type) {
+      this.input.val(type);
+    },
+  };
 
-      self.selected = false;
-    });
+  $('.insurance-card').each((i, el) => {
+    if (!$(el).data('Insurance')) $(el).data('Insurance', new InsuranceObj(el));
   });
 }
 
