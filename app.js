@@ -36,7 +36,7 @@ app.use(
     secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false },
+    cookie: { secure: false, expires: false },
     store: new RedisStore({ host: 'localhost', port: 6379, client: redisClient, ttl: 260 }),
   })
 );
