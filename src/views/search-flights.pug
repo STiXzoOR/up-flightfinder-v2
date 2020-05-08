@@ -459,11 +459,11 @@ block content
 														.d-flex.d-md-block.mx-n4.mx-md-0
 															.mb-md-2.order-2.w-100.w-md-auto
 																.mb-2.text-lh-1dot4.d-none.d-md-block
-																	span.font-weight-bold.font-size-22 &euro;#{flight.totalPrice}
+																	span.font-weight-bold.font-size-22 &euro;#{flight.totalPrice.toLocaleString()}
 																button.btn.btn-book-now.btn-block.text-right.text-md-center.py-2.pr-4.px-md-3(type='Submit')
 																	.d-flex.flex-column
 																		span.font-size-14.font-size-md-16 Book now
-																		span.font-weight-medium.font-size-22.d-md-none &euro;#{flight.totalPrice}
+																		span.font-weight-medium.font-size-22.d-md-none &euro;#{flight.totalPrice.toLocaleString()}
 															- var modalID = `flightDetailsModal${query.isRoundtrip ? "Roundtrip" : "Oneway"}-${index}`
 															a.btn-link.btn-flight-details.order-1.w-75.w-sm-35.w-md-auto.py-2.pr-3.pl-4.p-md-0(
 																href=`#${modalID}`,
@@ -573,7 +573,7 @@ block content
 																						i.fas.fa-shopping-bag.fa-fw.text-primary.mr-2
 																						span.font-size-15 Shopping
 																		.modal-footer.flex-center-between.justify-content-md-end
-																			span.font-weight-medium.font-size-22.mr-sm-2 &euro;#{flight.totalPrice}
+																			span.font-weight-medium.font-size-22.mr-sm-2 &euro;#{flight.totalPrice.toLocaleString()}
 																			button.btn.btn-primary.font-weight-medium.font-size-16.py-2.px-4(type='Submit') Select
 		a.btn.btn-go-up(href='#!')
 			i.fas.fa-chevron-up

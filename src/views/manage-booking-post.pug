@@ -402,7 +402,7 @@ block content
 											)
 												span.section-header Flights
 												span.flex-vertical-center.justify-content-end
-													span.section-price &euro;#{flight.totalPrice}
+													span.section-price &euro;#{flight.totalPrice.toLocaleString()}
 													span.card-btn-caret
 														i.fas.fa-chevron-down
 									#flightsSummarySection.collapse.show(aria-labelledby='Flights summary section', data-parent='#flightsSummary')
@@ -414,10 +414,10 @@ block content
 											ul.font-size-15
 												li.flex-center-between.pb-1
 													span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 #{booking.quantity}x passenger(s)
-													span.text-secondary.text-right.text-truncate &euro;#{flight.departPrice*booking.quantity}
+													span.text-secondary.text-right.text-truncate &euro;#{(flight.departPrice*booking.quantity).toLocaleString()}
 												li.flex-center-between.pt-1
 													span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 Taxes
-													span.text-secondary.text-right.text-truncate &euro;#{flight.departTaxes*booking.quantity}
+													span.text-secondary.text-right.text-truncate &euro;#{(flight.departTaxes*booking.quantity).toLocaleString()}
 											if flight.isRoundtrip
 												hr
 												h5.font-size-16.text-truncate
@@ -427,10 +427,10 @@ block content
 												ul.font-size-15
 													li.flex-center-between.pb-1
 														span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 #{booking.quantity}x passenger(s)
-														span.text-secondary.text-right.text-truncate &euro;#{flight.returnPrice*booking.quantity}
+														span.text-secondary.text-right.text-truncate &euro;#{(flight.returnPrice*booking.quantity).toLocaleString()}
 													li.flex-center-between.pt-1
 														span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 Taxes
-														span.text-secondary.text-right.text-truncate &euro;#{flight.returnTaxes*booking.quantity}
+														span.text-secondary.text-right.text-truncate &euro;#{(flight.returnTaxes*booking.quantity).toLocaleString()}
 								#baggageAndInsuranceSummary.accordion.rounded-0.border-top
 									.card-collapse
 										h3.mb-0
@@ -443,7 +443,7 @@ block content
 											)
 												span.section-header Baggage &amp; Insurance
 												span.flex-vertical-center.justify-content-end
-													span.section-price &euro;#{passengers.reduce((acc, {totalPaidPrice}) => acc + totalPaidPrice,0)}
+													span.section-price &euro;#{(passengers.reduce((acc, {totalPaidPrice}) => acc + totalPaidPrice,0)).toLocaleString()}
 													span.card-btn-caret
 														i.fas.fa-chevron-down
 									#baggageAndInsuranceSummarySection.collapse.show(
@@ -499,6 +499,6 @@ block content
 								#totalSummary.rounded-0.border-top
 									h3.flex-center-between.font-size-18.text-lh-3.mb-0.px-3.px-sm-4.px-md-5.py-2
 										span.section-header Total
-										span.section-price.text-dark &euro;#{booking.totalPrice}
+										span.section-price.text-dark &euro;#{booking.totalPrice.toLocaleString()}
 		a.btn.btn-go-up(href='#!')
 			i.fas.fa-chevron-up

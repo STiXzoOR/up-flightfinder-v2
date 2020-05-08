@@ -436,7 +436,7 @@ block content
 													.flex-center.flex-column
 														i.fas.fa-exclamation-triangle.fa-fw.fa-2x.mb-2
 														span Paypal service comming soon...
-												p.mb-0 Paypal service is still under development. Once we fine tune everything, the service will be available for use.
+												p.text-center.mb-0 Paypal service is still under development. Once we fine tune everything, the service will be available for use.
 								.card-footer
 									.form-group.custom-control.custom-checkbox
 										input#acceptTOU.custom-control-input(type='checkbox', name='acceptTOU', required='')
@@ -472,7 +472,7 @@ block content
 										)
 											span.section-header Flights
 											span.flex-vertical-center.justify-content-end
-												span.section-price &euro;#{flight.totalPrice}
+												span.section-price &euro;#{flight.totalPrice.toLocaleString()}
 												span.card-btn-caret
 													i.fas.fa-chevron-down.text-dark
 								#flightsSummarySection.collapse.show(aria-labelledby='Flights summary section', data-parent='#flightsSummary')
@@ -572,8 +572,9 @@ block content
 														data-toggle='sync-text',
 														data-sync-controls='totalPriceInput',
 														data-sync-placeholder=`${flight.totalPrice}`,
+														data-sync-type='numeric',
 														data-sync-parent='newBookingForm'
-													) #{flight.totalPrice}
+													) #{flight.totalPrice.toLocaleString()}
 												span.card-btn-caret
 													i.fas.fa-chevron-down.text-dark
 								#totalSummarySection.collapse(aria-labelledby='Total summary section', data-parent='#totalSummary')
@@ -581,7 +582,7 @@ block content
 										ul.text-gray-1
 											li.flex-center-between.mb-2
 												h6.item-name taxes
-												span.item-price &euro;#{flight.totalTaxes}
+												span.item-price &euro;#{flight.totalTaxes.toLocaleString()}
 		a.btn.btn-go-up(href='#!')
 			i.fas.fa-chevron-up
 

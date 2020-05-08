@@ -605,26 +605,29 @@ const rangeSlider = {
 };
 
 function initCheckedBaggage() {
-  const BaggageObj = function BaggageObj(el) {
-    this.element = $(el);
+  const BaggageObj = function BaggageObj(element) {
+    this.element = element;
     this.baggage = {
       small: {
-        element: $(el).find('.small-bag'),
-        price: $(el).find('.small-bag').data('price'),
-        weight: $(el).find('.small-bag').data('weight'),
-        btn: $(el).find('.small-bag').find('.btn-add-bag'),
+        element: $(element).find('.small-bag'),
+        price: $(element).find('.small-bag').data('price'),
+        weight: $(element).find('.small-bag').data('weight'),
+        btn: $(element).find('.small-bag').find('.btn-add-bag'),
       },
       large: {
-        element: $(el).find('.large-bag'),
-        price: $(el).find('.large-bag').data('price'),
-        weight: $(el).find('.large-bag').data('weight'),
-        btn: $(el).find('.large-bag').find('.btn-add-bag'),
+        element: $(element).find('.large-bag'),
+        price: $(element).find('.large-bag').data('price'),
+        weight: $(element).find('.large-bag').data('weight'),
+        btn: $(element).find('.large-bag').find('.btn-add-bag'),
       },
     };
-    this.input = $($(el).closest('.baggage-info').find('input[type="hidden"]'));
-    [this.baggageList] = $($(el).closest('.baggage-info').find('.baggage-list'));
-    this.summaryTarget = $($(el).closest('.passenger-details-card').data('summary-target'));
-    this.type = $(el).data('type');
+    this.input = $(element).closest('.baggage-info').find('input[type="hidden"]');
+    [this.baggageList] = $(element).closest('.baggage-info').find('.baggage-list');
+    this.summaryTarget = $($(element).closest('.passenger-details-card').data('summary-target'));
+    this.itemsList = this.summaryTarget.find('.items');
+    this.passengersPrice = $('#passengersSummary').find('#totalPassengersPrice');
+    this.totalPrice = $('#totalSummary').find('#totalPrice');
+    this.type = $(element).data('type');
     this.quantity = 0;
     this.max = 5;
     this.added = false;
@@ -654,22 +657,22 @@ function initCheckedBaggage() {
 
     add(bag) {
       const self = this;
-      const itemsList = this.summaryTarget.find('.items');
-      const passengersPrice = $('#passengersSummary').find('#totalPassengersPrice');
-      const totalPrice = $('#totalSummary').find('#totalPrice');
+
       let item = null;
       let itemNameWrapper = null;
       let itemQuantity = null;
       let itemName = null;
       let itemPrice = null;
 
-      if (this.added || itemsList.find('.checked-bag').length) {
-        item = itemsList.find('.checked-bag');
+      if (this.added || this.itemsList.find('.checked-bag').length) {
+        item = this.itemsList.find('.checked-bag');
         itemNameWrapper = item.find('.item-name');
         itemQuantity = itemNameWrapper.find('.quantity');
         itemName = itemNameWrapper.children().last();
         itemPrice = item.find('.item-price');
       } else {
+        const itemPriceWrapper = $('<span/>').addClass('font-size-14').text('€');
+
         item = $('<li/>').addClass('checked-bag flex-center-between mt-2');
         itemNameWrapper = $('<h6/>').addClass('item-name');
         itemQuantity = $('<span/>').addClass('quantity').text(0);
@@ -679,8 +682,9 @@ function initCheckedBaggage() {
         itemQuantity.appendTo(itemNameWrapper);
         itemName.appendTo(itemNameWrapper);
         itemNameWrapper.appendTo(item);
-        itemPrice.appendTo(item);
-        item.appendTo(itemsList);
+        itemPrice.appendTo(itemPriceWrapper);
+        itemPriceWrapper.appendTo(item);
+        item.appendTo(this.itemsList);
       }
 
       const row = this.baggageList.insertRow(-1);
@@ -709,17 +713,14 @@ function initCheckedBaggage() {
       this.summaryItem = item;
       itemQuantity.text(parseInt(itemQuantity.text(), 10) + 1);
       this.updatePrice(itemPrice, this.baggage[bag].price);
-      this.updatePrice(passengersPrice, this.baggage[bag].price);
-      this.updatePrice(totalPrice, this.baggage[bag].price);
+      this.updatePrice(this.passengersPrice, this.baggage[bag].price);
+      this.updatePrice(this.totalPrice, this.baggage[bag].price);
       this.updateInput(bag, 1);
       this.evaluateButtons();
     },
 
     remove(row, bag) {
-      const itemsList = this.summaryTarget.find('.items');
-      const passengersPrice = $('#passengersSummary').find('#totalPassengersPrice');
-      const totalPrice = $('#totalSummary').find('#totalPrice');
-      const item = itemsList.find('.checked-bag');
+      const item = this.itemsList.find('.checked-bag');
       const itemQuantity = item.find('.quantity');
       const itemPrice = item.find('.item-price');
 
@@ -738,14 +739,14 @@ function initCheckedBaggage() {
         this.added = false;
       }
 
-      this.updatePrice(passengersPrice, -this.baggage[bag].price);
-      this.updatePrice(totalPrice, -this.baggage[bag].price);
+      this.updatePrice(this.passengersPrice, -this.baggage[bag].price);
+      this.updatePrice(this.totalPrice, -this.baggage[bag].price);
       this.updateInput(bag, -1);
       this.evaluateButtons();
     },
 
     updatePrice(target, price) {
-      target.text(`${parseInt(target.text().replace(/,/g, ''), 10) + price}`).trigger('change');
+      target.text((parseInt(target.text().replace(/[,.]/g, ''), 10) + price).toLocaleString()).trigger('change');
     },
 
     updateInput(bag, quantity) {
@@ -756,7 +757,9 @@ function initCheckedBaggage() {
     },
   };
 
-  $('.add-baggage').each((i, el) => new BaggageObj(el));
+  $('.add-baggage').each((i, el) => {
+    if (!$(el).data('Baggage')) $(el).data('Baggage', new BaggageObj(el));
+  });
 }
 
 // TODO: reimplement the insurance method
