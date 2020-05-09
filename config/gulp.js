@@ -77,6 +77,7 @@ const paths = {
       ],
       dist: 'dist/static/vendors/ion.rangeSlider',
     },
+  },
 };
 
 module.exports = {
