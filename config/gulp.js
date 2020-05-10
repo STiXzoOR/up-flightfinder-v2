@@ -77,6 +77,10 @@ const paths = {
       ],
       dist: 'dist/static/vendors/ion.rangeSlider',
     },
+    zxcvbn: {
+      src: 'node_modules/zxcvbn/dist/zxcvbn.js',
+      dist: 'dist/static/vendors/zxcvbn',
+    },
   },
 };
 

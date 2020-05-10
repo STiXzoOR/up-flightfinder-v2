@@ -26,6 +26,7 @@ function formatAirports(airport) {
 $.fn.headerReveal = function headerReveal() {
   const $w = $(window);
   const $main = $('main');
+  const breakpoint = $(this).data('breakpoint');
   const breakpoints = {
     xs: 0,
     sm: 576,
@@ -38,10 +39,8 @@ $.fn.headerReveal = function headerReveal() {
   this.element = $(this);
   this.scrolled = false;
   this.revealed = false;
-  this.breakpoint = breakpoints[$(this).data('breakpoint')];
-  this.isAbsolute = $(this)
-    .attr('class')
-    .match(/header-abs|header-sm-abs|header-md-abs|header-lg-abs|header-xl-abs/);
+  this.breakpoint = breakpoints[breakpoint];
+  this.isAbsolute = $(this).hasClass(`header-${breakpoint !== 'xs' ? `-${breakpoint}` : '-'}abs`);
 
   return (
     $w.on('scroll', () => {
@@ -375,6 +374,26 @@ const customSelect = {
           $(':focus').blur();
         }, 1);
       });
+    });
+  },
+};
+
+const passwordStrength = {
+  defaultConfig: {},
+
+  init(selector, config) {
+    if (!$(selector).length) return;
+
+    this.selector = $(selector);
+    this.config =
+      config && $.isPlainObject(config)
+        ? $.extend(true, {}, this.defaultConfig, config, $(selector).data())
+        : $.extend(true, {}, this.defaultConfig, $(selector).data());
+
+    this.selector.each((i, el) => {
+      if (!$(el).data('PasswordStrength')) {
+        $(el).data('BSScrollSpy', new PasswordStrength(el));
+      }
     });
   },
 };
@@ -980,6 +999,7 @@ $(() => {
   $('.btn-go-up').goUp();
   $('.class-list').classCheckList();
   customScrollSpy.init($('.nav-scroll'));
+  passwordStrength.init('[data-toggle="password-strength"]');
   datePicker.init('.flatpickr-input');
   customSelect.init('.select2-input');
   rangeSlider.init('.ion-range-slider-input');

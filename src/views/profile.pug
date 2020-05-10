@@ -1,6 +1,7 @@
 extends layout
 include mixins/_preloader
 include mixins/_alert
+include mixins/_password-strength
 
 block title
 	title Profile - Flight Finder
@@ -312,18 +313,19 @@ block content
 													placeholder='Current password',
 													required=''
 												)
-										.form-group
+										.form-group.password-strength
 											label.text-muted.required(for='newPassword') New password
 											.prepend-icon
 												i.fas.fa-lock.fa-fw
-												input#newPassword.form-control(
+												input#newPassword.form-control.mb-3(
 													type='password',
 													name='password',
-													pattern='^(?=.*[A-Za-z])[A-Za-z\\d\\W]{8,}$',
+													pattern='^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!^+%/()=?_:`@~|\\}\\]\\[{$.,*-])[A-Za-z\\d!^+%/()=?_:`@~|\\}\\]\\[{$.,*-]{8,30}$',
 													placeholder='New password',
+													data-toggle='password-strength',
 													required=''
 												)
-												.invalid-feedback Password must at least 8 characters long.
+												+passwordStrength
 										.d-flex.justify-content-end
 											button.btn.btn-sm.btn-primary.w-100.w-md-20.w-xl-15(type='submit') Save
 					#delete.card.shadow-soft

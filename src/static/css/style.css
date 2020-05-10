@@ -1334,7 +1334,7 @@ textarea.form-control.is-invalid {
 	font-family: 'Font Awesome 5 Free';
 	font-weight: 900;
 	content: '\f107';
-	color: #5c6770;
+	color: inherit;
 	border: none;
 	margin-left: 0.5rem;
 	vertical-align: initial;
@@ -8295,10 +8295,85 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.18. Sizing
+    2.18. Password Strength
+\*-------------------------------------------*/
+.password-strength-progress .progress {
+	height: 0.375rem;
+	background-color: #ebf0f7;
+}
+
+.password-strength-progress.show-verdict .progress {
+	height: 0.875rem;
+	border-radius: 0.875rem;
+}
+
+.password-strength-legend {
+	color: #77838f;
+	font-size: 0.8125rem;
+	padding: 1rem;
+	border-radius: 0.3125rem;
+	background: rgba(119, 131, 143, 0.1);
+}
+
+.password-strength-legend li {
+	position: relative;
+	padding: 0.25rem 0 0.25rem 1.5rem;
+}
+
+.password-strength-legend li::before {
+	display: inline-block;
+	position: absolute;
+	left: 0;
+	top: 50%;
+	font-family: 'Font Awesome 5 Free';
+	font-weight: 900;
+	font-size: 1rem;
+	content: '\f128';
+	color: inherit;
+	border: none;
+	vertical-align: initial;
+	transform: translateY(-50%);
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+}
+
+.was-validated input:invalid + .password-strength .password-strength-legend li {
+	color: #de4437;
+}
+
+.password-strength-legend li.is-invalid {
+	color: #de4437 !important;
+}
+
+.was-validated input:valid + .password-strength .password-strength-legend li {
+	color: #00c9a7;
+}
+
+.password-strength-legend li.is-success {
+	color: #00c9a7 !important;
+}
+
+.was-validated input:invalid + .password-strength .password-strength-legend li::before {
+	content: '\f00d';
+}
+
+.password-strength-legend li.is-invalid::before {
+	content: '\f00d' !important;
+}
+
+.was-validated input:valid + .password-strength .password-strength-legend li::before {
+	content: '\f00c';
+}
+
+.password-strength-legend li.is-success::before {
+	content: '\f00c' !important;
+}
+
+/*-------------------------------------------*\
+    2.19. Sizing
 \*-------------------------------------------*/
 /*-------------------------------------------*\
-    2.18.1. Width
+    2.19.1. Width
 \*-------------------------------------------*/
 .w-0 {
 	width: 0% !important;
@@ -8729,7 +8804,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.18.2. Height
+    2.19.2. Height
 \*-------------------------------------------*/
 .h-0 {
 	height: 0% !important;
@@ -9160,10 +9235,10 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.19. Utilities
+    2.20. Utilities
 \*-------------------------------------------*/
 /*-------------------------------------------*\
-    2.19.1. Margin
+    2.20.1. Margin
 \*-------------------------------------------*/
 .m-0 {
 	margin: 0 !important;
@@ -14334,7 +14409,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.19.2. Padding
+    2.20.2. Padding
 \*-------------------------------------------*/
 
 .p-0dot5 {
@@ -16986,7 +17061,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.19.3 Borders
+    2.20.3 Borders
 \*-------------------------------------------*/
 .rounded-xs {
 	border-radius: 0.1875rem;
@@ -17629,7 +17704,7 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.19.4 Font Size
+    2.20.4 Font Size
 \*-------------------------------------------*/
 .font-size-1 {
 	font-size: 0.875rem !important;
@@ -18600,14 +18675,14 @@ a.badge-soft-white.focus {
 }
 
 /*-------------------------------------------*\
-    2.19.5 Font Weight
+    2.20.5 Font Weight
 \*-------------------------------------------*/
 .font-weight-medium {
 	font-weight: 500 !important;
 }
 
 /*-------------------------------------------*\
-    2.19.6 Text Color
+    2.20.6 Text Color
 \*-------------------------------------------*/
 .text-white {
 	color: #fff !important;
@@ -19217,7 +19292,7 @@ a.text-dark-2:focus {
 }
 
 /*-------------------------------------------*\
-    2.19.7 Line Height
+    2.20.7 Line Height
 \*-------------------------------------------*/
 
 .text-lh-sm {
@@ -19261,7 +19336,7 @@ a.text-dark-2:focus {
 }
 
 /*-------------------------------------------*\
-    2.19.8 Text Wrap
+    2.20.8 Text Wrap
 \*-------------------------------------------*/
 
 @media (min-width: 576px) {
@@ -19329,7 +19404,7 @@ a.text-dark-2:focus {
 }
 
 /*-------------------------------------------*\
-    2.19.9 Position
+    2.20.9 Position
 \*-------------------------------------------*/
 
 @media (min-width: 576px) {
@@ -19594,7 +19669,7 @@ a.text-dark-2:focus {
 }
 
 /*-------------------------------------------*\
-    2.19.10 Background
+    2.20.10 Background
 \*-------------------------------------------*/
 
 .bg-gray {
@@ -20417,7 +20492,7 @@ button.bg-soft-gray:focus {
 }
 
 /*-------------------------------------------*\
-    2.19.11 Dividers
+    2.20.11 Dividers
 \*-------------------------------------------*/
 
 .vr {
@@ -20435,7 +20510,7 @@ button.bg-soft-gray:focus {
 }
 
 /*-------------------------------------------*\
-    2.19.12 Animations
+    2.20.12 Animations
 \*-------------------------------------------*/
 
 .fadeIn {
@@ -20620,7 +20695,7 @@ button.bg-soft-gray:focus {
 }
 
 /*-------------------------------------------*\
-    2.19.13 Font Awesome
+    2.20.13 Font Awesome
 \*-------------------------------------------*/
 
 :root .fa-rotate-45,

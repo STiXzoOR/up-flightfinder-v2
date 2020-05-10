@@ -1,6 +1,7 @@
 extends layout
 include mixins/_alert
 include mixins/_preloader
+include mixins/_password-strength
 
 block title
 	title Sign up - Flight Finder
@@ -65,18 +66,19 @@ block content
 										i.fas.fa-envelope.fa-fw
 										input#email.form-control(type='email', name='email', placeholder='johndoe@placeholder.com', required='')
 										.invalid-feedback Email address is required.
-								.form-group
+								.form-group.password-strength
 									label.text-muted.required(for='password') Password
 									.prepend-icon
 										i.fas.fa-lock.fa-fw
-										input#password.form-control(
+										input#password.form-control.mb-3(
 											type='password',
 											name='password',
-											pattern='^(?=.*[A-Za-z])[A-Za-z\\d\\W]{8,}$',
+											pattern='^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!^+%/()=?_:`@~|\\}\\]\\[{$.,*-])[A-Za-z\\d!^+%/()=?_:`@~|\\}\\]\\[{$.,*-]{8,30}$',
 											placeholder='Password',
+											data-toggle='password-strength',
 											required=''
 										)
-										.invalid-feedback Password must at least 8 characters long.
+										+passwordStrength
 								.form-group.custom-control.custom-checkbox.mt-5
 									input#acceptTOU.custom-control-input(type='checkbox', name='acceptTOU', required='')
 									label.custom-control-label.font-size-15(for='acceptTOU')
