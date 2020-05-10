@@ -43,6 +43,7 @@
 		"is-number": "7.0.0",
 		"is-plain-object": "3.0.0",
 		"jquery": "3.5.1",
+		"kind-of": "6.0.3",
 		"mailgun-js": "0.22.0",
 		"moment": "2.25.3",
 		"morgan": "~1.10.0",

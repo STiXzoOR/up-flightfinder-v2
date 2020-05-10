@@ -1,6 +1,6 @@
 const express = require('express');
 const createError = require('http-errors');
-const validate = require('../config/superstruct');
+const { validate } = require('../config/superstruct');
 const {
   permit,
   getCountries,
@@ -39,7 +39,7 @@ router.post('/add', permit('USER'), async (req, res, next) => {
   }
 });
 
-router.get('/new-booking', validate('newBooking'), async (req, res, next) => {
+router.get('/new-booking', validate('newBookingQuery'), async (req, res, next) => {
   const { query } = req;
   query.isRoundtrip = query.isRoundtrip === 'true';
   query.quantity = parseInt(query.quantity, 10);

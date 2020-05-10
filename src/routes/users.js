@@ -42,7 +42,8 @@ router.post('/sign-in', (req, res, next) => {
     }
 
     if (response.error) {
-      return res.status(response.status).render('sign-in', { error: response.message });
+      res.flash('error', response.message);
+      return res.redirect('/user/sign-in');
     }
 
     req.login(response.result[0], (err) => {
@@ -65,7 +66,8 @@ router.post('/sign-up', async (req, res, next) => {
     const response = await insertUser(req.body);
 
     if (response.error) {
-      return res.status(response.status).render('sign-up', { error: response.message });
+      res.flash('error', response.message);
+      return res.redirect('/user/sign-up');
     }
 
     res.flash('success', response.message);

@@ -6131,6 +6131,10 @@ a.badge-soft-white.focus {
 	cursor: pointer;
 }
 
+.search-flights-card .dropdown-input.dropdown-toggle::after {
+	color: #5c6770;
+}
+
 .search-flights-card .dropdown-input span {
 	overflow: hidden;
 	text-overflow: ellipsis;
