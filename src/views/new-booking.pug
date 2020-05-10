@@ -1,5 +1,6 @@
 extends layout
 include mixins/_preloader
+include mixins/_go-up
 
 block title
 	title New booking - Flight Finder
@@ -583,8 +584,7 @@ block content
 											li.flex-center-between.mb-2
 												h6.item-name taxes
 												span.item-price &euro;#{flight.totalTaxes.toLocaleString()}
-		a.btn.btn-go-up(href='#!')
-			i.fas.fa-chevron-up
+		+goUpButton
 
 block append scripts
 	script.
