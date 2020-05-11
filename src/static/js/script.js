@@ -991,6 +991,28 @@ $('a[href="#navEditContactDetails"]').on('click', function clicked(e) {
   $(this).tab('show');
 });
 
+$(document).on('click', '.load-more__btn', function () {
+  const nextID = parseInt($(this).data('load-next'), 10);
+  $(this)
+    .data('load-next', nextID + 5)
+    .attr('data-load-next', nextID + 5);
+
+  setTimeout(() => {
+    const next = $(`#flight-${nextID}`);
+
+    const header = $('.page-header');
+    const headerStyles = getComputedStyle(header.get(0));
+    const headerPosition = headerStyles.position;
+    let offset = next.offset().top;
+
+    if (header.length && headerPosition === 'fixed' && parseInt(headerStyles.top, 10) === 0) {
+      offset -= header.outerHeight() - parseInt(headerStyles.marginTop, 10);
+    }
+
+    $('html').scrollTop(offset - 30);
+  }, 100);
+});
+
 $(() => {
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();

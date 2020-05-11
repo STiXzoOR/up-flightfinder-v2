@@ -621,8 +621,18 @@ block append scripts
 						new Date(timestamp).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }),
 				});
 			});
+	if flights.results
+		script.
+			$(".flights-container").simpleLoadMore({
+				item: ".flight-card",
+				count: 5,
+				btnHTML: '<div class="text-center"><a href="#" class="btn btn-sm btn-primary load-more__btn" data-load-next="5"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>Load more</a></div>'
+			});
+			
 	script.
-		setTimeout(() => {
-			$('#preloaderFlights').fadeOut(500);
-			$('#preloaderFlights').next().fadeIn(500)
-		}, 3000);
+		$(() => {
+			setTimeout(() => {
+				$('#preloaderFlights').fadeOut(500);
+				$('#preloaderFlights').next().fadeIn(500)
+			}, 3000);
+		})

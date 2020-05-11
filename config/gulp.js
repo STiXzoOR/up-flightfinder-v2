@@ -66,11 +66,11 @@ const paths = {
       src: ['node_modules/select2/dist/*css*/select2.min.css', 'node_modules/select2/dist/*js*/select2.full.min.js'],
       dist: 'dist/static/vendors/select2',
     },
-    select2_bootstrap: {
+    select2Bootstrap: {
       src: 'node_modules/select2-theme-bootstrap4/dist/select2-bootstrap.min.css',
       dist: 'dist/static/vendors/select2/css',
     },
-    ion_range: {
+    ionRange: {
       src: [
         'node_modules/ion-rangeslider/*js*/ion.rangeSlider.min.js',
         'node_modules/ion-rangeslider/*css*/ion.rangeSlider.min.css',
@@ -80,6 +80,10 @@ const paths = {
     zxcvbn: {
       src: 'node_modules/zxcvbn/dist/zxcvbn.js',
       dist: 'dist/static/vendors/zxcvbn',
+    },
+    loadMore: {
+      src: 'node_modules/simple-load-more/jquery.simpleLoadMore.min.js',
+      dist: 'dist/static/vendord/simple-load-more/simpleLoadMore.min.js',
     },
   },
 };
