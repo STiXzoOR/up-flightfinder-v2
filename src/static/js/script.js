@@ -40,7 +40,9 @@ $.fn.headerReveal = function headerReveal() {
   this.scrolled = false;
   this.revealed = false;
   this.breakpoint = breakpoints[breakpoint];
-  this.isAbsolute = $(this).hasClass(`header-${breakpoint !== 'xs' ? `-${breakpoint}` : '-'}abs`);
+  this.isAbsolute = $(this)
+    .attr('class')
+    .match(/header-abs|header-sm-abs|header-md-abs|header-lg-abs|header-xl-abs/);
 
   return (
     $w.on('scroll', () => {
