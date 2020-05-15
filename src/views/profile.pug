@@ -8,7 +8,7 @@ block title
 	title Profile - Flight Finder
 
 block preloader
-	+preLoader
+	+preLoaderImage#preloader
 
 block content
 	main.bg-gray(role='main')
@@ -271,7 +271,7 @@ block content
 											.form-group.col-sm-6
 												label.text-muted(for='region') Region
 												.prepend-icon
-													i.fas.fa-globe.fa-fw
+													i.fas.fa-map-signs.fa-fw
 													input#region.form-control(
 														type='text',
 														name='region',
@@ -290,7 +290,7 @@ block content
 											.form-group.col-sm-6
 												label.text-muted(for='country') Country
 												.prepend-icon.custom-select2
-													i.fas.fa-flag.fa-fw
+													i.fas.fa-globe.fa-fw
 													select#country.select2-input.form-control.custom-select(
 														name='country',
 														data-placeholder=`${details.country ? details.country : "Greece"}`

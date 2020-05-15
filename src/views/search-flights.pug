@@ -1,4 +1,5 @@
 extends layout
+include mixins/_preloader
 include mixins/_go-up
 
 block title
@@ -197,11 +198,7 @@ block content
 											button#flightSearch.btn.btn-primary.btn-block(type='submit')
 												i.fas.fa-search.fa-fw.mr-1.mr-lg-0
 												span.d-inline-block.d-lg-none.font-weight-bold SEARCH FLIGHTS
-			#preloaderFlights.page-preloader.position-relative.bg-gray.py-10.py-sm-15
-				.flex-center.h-100
-					.spinner-grow.text-primary(style='transform: scale(1.5);', role='status')
-						span.sr-only Searching for flights...
-					h5.font-size-22.font-weight-medium.mb-0.ml-3(aria-hidden='true') Searching for flights...
+			+preLoaderImage('gray')#preLoaderFlights.position-relative.bg-gray.py-10.py-sm-15
 			if !flights.results
 				.p-5(style='display: none;')
 					h5.font-size-24

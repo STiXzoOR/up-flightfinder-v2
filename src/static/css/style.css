@@ -2858,6 +2858,12 @@ label.required::after {
 	background-color: #fff;
 }
 
+.page-preloader-image {
+	overflow: visible;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
 .smooth-scroll {
 	scroll-behavior: smooth;
 }
