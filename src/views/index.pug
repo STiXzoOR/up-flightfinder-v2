@@ -17,17 +17,17 @@ block content
 			#heroCarousel.carousel.slide(data-ride='carousel')
 				.carousel-inner
 					.carousel-item.slide-1.active
-						.hero
+						.hero.hero-mask.hero-mask-light-dark
 							.hero-content
 								h2.heroFadeInUp.duration4.mb-0 Plan your next trip
 								p.heroFadeInUp.duration6.mb-0 Pick your next flight from a variety of destinations
 					.carousel-item.slide-2
-						.hero
+						.hero.hero-mask.hero-mask-light-dark
 							.hero-content
 								h2.heroFadeInUp.duration4.mb-0 Travel around the world
 								p.heroFadeInUp.duration6.mb-0 Discover the hidden beauty from top to bottom
 					.carousel-item.slide-3
-						.hero
+						.hero.hero-mask.hero-mask-light-dark
 							.hero-content
 								h2.heroFadeInUp.duration4.mb-0 Memories count
 								p.heroFadeInUp.duration6.mb-0 Travel more, create more memories
@@ -113,7 +113,7 @@ block content
 															)
 															.invalid-feedback Flight dates are required.
 													.form-group.col-sm-6.col-lg-3.mb-3.mb-lg-0
-														span.text-muted= "Passengers & class"
+														span.text-muted Passengers &amp; class
 														.dropdown
 															input#passengersClassInput.form-control.d-none(
 																type='text',
@@ -128,7 +128,7 @@ block content
 																aria-haspopup='true',
 																aria-expanded='false'
 															)
-																span#passengerClassResult= "1 Adult, Economy"
+																span#passengerClassResult 1 Adult, Economy
 															.invalid-feedback Passengers and class are required.
 															.dropdown-menu.keep-open(aria-labelledby='dropdownMenuLink')
 																.passengers-wrapper
@@ -199,12 +199,12 @@ block content
 				.row.mb-2
 					.col-md-4.mb-4.mb-md-0
 						i.fas.fa-hand-holding-usd.fa-fw.text-primary.font-size-65.mb-3
-						h5.font-size-17.font-weight-bold.mb-2= "Best Flight Deals"
+						h5.font-size-17.text-dark.font-weight-bold.mb-2 Best Flight Deals
 						p.text-gray-1.px-4.px-sm-2 Save more on your next summer vacation, holiday getaway or dream trip to a bucket list destination.
 					.col-md-4.mb-4.mb-md-0
 						i.fas.fa-award.fa-fw.text-primary.font-size-65.mb-3
 						h5.font-size-17.text-dark.font-weight-bold.mb-2 Award-Winning Service
-						p.text-gray-1.px-4.px-sm-2= "Travel worry-free knowing that we're here if you need us, 24 hours a day"
+						p.text-gray-1.px-4.px-sm-2 Travel worry-free knowing that we&apos;re here if you need us, 24 hours a day.
 					.col-md-4
 						i.fas.fa-map-marked-alt.fa-fw.text-primary.font-size-65.mb-3
 						h5.font-size-17.text-dark.font-weight-bold.mb-2 Worldwide Coverage
