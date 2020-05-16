@@ -2888,6 +2888,20 @@ ul {
 	list-style: none;
 }
 
+.list-styled {
+	margin: 1rem;
+	padding: 0 0 0 2.5rem;
+	list-style: disc;
+}
+
+ol.list-styled.list-styled-decimal {
+	list-style-type: decimal;
+}
+
+ol.list-styled.list-styled-latin {
+	list-style-type: upper-latin;
+}
+
 .navbar-separate .nav-item:not(:first-child)::before,
 .list-inline-separate .list-inline-item:not(:first-child)::before {
 	content: '';
