@@ -1,0 +1,131 @@
+extends layout
+include mixins/_alert
+include mixins/_preloader
+
+block title
+	title About us - Flight Finder
+
+block preloader
+	+preLoaderImage#preloader
+
+block header
+	header.page-header.header-sm-abs.header-sm-bg-transparent.header-md-white-nav-links.border-bottom.border-md-bottom-0.border-white-translucent.header-md-scroll.transition-scroll(
+		data-breakpoint='md'
+	)
+		+headerContent
+
+block content
+	main(role='main')
+		.position-relative
+			.hero.hero-bg.hero-mask.hero-mask-light-dark(
+				copyright='CC-BY Photo by Rhiannon Elliott on Unsplash',
+				style='background-image: url(/static/images/hero/airport.jpg);'
+			)
+				h1.section-title.section-title-white.font-size-40.text-center.mb-0 About us
+		.why-choose-block.container.py-5.py-lg-10
+			h1.section-title.font-size-25.text-center.mb-6 Why Choose
+			.row
+				.col-md-6.col-lg-4.mb-4
+					.card.h-100.shadow-soft
+						.card-body.flex-center.flex-column.text-center.p-4.px-md-5.py-md-7.py-lg-5.py-xl-7
+							i.fas.fa-hand-holding-usd.fa-fw.text-primary.font-size-35.mb-3
+							h5.font-size-18.text-dark.font-weight-bold.mb-2 Best Flight Deals
+							p.font-size-15.mb-0 Save more on your next summer vacation, holiday getaway or dream trip to a bucket list destination. Register as a member to receive even bigger discounts!
+				.col-md-6.col-lg-4.mb-4
+					.card.h-100.shadow-soft
+						.card-body.flex-center.flex-column.text-center.p-4.px-md-5.py-md-7.py-lg-5.py-xl-7
+							i.fas.fa-award.fa-fw.text-primary.font-size-35.mb-3
+							h5.font-size-18.text-dark.font-weight-bold.mb-2 Award-Winning Service
+							p.font-size-15.mb-0 Travel worry free knowing that we're here if you need us. Our customer service team is available 24 hours a day via phone or email.
+				.col-md-6.col-lg-4.mb-4
+					.card.h-100.shadow-soft
+						.card-body.flex-center.flex-column.text-center.p-4.px-md-5.py-md-7.py-lg-5.py-xl-7
+							i.fas.fa-map-marked-alt.fa-fw.text-primary.font-size-35.mb-3
+							h5.font-size-18.text-dark.font-weight-bold.mb-2 Worldwide Coverage
+							p.font-size-15.mb-0 No matter where in the world you want the go, Flight Finder has got you covered. Our extensive network connects all corners of the globe.
+				.col-md-6.col-lg-4.mb-4.mb-lg-0
+					.card.h-100.shadow-soft
+						.card-body.flex-center.flex-column.text-center.p-4.px-md-5.py-md-7.py-lg-5.py-xl-7
+							i.fas.fa-shield-alt.fa-fw.text-primary.font-size-35.mb-3
+							h5.font-size-18.text-dark.font-weight-bold.mb-2 Secure Payments
+							p.font-size-15.mb-0 Data security is our top priority. Whether you're paying by credit card or via one of the multiple third party payment options available, your payment data will always be protected.
+				.col-md-6.col-lg-4.mb-4.mb-md-0
+					.card.h-100.shadow-soft
+						.card-body.flex-center.flex-column.text-center.p-4.px-md-5.py-md-7.py-lg-5.py-xl-7
+							i.fas.fa-users.fa-fw.text-primary.font-size-35.mb-3
+							h5.font-size-18.text-dark.font-weight-bold.mb-2 Satisfied Customers
+							p.font-size-15.mb-0 With more than 2000+ satisfiend customers, Flight Finder is the perfect place to find and plan your next trip that syits your needs.
+				.col-md-6.col-lg-4
+					.card.h-100.shadow-soft
+						.card-body.flex-center.flex-column.text-center.p-4.px-md-5.py-md-7.py-lg-5.py-xl-7
+							i.fas.fa-check-double.fa-fw.text-primary.font-size-35.mb-3
+							h5.font-size-18.text-dark.font-weight-bold.mb-2 Instant Booking
+							p.font-size-15.mb-0 At Flight Finder, every booking is instantly confirmed. Once you’ve found your perfect destination, a few clicks are all it takes.
+		hr.m-0
+		.who-we-are-block.container.py-5.py-lg-10
+			.w-md-80.w-lg-70.text-center.mx-md-auto
+				h2.section-title.font-size-25.mb-6 We&rsquo;re truely dedicated to make your travel experience as much simple and fun as possible!
+			.w-lg-80.mx-auto
+				.row.mb-4
+					.col-md-6
+						h2.font-size-20.font-weight-bold.text-center.text-md-left Our Story
+						p Bringing you a modern, comfortable, and connected travel experience is one of our highest priorities and that&rsquo;s why we continuously try to improve your experience when you book anything with us.
+					.col-md-6
+						h2.font-size-20.font-weight-bold.text-center.text-md-left Our mission
+						p We firmly believe that by helping people travel more, explore the world and experience diversity, we create a meaningful socio-economic impact. We really appreciate and welcome any of suggstions you might have for us, so feel free drop us line anytime.
+				.blockquote.position-relative
+					i.position-absolute.fas.fa-quote-left.fa-4x.text-gray(style='z-index: -1;')
+					.px-5.pt-5.pb-0
+						p.font-size-18.mb-0 Travel is fatal to prejudice, bigotry, and narrow-mindedness, and many of our people need it sorely on these accounts. Broad, wholesome, charitable views of men and things cannot be acquired by vegetating in one little corner of the earth all one’s lifetime.
+						footer.blockquote-footer.font-size-15.text-right Mark Twain, 1869
+		.carousel-block.carousel-wrapper
+			#heroCarousel.carousel.carousel-lg.slide(data-ride='carousel')
+				.carousel-inner
+					.carousel-item.slide-1.active
+						.hero.hero-mask.hero-mask-light-dark
+							.hero-content
+								h2.heroFadeInUp.duration4.mb-0 Plan your next trip
+								p.heroFadeInUp.duration6.mb-0 Pick your next flight from a variety of destinations
+					.carousel-item.slide-2
+						.hero.hero-mask.hero-mask-light-dark
+							.hero-content
+								h2.heroFadeInUp.duration4.mb-0 Travel around the world
+								p.heroFadeInUp.duration6.mb-0 Discover the hidden beauty from top to bottom
+					.carousel-item.slide-3
+						.hero.hero-mask.hero-mask-light-dark
+							.hero-content
+								h2.heroFadeInUp.duration4.mb-0 Memories count
+								p.heroFadeInUp.duration6.mb-0 Travel more, create more memories
+				a.carousel-control-prev(href='#heroCarousel', role='button', data-slide='prev')
+					span.carousel-control-prev-icon(aria-hidden='true')
+					span.sr-only Previous
+				a.carousel-control-next(href='#heroCarousel', role='button', data-slide='next')
+					span.carousel-control-next-icon(aria-hidden='true')
+					span.sr-only Next
+		.dedicated-team-block.container.py-5.py-lg-10
+			h2.section-title.font-size-25.text-center.mb-6 Deticated Team
+			.row.text-center.pb-2
+				.col-md-6.mb-5.mb-md-0
+					figure.avatar.avatar-circle.avatar-4x.overflow-hidden.mb-3
+						.avatar-img-overlay
+							.flex-center.w-100.h-100
+								a.btn.btn-icon.btn-soft-white.btn-bg-transparent.transition-3d-hover.rounded-circle(
+									href='https://github.com/STiXzoOR',
+									target='_blank'
+								)
+									i.fab.fa-github-alt.fa-fw.fa-2x
+						img.avatar-img(src='https://avatars2.githubusercontent.com/u/23358296?v=3', alt='Neoptolemos\' Avatar')
+					h6.font-size-17.font-weight-bold.text-gray-1.mb-0 Neoptolemos Kyriakou
+					span.small.text-primary.font-size-14 Founder &amp; Frontend/Backend
+				.col-md-6
+					figure.avatar.avatar-circle.avatar-4x.overflow-hidden.mb-3
+						.avatar-img-overlay
+							.flex-center.w-100.h-100
+								a.btn.btn-icon.btn-soft-white.btn-bg-transparent.transition-3d-hover.rounded-circle(
+									href='https://github.com/giannismich',
+									target='_blank'
+								)
+									i.fab.fa-github-alt.fa-fw.fa-2x
+						img.avatar-img(src='https://avatars0.githubusercontent.com/u/61234053?v=4', alt='Giannis\' Avatar')
+					h6.font-size-17.font-weight-bold.text-gray-1.mb-0 Giannis Michailou
+					span.text-primary.font-size-14 Founder &amp; Backend

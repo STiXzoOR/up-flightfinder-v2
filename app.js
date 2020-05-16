@@ -12,6 +12,7 @@ const redis = require('redis');
 const RedisStore = require('connect-redis')(session);
 
 const indexRouter = require('./src/routes/index');
+const pagesRouter = require('./src/routes/pages');
 const usersRouter = require('./src/routes/users');
 const flightsRouter = require('./src/routes/flight');
 const bookingRouter = require('./src/routes/booking');
@@ -58,6 +59,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/', indexRouter);
+app.use('/pages', pagesRouter);
 app.use('/user', usersRouter);
 app.use('/flight', flightsRouter);
 app.use('/booking', bookingRouter);
