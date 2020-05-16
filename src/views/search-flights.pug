@@ -435,16 +435,113 @@ block append scripts
 			});
 	if flights.results
 		script.
-			$(".flights-container").simpleLoadMore({
-				item: ".flight-card",
-				count: 5,
-				btnHTML: '<div class="text-center"><a href="#" class="btn btn-sm btn-primary load-more__btn" data-load-next="5"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>Load more</a></div>'
+			function initLoadMoreFlights() {
+				$(".flights-container").simpleLoadMore({
+					item: ".flight-card",
+					count: 5,
+					cssClass: 'load-more-flights',
+					btnHTML: '<div class="text-center"><a href="#" class="btn btn-sm btn-primary load-more-flights__btn" data-load-next="5">Load more</a></div>'
+				});
+			}
+			
+			function resetLoadMoreFlights() {
+				let items = $(".flights-container").find('.load-more-flights__item')
+				items = items.filter(':hidden');
+			
+				items.show()
+				$('.load-more-flights__btn').parent().remove();
+			}
+			
+			function setNext(el) {
+				const nextID = $('.load-more-flights__item:hidden').length
+					? $('.load-more-flights__item:hidden').first().closest('[id^="flight-"]').attr('id').replace('flight-', '')
+					: '';
+				
+				$(el).data('load-next', nextID).attr('data-load-next', nextID);
+			}
+			
+			$('#sortFlightsBy').on('change', function sort() {
+				let preloader = $('#preLoaderSorting');
+			
+				if(!preloader.length) {
+					preloader = $('#preLoaderFlights')
+						.clone()
+						.attr('id', 'preLoaderSorting')
+						.removeClass()
+						.addClass('page-preloader-image h-lg-100 py-10 py-sm-15');
+			
+					preloader.insertAfter('.flights-container');
+				}
+				
+				const value = $(this).val();
+				let attr = '';
+			
+				switch (value) {
+					case 'lowest':
+						attr = 'price';
+						break;
+					case 'fastest':
+						attr = 'duration';
+						break;
+					case 'departTime':
+						attr = 'depart-time';
+						break;
+					case 'returnTime':
+						attr = 'return-time';
+						break;
+					default:
+				}
+			
+				$('.flights-container').fadeOut(400, () => {
+					preloader.fadeIn();
+			
+					resetLoadMoreFlights();
+					
+					tinysort('[id^="flight-"]', {
+						data: attr,
+					});
+			
+					initLoadMoreFlights();
+			
+					setTimeout(() => {
+						preloader.hide();
+						$('.flights-container').fadeIn(() => {
+							if ($('.load-more-flights__btn').length) {
+								setNext('.load-more-flights__btn');
+							}
+						});
+					}, 1000)
+				});
 			});
+			
+			// TODO: Make it universal
+			$(document).on('click', '.load-more-flights__btn', function scroll() {
+				const ID = parseInt($(this).data('load-next'), 10);
+				setNext(this);
+			
+				setTimeout(() => {
+					const next = $(`#flight-${ID}`);
+			
+					const header = $('.page-header');
+					const headerStyles = getComputedStyle(header.get(0));
+					const headerPosition = headerStyles.position;
+					let offset = next.offset().top;
+			
+					if (header.length && headerPosition === 'fixed' && parseInt(headerStyles.top, 10) === 0) {
+					offset -= header.outerHeight() - parseInt(headerStyles.marginTop, 10);
+					}
+			
+					$('html').scrollTop(offset - 30);
+				}, 100);
+			});
+			
+			initLoadMoreFlights()
 			
 	script.
 		$(() => {
 			setTimeout(() => {
-				$('#preLoaderFlights').fadeOut(500);
-				$('#preLoaderFlights').next().fadeIn(500)
+				$('#preLoaderFlights').fadeOut(500, () => {
+					$('#preLoaderFlights').next().fadeIn(500)
+				})
 			}, 3000);
 		})
