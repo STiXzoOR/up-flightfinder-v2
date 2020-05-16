@@ -6800,6 +6800,11 @@ a.badge-soft-white.focus {
 	font-size: 80%;
 	font-weight: 900;
 	content: '\f00c';
+	line-height: 1.8;
+	margin-left: 0.5rem;
+	vertical-align: initial;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
 }
 
 .custom-select2 .select2-container--bootstrap .select2-results__option--highlighted[aria-selected] {
@@ -7022,6 +7027,7 @@ a.badge-soft-white.focus {
 	.select2-selection__arrow
 	b::before {
 	font-size: 0.875rem;
+	line-height: 1.7;
 }
 
 .form-group-sm.custom-select2 .select2-container--bootstrap .select2-selection--multiple,
