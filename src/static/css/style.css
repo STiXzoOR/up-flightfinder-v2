@@ -8395,7 +8395,7 @@ a.badge-soft-white.focus {
 	font-size: 0.8125rem;
 	padding: 1rem;
 	border-radius: 0.3125rem;
-	background: rgba(119, 131, 143, 0.1);
+	background: #ebf0f7;
 }
 
 .password-strength-legend li {
