@@ -1,0 +1,112 @@
+extends layout
+include mixins/_alert
+include mixins/_preloader
+
+block title
+	title Contact us - Flight Finder
+
+block preloader
+	+preLoaderImage#preloader
+
+block header
+	header.page-header.header-sm-abs.header-sm-bg-transparent.header-md-white-nav-links.border-bottom.border-md-bottom-0.border-white-translucent.header-md-scroll.transition-scroll(
+		data-breakpoint='md'
+	)
+		+headerContent
+
+block content
+	main(role='main')
+		.position-relative
+			.hero.hero-bg.hero-mask.hero-mask-gradient-half-bw(
+				copyright='CC-BY Photo by Rhiannon Elliott on Unsplash',
+				style='background-image: url(/static/images/hero/airport.jpg);'
+			)
+				.container.position-relative.pt-5.pt-sm-15.pt-md-10.pb-0
+					h1.section-title.section-title-white.font-size-40.text-center.mb-6.mb-md-15 Contact us
+					.row.w-lg-90.w-xl-80.mx-lg-auto
+						.col-md-4.mb-3.mb-md-0.mb-md-n20
+							.card.h-100(style='box-shadow: 0 12px 15px rgba(140,152,164,.1);')
+								.card-body.flex-center.flex-column.text-center.px-4.py-6.p-sm-4.p-lg-5
+									i.fas.fa-map-marked-alt.fa-fw.text-primary.font-size-35.mb-3
+									h5.font-size-18.text-dark.font-weight-bold.mb-2 Address
+									p.mb-0 University Campus, 26504, Rio, Achaia, Greece
+						.col-md-4.mb-3.mb-md-0.mb-md-n20
+							.card.h-100(style='box-shadow: 0 12px 15px rgba(140,152,164,.1);')
+								.card-body.flex-center.flex-column.text-center.px-4.py-6.p-sm-4.p-lg-5
+									i.fas.fa-envelope-open-text.fa-fw.text-primary.font-size-35.mb-3
+									h5.font-size-18.text-dark.font-weight-bold.mb-2 Email Address
+									p.mb-0 
+										| info@upflightfinder.live
+										br
+										span.small Monday to Friday 9am - 7pm
+						.col-md-4.mb-3.mb-md-0.mb-md-n20
+							.card.h-100(style='box-shadow: 0 12px 15px rgba(140,152,164,.1);')
+								.card-body.flex-center.flex-column.text-center.px-4.py-6.p-sm-4.p-lg-5
+									i.fas.fa-phone.fa-fw.text-primary.font-size-35.mb-3
+									h5.font-size-18.text-dark.font-weight-bold.mb-2 Phone Number
+									p.mb-0 
+										| 00-30-0123456789
+										br
+										span.small Monday to Friday 9am - 7pm
+		.container.pt-5.pt-md-17.pt-lg-19.pt-xl-17.pb-10
+			.row.justify-content-center
+				.col-lg-9
+					h1.section-title.font-size-25.text-center.mb-6 Ask Anything
+					form#contactForm.needs-validation(method='POST', action='/contact-us/send', novalidate='')
+						.row
+							.form-group.col-md-6.mb-4
+								label.text-muted.required(for='firstName') First name
+								.prepend-icon
+									i.fas.fa-user.fa-fw
+									input#firstName.form-control(type='text', name='firstName', placeholder='John', required='')
+									.invalid-feedback First name is required.
+							.form-group.col-md-6.mb-4
+								label.text-muted.required(for='lastName') Last name
+								.prepend-icon
+									i.fas.fa-user.fa-fw
+									input#lastName.form-control(type='text', name='lastName', placeholder='Doe', required='')
+									.invalid-feedback Last name is required.
+						.row
+							.form-group.col-md-6.mb-4
+								label.text-muted.required(for='email') Email address
+								.prepend-icon
+									i.fas.fa-envelope.fa-fw
+									input#email.form-control(type='email', name='email', placeholder='johndoe@placeholder.com', required='')
+									.invalid-feedback Email address is required.
+							.form-group.col-md-6.mb-4
+								label.text-muted.required(for='mobile') Mobile number
+								.prepend-icon
+									i.fas.fa-mobile.fa-fw
+									input#mobile.form-control(
+										type='tel',
+										pattern='[0-9]{6,10}',
+										maxlength='10',
+										name='mobile',
+										placeholder='0123456789',
+										required=''
+									)
+									.invalid-feedback Mobile number is required.
+						.row
+							.form-group.col-12.mb-4
+								label.text-muted.required(for='subject') Subject
+								.prepend-icon
+									i.fas.fa-comments.fa-fw
+									input#subject.form-control(type='text', name='subject', placeholder='Feedback', required='')
+									.invalid-feedback Subject is required.
+							.form-group.col-12.mb-6
+								label.text-muted.required(for='message') Message
+								textarea#message.form-control(rows='7', placeholder='Hi there, I would like to ask...', required='')
+								.invalid-feedback Message is required.
+						.text-center
+							button.btn.btn-primary.px-5.mb-3(type='submit') Send Inquiry
+							p.font-size-14.mb-0 Usually, we reply within 2 business days
+		iframe(
+			src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3131.5799042251588!2d21.783180315332412!3d38.28922997966898!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x135e4c793099940b%3A0x40a1f27b1f8908f3!2zzqDOsc69zrXPgM65z4PPhM6uzrzOuc6_IM6gzrHPhM-Bz47OvQ!5e0!3m2!1sel!2sgr!4v1589334550652!5m2!1sel!2sgr',
+			width='100%',
+			height='500',
+			frameborder='0',
+			style='border:0;',
+			allowfullscreen='',
+			aria-hidden='false',
+			tabindex='0'
+		)
