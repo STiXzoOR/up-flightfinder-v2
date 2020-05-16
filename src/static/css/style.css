@@ -3879,6 +3879,10 @@ a.badge-soft-white.focus {
 	color: #fff;
 }
 
+.btn-bg-transparent {
+	background-color: transparent;
+}
+
 .btn-xs {
 	font-size: 0.6875rem;
 	font-weight: 400;
