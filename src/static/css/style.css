@@ -6460,12 +6460,24 @@ a.badge-soft-white.focus {
 	transform: scale(1);
 }
 
-.nav-scroll-box .nav-link {
+.nav-scroll .nav-link {
+	color: #67747c;
+}
+
+.nav-scroll .nav-link:hover {
+	color: #297cbb;
+}
+
+.nav-scroll .nav-link.active {
+	color: #297cbb;
+}
+
+.nav-scroll.nav-scroll-box .nav-link {
 	color: #77838f;
 	background: rgba(119, 131, 143, 0.1);
 }
 
-.nav-scroll-box .nav-link:hover {
+.nav-scroll.nav-scroll-box .nav-link:hover {
 	color: #fff;
 	background: #77838f;
 }
