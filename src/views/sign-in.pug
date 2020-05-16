@@ -25,7 +25,9 @@ block content
 										input#email.form-control(type='email', name='email', placeholder='johndoe@placeholder.com', required='')
 										.invalid-feedback Email address is required.
 								.form-group
-									label.text-muted.required(for='password') Password
+									label.flex-center-between(for='password')
+										span.text-muted.required Password
+										a.font-size-14(href='#!') Forgot your password
 									.prepend-icon
 										i.fas.fa-lock.fa-fw
 										input#password.form-control(type='password', name='password', placeholder='Password', required='')
@@ -35,12 +37,8 @@ block content
 									label.custom-control-label.font-size-15(for='rememberMyPassword') Remember my password
 								.form-group
 									button.btn.btn-primary.btn-block(type='submit') Sign in
-							.mt-1.font-size-14
-								p.mb-1
-									a(href='#!') Forgot your password
-									| ?
-								p.mb-0
-									| Don&apos;t have an account?
-									a(href='/user/sign-up') &nbsp;Register now
+							p.font-size-14.mb-0.mt-1
+								| Don&apos;t have an account?
+								a(href='/user/sign-up') &nbsp;Sign up now
 				.col-lg-6.text-center.order-1.order-lg-2.mb-3.mb-lg-0.mt-lg-10.px-lg-8
 					img.img-fluid.w-75.w-md-65.w-lg-100(src='/static/images/svg/undraw_world.svg', alt='Welcome')
