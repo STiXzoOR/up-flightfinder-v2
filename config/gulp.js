@@ -31,7 +31,7 @@ const paths = {
     dist: 'dist/static/fonts',
   },
   images: {
-    src: 'src/static/images/**/*.+(png|jpg|jpeg|svg|ico)',
+    src: 'src/static/images/**/*.+(png|jpg|jpeg|gif|svg|ico)',
     dist: 'dist/static/images',
   },
   vendors: {
