@@ -1,8 +1,8 @@
 const createError = require('http-errors');
 const bcrypt = require('bcrypt');
-const mysql = new (require('./mysql'))();
+const mysql = require('./mysql');
 
-//TODO: Replace everything with Sequelize ORM
+// TODO: Replace everything with Sequelize ORM
 
 const permit = ({ roles = [], requireVerification = true } = {}) => {
   if (typeof roles === 'string') {
@@ -112,11 +112,6 @@ const getUserDetails = async ({ args = {}, byID = true, byEmail = false, partial
       response.status = 400;
       response.error = true;
       response.message = 'A user with the provided email does not exist. Please sign up.';
-    } else if (partial && data[0].isVerified === 0) {
-      response.status = 403;
-      response.error = true;
-      response.message =
-        'Your account needs to be verified first. Please check your email for the verification link including the spam folder.';
     } else {
       response.status = 200;
       response.error = false;

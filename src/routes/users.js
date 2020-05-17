@@ -78,7 +78,7 @@ router.post('/sign-up', async (req, res, next) => {
   }
 });
 
-router.get('/profile', permit({ roles: 'USER' }), async (req, res, next) => {
+router.get('/profile', permit({ roles: 'USER', requireVerification: false }), async (req, res, next) => {
   const customerID = req.user.id;
   try {
     const details = await getUserDetails({ args: { customerID } });

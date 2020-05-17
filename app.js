@@ -52,7 +52,7 @@ app.use((req, res, next) => {
 
   res.locals.user = {
     ...(req.user ? req.user : req.session.user),
-    isAuthenticated: (req.isAuthenticated() && req.user.isVerified === 1) || false,
+    isAuthenticated: req.isAuthenticated() || false,
   };
 
   return next();
