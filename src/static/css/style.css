@@ -6533,6 +6533,11 @@ a.badge-soft-white.focus {
 	background: #77838f;
 }
 
+.nav-scroll.nav-scroll-box .nav-link.active {
+	color: #fff;
+	background: #297cbb;
+}
+
 .nav-unjustified .nav-item {
 	-ms-flex-preferred-size: auto;
 	flex-basis: auto;
@@ -17812,6 +17817,30 @@ a.badge-soft-white.focus {
 
 .border-radius-5 {
 	border-radius: 5px !important;
+}
+
+.alert-primary [class*='border-'] {
+	border-color: #b0cee6 !important;
+}
+
+.alert-secondary [class*='border-'] {
+	border-color: #cbcfd5 !important;
+}
+
+.alert-success [class*='border-'] {
+	border-color: #a3ecdf !important;
+}
+
+.alert-info [class*='border-'] {
+	border-color: #9ff3fe !important;
+}
+
+.alert-danger [class*='border-'] {
+	border-color: #f2b7b1 !important;
+}
+
+.alert-dark [class*='border-'] {
+	border-color: #bbbec2 !important;
 }
 
 /*-------------------------------------------*\
