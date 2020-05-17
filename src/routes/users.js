@@ -28,7 +28,7 @@ router.get('/sign-up', (req, res, next) => {
   return res.render('sign-up');
 });
 
-router.get('/sign-out', permit('USER'), (req, res) => {
+router.get('/sign-out', permit({ roles: 'USER' }), (req, res) => {
   req.session.destroy(() => {
     req.logout();
     return res.redirect('/');
@@ -78,7 +78,7 @@ router.post('/sign-up', async (req, res, next) => {
   }
 });
 
-router.get('/profile', permit('USER'), async (req, res, next) => {
+router.get('/profile', permit({ roles: 'USER' }), async (req, res, next) => {
   const customerID = req.user.id;
   try {
     const details = await getUserDetails({ args: { customerID } });
@@ -110,7 +110,7 @@ router.get('/profile', permit('USER'), async (req, res, next) => {
   }
 });
 
-router.post('/edit/personal', permit('USER'), async (req, res, next) => {
+router.post('/edit/personal', permit({ roles: 'USER' }), async (req, res, next) => {
   const { body } = req;
   body.country = body.country || null;
 
@@ -124,7 +124,7 @@ router.post('/edit/personal', permit('USER'), async (req, res, next) => {
   }
 });
 
-router.post('/edit/password', permit('USER'), async (req, res, next) => {
+router.post('/edit/password', permit({ roles: 'USER' }), async (req, res, next) => {
   const { body } = req;
 
   try {
@@ -138,7 +138,7 @@ router.post('/edit/password', permit('USER'), async (req, res, next) => {
   }
 });
 
-router.post('/delete', permit('USER'), async (req, res, next) => {
+router.post('/delete', permit({ roles: 'USER' }), async (req, res, next) => {
   try {
     const response = await removeUser({ customerID: req.user.id, ...req.body });
 

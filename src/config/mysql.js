@@ -18,7 +18,7 @@ if (OSX) {
 }
 
 class Database {
-  constructor() {
+  constructor(options) {
     this.pool = mysql.createPool(options);
   }
 
@@ -85,4 +85,4 @@ class Database {
   }
 }
 
-module.exports = Database;
+module.exports = new Database(options);

@@ -52,10 +52,10 @@ app.use((req, res, next) => {
 
   res.locals.user = {
     ...(req.user ? req.user : req.session.user),
-    isAuthenticated: req.isAuthenticated() || false,
+    isAuthenticated: (req.isAuthenticated() && req.user.isVerified === 1) || false,
   };
 
-  next();
+  return next();
 });
 
 app.use('/', indexRouter);

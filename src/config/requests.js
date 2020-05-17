@@ -2,11 +2,18 @@ const createError = require('http-errors');
 const bcrypt = require('bcrypt');
 const mysql = new (require('./mysql'))();
 
-const permit = (...allowed) => {
-  const isAllowed = (role) => allowed.indexOf(role) > -1;
+//TODO: Replace everything with Sequelize ORM
+
+const permit = ({ roles = [], requireVerification = true } = {}) => {
+  if (typeof roles === 'string') {
+    roles = [roles];
+  }
+
+  const isAllowed = (role) => roles.includes(role);
+  const checkVerification = (verified) => (requireVerification ? verified === 1 : true);
 
   return (req, res, next) => {
-    if (req.user && isAllowed(req.user.role)) return next();
+    if (req.user && isAllowed(req.user.role) && checkVerification(req.user.isVerified)) return next();
     return next(createError(403));
   };
 };
@@ -84,7 +91,7 @@ const getUserDetails = async ({ args = {}, byID = true, byEmail = false, partial
 
   let query = !partial
     ? 'SELECT DISTINCT c.first_name as firstName, c.last_name as lastName, c.email as email, c.gender as gender, c.mobile as mobile, DATE_FORMAT(c.joined_date, "%a, %d %b") as date, c.address_line_1 as addressLine1, c.address_line_2 as addressLine2, c.city as city, c.region as region, IF(c.country IS NOT NULL, cs.name, c.country) as country, c.postal_code as postalCode, c.status = "VERIFIED" as isVerified FROM customer as c, countries as cs WHERE IF(c.country IS NOT NULL, cs.country_code=c.country, 1)'
-    : 'SELECT c.customer_id as id, c.first_name as firstName, c.last_name as lastName, c.customer_type as role FROM customer as c WHERE 1';
+    : 'SELECT c.customer_id as id, c.first_name as firstName, c.last_name as lastName, c.customer_type as role, c.status = "VERIFIED" as isVerified FROM customer as c WHERE 1';
 
   if (byID && byEmail) {
     query += ' and c.customer_id=:customerID and c.email=:email';
@@ -105,6 +112,11 @@ const getUserDetails = async ({ args = {}, byID = true, byEmail = false, partial
       response.status = 400;
       response.error = true;
       response.message = 'A user with the provided email does not exist. Please sign up.';
+    } else if (partial && data[0].isVerified === 0) {
+      response.status = 403;
+      response.error = true;
+      response.message =
+        'Your account needs to be verified first. Please check your email for the verification link including the spam folder.';
     } else {
       response.status = 200;
       response.error = false;
