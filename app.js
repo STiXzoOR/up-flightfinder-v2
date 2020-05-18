@@ -46,6 +46,12 @@ app.use(passport.session());
 app.use(flash());
 
 app.use((req, res, next) => {
+  req.getUrl = () => `${req.protocol}://${req.app.get('env') === 'development' ? req.get('host') : req.hostname}`;
+
+  return next();
+});
+
+app.use((req, res, next) => {
   if (req.session.user === undefined || !req.isAuthenticated()) {
     req.session.user = { id: 0 };
   }

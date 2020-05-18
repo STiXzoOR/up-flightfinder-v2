@@ -1,3 +1,9 @@
+const os = require('os');
+
+const OSX = os.platform() === 'darwin';
+const LINUX = os.platform() === 'linux';
+const WINDOWS = os.platform() === 'win32';
+
 const paths = {
   cleanup_dirs: [
     'dist/**/*',
@@ -99,7 +105,7 @@ module.exports = {
       proxy: 'localhost:3000',
       port: 5000,
       files: [paths.dist_files],
-      browser: 'google chrome',
+      browser: OSX ? 'google chrome' : LINUX ? 'google-chrome' : 'chrome',
       notify: true,
     },
     nodemon: {
