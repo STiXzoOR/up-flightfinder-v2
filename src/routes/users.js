@@ -3,6 +3,7 @@ const createError = require('http-errors');
 const passport = require('passport');
 const { validate } = require('../config/superstruct');
 const {
+  useMailgun,
   permit,
   verifyToken,
   sendVerificationLink,
@@ -75,18 +76,20 @@ router.post('/sign-up', async (req, res, next) => {
       return res.redirect('/user/sign-up');
     }
 
-    const args = {
-      email: body.email,
-      firstName: body.firstName,
-      lastName: body.lastName,
-      url: req.getUrl(),
-    };
+    if (useMailgun) {
+      const args = {
+        email: body.email,
+        firstName: body.firstName,
+        lastName: body.lastName,
+        url: req.getUrl(),
+      };
 
-    response = await sendVerificationLink({ args });
+      response = await sendVerificationLink({ args });
 
-    if (response.error) {
-      res.flash('error', response.message);
-      return res.redirect('/user/sign-up');
+      if (response.error) {
+        res.flash('error', response.message);
+        return res.redirect('/user/sign-up');
+      }
     }
 
     res.flash('success', response.message);
@@ -176,60 +179,62 @@ router.post('/delete', permit({ roles: 'USER' }), async (req, res, next) => {
   }
 });
 
-router.get('/account/verify', validate('validateToken'), async (req, res, next) => {
-  const { token } = req.query;
-  const route = `/user/${req.isAuthenticated() ? 'profile' : 'sign-in'}`;
+if (useMailgun) {
+  router.get('/account/verify', validate('validateToken'), async (req, res, next) => {
+    const { token } = req.query;
+    const route = `/user/${req.isAuthenticated() ? 'profile' : 'sign-in'}`;
 
-  try {
-    let response;
+    try {
+      let response;
 
-    response = await verifyToken({ token });
+      response = await verifyToken({ token });
 
-    if (response.error) {
-      res.flash('error', response.message);
+      if (response.error) {
+        res.flash('error', response.message);
+        return res.redirect(route);
+      }
+
+      response = await updateUserStatus(response.result[0].id);
+
+      res.flash(response.error ? 'error' : 'success', response.message);
       return res.redirect(route);
+    } catch (err) {
+      console.log(err);
+      return next(err);
     }
+  });
 
-    response = await updateUserStatus(response.result[0].id);
+  router.get('/account/verify/resend', validate({ email: 'email' }), async (req, res, next) => {
+    const { email } = req.query;
+    const route = `/user/${req.isAuthenticated() ? 'profile' : 'sign-in'}`;
 
-    res.flash(response.error ? 'error' : 'success', response.message);
-    return res.redirect(route);
-  } catch (err) {
-    console.log(err);
-    return next(err);
-  }
-});
+    try {
+      let response;
 
-router.get('/account/verify/resend', validate({ email: 'email' }), async (req, res, next) => {
-  const { email } = req.query;
-  const route = `/user/${req.isAuthenticated() ? 'profile' : 'sign-in'}`;
+      response = await getUserDetails({ args: { email }, byID: false, byEmail: true, partial: true });
 
-  try {
-    let response;
+      if (response.error) {
+        return next(createError(response.status));
+      }
 
-    response = await getUserDetails({ args: { email }, byID: false, byEmail: true, partial: true });
+      const data = response.result[0];
 
-    if (response.error) {
-      return next(createError(response.status));
+      const args = {
+        email,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        url: req.getUrl(),
+      };
+
+      response = await sendVerificationLink({ args });
+
+      res.flash(response.error ? 'error' : 'success', response.message);
+      return res.redirect(route);
+    } catch (err) {
+      console.log(err);
+      return next(err);
     }
-
-    const data = response.result[0];
-
-    const args = {
-      email,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      url: req.getUrl(),
-    };
-
-    response = await sendVerificationLink({ args });
-
-    res.flash(response.error ? 'error' : 'success', response.message);
-    return res.redirect(route);
-  } catch (err) {
-    console.log(err);
-    return next(err);
-  }
-});
+  });
+}
 
 module.exports = router;

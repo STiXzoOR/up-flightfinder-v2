@@ -1,8 +1,16 @@
+/* eslint-disable global-require */
 const createError = require('http-errors');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const mysql = require('./mysql');
-const mailgun = require('./mailgun');
+
+let mailgun = false;
+try {
+  mailgun = require('./mailgun');
+  // eslint-disable-next-line no-empty
+} catch (err) {}
+
+const useMailgun = process.env.MAILGUN_ENABLED;
 
 // TODO #1: Write check if user exists standalone function
 // TODO #2: Replace everything with Sequelize ORM
@@ -581,7 +589,7 @@ const insertUser = async (args = {}) => {
 
   const userExistsQuery = 'SELECT email FROM customer WHERE email=:email';
   const userInsertQuery =
-    'INSERT INTO customer (first_name, last_name, email, password, mobile, gender, joined_date, status, customer_type, email_token, email_token_expire) VALUES (:firstName, :lastName, :email, :password, :mobile, :gender, NOW(), :status, "USER")';
+    'INSERT INTO customer (first_name, last_name, email, password, mobile, gender, joined_date, status, customer_type) VALUES (:firstName, :lastName, :email, :password, :mobile, :gender, NOW(), :status, "USER")';
 
   try {
     const result = await mysql.fetch(userExistsQuery, { email: args.email });
@@ -600,7 +608,7 @@ const insertUser = async (args = {}) => {
       password,
       mobile: args.mobile,
       gender: args.gender,
-      status: 'UNVERIFIED',
+      status: useMailgun ? 'UNVERIFIED' : 'VERIFIED',
     };
 
     await mysql
@@ -1061,6 +1069,7 @@ const removeUser = async (args = {}) => {
 };
 
 module.exports = {
+  useMailgun,
   permit,
   verifyToken,
   sendVerificationLink,
