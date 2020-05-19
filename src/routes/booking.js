@@ -35,7 +35,7 @@ router.post('/add', permit('USER'), async (req, res, next) => {
     return res.redirect('/user/profile');
   } catch (err) {
     console.log(err);
-    return next(createError(err));
+    return next(err);
   }
 });
 
@@ -57,13 +57,13 @@ router.get('/new-booking', validate('newBookingQuery'), async (req, res, next) =
     const flight = await getFlights({ isRoundtrip: query.isRoundtrip, args: query, WHERE, FETCH_ALL: false });
 
     if (flight.error) {
-      return next(createError(flight.status));
+      return next(createError(flight.status, flight.message));
     }
 
     const countries = await getCountries();
 
     if (countries.error) {
-      return next(createError(countries.status));
+      return next(createError(countries.status, countries.message));
     }
 
     req.session.flightData = query;
@@ -164,7 +164,7 @@ router.post('/new-booking/thank-you', async (req, res, next) => {
     const bookingResponse = await insertBooking({ args: bookingDetails });
 
     if (bookingResponse.error) {
-      return next(createError(bookingResponse.status));
+      return next(createError(bookingResponse.status, bookingResponse.message));
     }
 
     await Promise.all(passengerInfo.map(async (passenger) => insertPassenger(passenger))).catch((err) => {
@@ -206,7 +206,7 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
     let booking = await getBooking({ args: { bookingID, customerID, lastName }, byID });
 
     if (booking.error) {
-      return next(createError(booking.status));
+      return next(createError(booking.status, booking.message));
     }
 
     [booking] = booking.result;
@@ -240,7 +240,7 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
     });
 
     if (flight.error) {
-      return next(createError(flight.status));
+      return next(createError(flight.status, flight.message));
     }
 
     [flight] = flight.result;
@@ -249,7 +249,7 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
     let passengers = await getBookingPassengers(booking.id);
 
     if (passengers.error) {
-      return next(createError(passengers.status));
+      return next(createError(passengers.status, passengers.message));
     }
 
     passengers = passengers.result;

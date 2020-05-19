@@ -48,7 +48,7 @@ router.post('/sign-in', (req, res, next) => {
 
     req.login(response.result[0], (err) => {
       if (err) {
-        return next(createError(err));
+        return next(err);
       }
 
       if (req.body.rememberMyPassword && req.body.rememberMyPassword === 'on') {

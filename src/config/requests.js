@@ -2,7 +2,8 @@ const createError = require('http-errors');
 const bcrypt = require('bcrypt');
 const mysql = require('./mysql');
 
-// TODO: Replace everything with Sequelize ORM
+// TODO #1: Write check if user exists standalone function
+// TODO #2: Replace everything with Sequelize ORM
 
 const permit = ({ roles = [], requireVerification = true } = {}) => {
   if (typeof roles === 'string') {
@@ -52,7 +53,10 @@ const checkPasswordMatch = async (args = {}) => {
     return response;
   } catch (err) {
     console.log(err);
-    return err;
+    response.status = 400;
+    response.error = true;
+    response.message = err;
+    return response;
   }
 };
 
@@ -122,7 +126,10 @@ const getUserDetails = async ({ args = {}, byID = true, byEmail = false, partial
     return response;
   } catch (err) {
     console.log(err);
-    return err;
+    response.status = 400;
+    response.error = true;
+    response.message = err;
+    return response;
   }
 };
 
@@ -141,7 +148,11 @@ const getSessionUser = async (args = {}) => {
 
     return !responsePassword.error ? response : responsePassword;
   } catch (err) {
-    return err;
+    console.log(err);
+    response.status = 400;
+    response.error = true;
+    response.message = err;
+    return response;
   }
 };
 
@@ -174,7 +185,11 @@ const getCountries = async () => {
 
     return response;
   } catch (err) {
-    return err;
+    console.log(err);
+    response.status = 400;
+    response.error = true;
+    response.message = err;
+    return response;
   }
 };
 
@@ -208,7 +223,11 @@ const getPopularDestinations = async () => {
 
     return response;
   } catch (err) {
-    return err;
+    console.log(err);
+    response.status = 400;
+    response.error = true;
+    response.message = err;
+    return response;
   }
 };
 
@@ -241,7 +260,11 @@ const getAirports = async () => {
 
     return response;
   } catch (err) {
-    return err;
+    console.log(err);
+    response.status = 400;
+    response.error = true;
+    response.message = err;
+    return response;
   }
 };
 
@@ -293,7 +316,11 @@ const getFlights = async ({
 
     return response;
   } catch (err) {
-    return err;
+    console.log(err);
+    response.status = 400;
+    response.error = true;
+    response.message = err;
+    return response;
   }
 };
 
@@ -335,7 +362,11 @@ const getBooking = async ({ args = {}, byID = false, byLastName = true } = {}) =
 
     return response;
   } catch (err) {
-    return err;
+    console.log(err);
+    response.status = 400;
+    response.error = true;
+    response.message = err;
+    return response;
   }
 };
 
@@ -370,7 +401,10 @@ const getBookingPassengers = async (bookingID = '') => {
     return response;
   } catch (err) {
     console.log(err);
-    return err;
+    response.status = 400;
+    response.error = true;
+    response.message = err;
+    return response;
   }
 };
 
@@ -404,7 +438,11 @@ const getUserBookings = async (userID = '') => {
 
     return response;
   } catch (err) {
-    return err;
+    console.log(err);
+    response.status = 400;
+    response.error = true;
+    response.message = err;
+    return response;
   }
 };
 
@@ -449,7 +487,8 @@ const insertUser = async (args = {}) => {
         response.error = false;
         response.message = 'Sign up was successfull. Please sign in.';
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log(err);
         response.status = 500;
         response.error = true;
         response.message = 'Something went wrong while signing you up. Please contact our support team.';
@@ -457,7 +496,11 @@ const insertUser = async (args = {}) => {
 
     return response;
   } catch (err) {
-    return err;
+    console.log(err);
+    response.status = 400;
+    response.error = true;
+    response.message = err;
+    return response;
   }
 };
 
@@ -572,7 +615,11 @@ const insertUserBooking = async (args = {}) => {
 
     return await insertBooking({ args: data[0], updateFlight: false });
   } catch (err) {
-    return err;
+    console.log(err);
+    response.status = 400;
+    response.error = true;
+    response.message = err;
+    return response;
   }
 };
 
@@ -765,7 +812,10 @@ const cancelBooking = async (args = {}) => {
     [booking] = data;
   } catch (err) {
     console.log(err);
-    return err;
+    response.status = 400;
+    response.error = true;
+    response.message = err;
+    return response;
   }
 
   const queryUpdateBooking = 'UPDATE booking SET status="CANCELED" WHERE booking_id=:bookingID and last_name=:lastName';

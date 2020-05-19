@@ -10,7 +10,8 @@ router.get('/', async (req, res, next) => {
     const destinations = await getPopularDestinations();
 
     if (airports.error || destinations.error) {
-      return next(createError((airports.error && airports.status) || destinations.status));
+      const response = (airports.error && airports) || destinations;
+      return next(createError(response.status, response.message));
     }
 
     return res.render('index', { airports: airports.result, destinations: destinations.result });

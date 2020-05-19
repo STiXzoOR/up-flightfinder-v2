@@ -42,7 +42,7 @@ router.get('/search-flights', validate('searchFlightsQuery'), async (req, res, n
     const airports = await getAirports();
 
     if (airports.error) {
-      return next(createError(airports.status));
+      return next(createError(airports.status, airports.message));
     }
 
     let WHERE =
@@ -77,7 +77,7 @@ router.get('/search-flights', validate('searchFlightsQuery'), async (req, res, n
     const flights = await getFlights({ isRoundtrip: query.isRoundtrip, args, WHERE, ORDER });
 
     if (flights.error && flights.status === 500) {
-      return next(createError(flights.status));
+      return next(createError(flights.status, flights.message));
     }
 
     const airlines =

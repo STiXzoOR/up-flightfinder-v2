@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+const createError = require('http-errors');
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
@@ -71,7 +72,7 @@ app.use('/flight', flightsRouter);
 app.use('/booking', bookingRouter);
 
 app.use((req, res, next) => {
-  return res.status(404).render('404');
+  return next(createError(400));
 });
 
 app.use((err, req, res, next) => {
