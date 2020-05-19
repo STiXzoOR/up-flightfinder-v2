@@ -24,6 +24,10 @@ function isEmpty(value) {
   return value.length === 0;
 }
 
+function isValidToken(value) {
+  return kindOf(value) === 'string' && value.length === 80;
+}
+
 function isValidPassword(value) {
   return /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!^+%/()=?_:`@~|\}\]\[{$.,*-])[A-Za-z\d!^+%/()=?_:`@~|\}\]\[{$.,*-]{8,30}$/.text(
     value
@@ -80,6 +84,7 @@ const struct = superstruct({
     password: (value) => isValidPassword(value),
     number: (value) => isNumber(value),
     json: (value) => isValidJSON(value),
+    token: (value) => isValidToken(value),
     stringBoolean: (value) => isStringBoolean(value),
     stringDate: (value) => isStringDate(value),
     passengersObject: (value) => isValidPassengersObject(value),
@@ -100,6 +105,9 @@ const SCHEMAS = {
   userSignInForm: {
     email: 'email & !isEmpty',
     password: 'string & !isEmpty',
+  },
+  validateToken: {
+    token: 'token',
   },
   searchFlightsQuery: {
     type: 'string',

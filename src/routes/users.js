@@ -1,12 +1,16 @@
 const express = require('express');
 const createError = require('http-errors');
 const passport = require('passport');
+const { validate } = require('../config/superstruct');
 const {
   permit,
+  verifyToken,
+  sendVerificationLink,
   getCountries,
   getUserDetails,
   getUserBookings,
   insertUser,
+  updateUserStatus,
   updateUserDetails,
   updateUserPassword,
   removeUser,
@@ -62,8 +66,23 @@ router.post('/sign-in', (req, res, next) => {
 });
 
 router.post('/sign-up', async (req, res, next) => {
+  const { body } = req;
   try {
-    const response = await insertUser(req.body);
+    let response = await insertUser(body);
+
+    if (response.error) {
+      res.flash('error', response.message);
+      return res.redirect('/user/sign-up');
+    }
+
+    const args = {
+      email: body.email,
+      firstName: body.firstName,
+      lastName: body.lastName,
+      url: req.getUrl(),
+    };
+
+    response = await sendVerificationLink({ args });
 
     if (response.error) {
       res.flash('error', response.message);
@@ -154,6 +173,62 @@ router.post('/delete', permit({ roles: 'USER' }), async (req, res, next) => {
   } catch (err) {
     console.log(err);
     return next(createError(err));
+  }
+});
+
+router.get('/account/verify', validate('validateToken'), async (req, res, next) => {
+  const { token } = req.query;
+  const route = `/user/${req.isAuthenticated() ? 'profile' : 'sign-in'}`;
+
+  try {
+    let response;
+
+    response = await verifyToken({ token });
+
+    if (response.error) {
+      res.flash('error', response.message);
+      return res.redirect(route);
+    }
+
+    response = await updateUserStatus(response.result[0].id);
+
+    res.flash(response.error ? 'error' : 'success', response.message);
+    return res.redirect(route);
+  } catch (err) {
+    console.log(err);
+    return next(err);
+  }
+});
+
+router.get('/account/verify/resend', validate({ email: 'email' }), async (req, res, next) => {
+  const { email } = req.query;
+  const route = `/user/${req.isAuthenticated() ? 'profile' : 'sign-in'}`;
+
+  try {
+    let response;
+
+    response = await getUserDetails({ args: { email }, byID: false, byEmail: true, partial: true });
+
+    if (response.error) {
+      return next(createError(response.status));
+    }
+
+    const data = response.result[0];
+
+    const args = {
+      email,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      url: req.getUrl(),
+    };
+
+    response = await sendVerificationLink({ args });
+
+    res.flash(response.error ? 'error' : 'success', response.message);
+    return res.redirect(route);
+  } catch (err) {
+    console.log(err);
+    return next(err);
   }
 });
 

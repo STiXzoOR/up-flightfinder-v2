@@ -1,6 +1,8 @@
 const createError = require('http-errors');
+const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const mysql = require('./mysql');
+const mailgun = require('./mailgun');
 
 // TODO #1: Write check if user exists standalone function
 // TODO #2: Replace everything with Sequelize ORM
@@ -18,6 +20,8 @@ const permit = ({ roles = [], requireVerification = true } = {}) => {
     return next(createError(403));
   };
 };
+
+const generateToken = () => crypto.randomBytes(40).toString('hex');
 
 const checkPasswordMatch = async (args = {}) => {
   const response = {
@@ -61,8 +65,6 @@ const checkPasswordMatch = async (args = {}) => {
 };
 
 const checkBookingExists = async ({ args = {}, byID = false, byLastName = true } = {}) => {
-  let found = false;
-
   let query = 'SELECT booking_id FROM booking WHERE booking_id=:bookingID';
 
   if (byID) {
@@ -76,13 +78,134 @@ const checkBookingExists = async ({ args = {}, byID = false, byLastName = true }
   try {
     const data = await mysql.fetchOne(query, args);
 
-    if (data.length !== 0) {
-      found = true;
+    return data.length !== 0;
+  } catch (err) {
+    console.log(err);
+    response.status = 400;
+    response.error = true;
+    response.message = err;
+    return response;
+  }
+};
+
+const verifyToken = async ({ token = '', type = 'email' } = {}) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const query = `SELECT customer_id as id FROM customer WHERE ${type}_token=:token and ${type}_token_expire > NOW()`;
+
+  try {
+    const data = await mysql.fetchOne(query, { token });
+
+    if (data === null) {
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    } else if (data.length === 0) {
+      response.status = 400;
+      response.error = true;
+      response.message = 'The requested link is invalid or has expired';
+    } else {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Token has been verified.';
+      response.result = data;
     }
 
-    return found;
+    return response;
   } catch (err) {
-    return err;
+    console.log(err);
+    return false;
+  }
+};
+
+const sendVerificationLink = async ({ args = {}, type = 'email' } = {}) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const config = {
+    email: {
+      messages: {
+        success: `An email to verify your account was sent to: ${args.email}. The link will expire after 1 day. Follow the instructions to complete the sign up process.`,
+        error: 'Something went wrong while sending you the verification code. Please contact our support team.',
+      },
+      tokenDuration: 86400000,
+      send: (data) => mailgun.sendVerifyAccount(data),
+    },
+    password: {
+      messages: {
+        success: `An email to reset your password was sent to: ${args.email}. The link will expire after 10 minutes. Follow the instructions to enter a new password.`,
+        error: 'Something went wrong while sending you the verification code. Please contact our support team.',
+      },
+      tokenDuration: 600000,
+      send: (data) => mailgun.sendResetPassword(data),
+    },
+    newsletter: {
+      messages: {
+        success: '',
+        error: `An email to verify your subscription was sent to: ${args.email}. The link will expire after 30 minutes.`,
+      },
+      tokenDuration: 1800000,
+      send: (data) => mailgun.sendVerifySubscription(data),
+    },
+  };
+
+  const query = `UPDATE customer SET ${type}_token=:token, ${type}_token_expire=:tokenExpire WHERE email=:email`;
+
+  try {
+    const token = generateToken();
+    const tokenExpire = new Date(Date.now() + config[type].tokenDuration);
+
+    await mysql
+      .commit(query, { email: args.email, token, tokenExpire })
+      .then(() => {
+        response.status = 200;
+        response.error = false;
+        response.message = 'Verification token was successfully stored.';
+      })
+      .catch((err) => {
+        console.log(err);
+        response.status = 500;
+        response.error = true;
+        response.message = 'Something went wrong while updating your account. Please contact our support team.';
+      });
+
+    if (response.error) return response;
+
+    const data = {
+      url: args.url,
+      token,
+      recipient: `${args.firstName} ${args.lastName} <${args.email}>`,
+    };
+
+    await config[type]
+      .send(data)
+      .then((result) => {
+        console.log(result);
+        response.status = 200;
+        response.error = false;
+        response.message = config[type].messages.success;
+      })
+      .catch((err) => {
+        console.log(err);
+        response.status = 500;
+        response.error = true;
+        response.message = config[type].messages.error;
+      });
+
+    return response;
+  } catch (err) {
+    console.log(err);
+    response.status = 400;
+    response.error = true;
+    response.message = err;
+    return response;
   }
 };
 
@@ -458,7 +581,7 @@ const insertUser = async (args = {}) => {
 
   const userExistsQuery = 'SELECT email FROM customer WHERE email=:email';
   const userInsertQuery =
-    'INSERT INTO customer (first_name, last_name, email, password, mobile, gender, joined_date, status, customer_type) VALUES (:firstName, :lastName, :email, :password, :mobile, :gender, NOW(), :status, "USER")';
+    'INSERT INTO customer (first_name, last_name, email, password, mobile, gender, joined_date, status, customer_type, email_token, email_token_expire) VALUES (:firstName, :lastName, :email, :password, :mobile, :gender, NOW(), :status, "USER")';
 
   try {
     const result = await mysql.fetch(userExistsQuery, { email: args.email });
@@ -477,7 +600,7 @@ const insertUser = async (args = {}) => {
       password,
       mobile: args.mobile,
       gender: args.gender,
-      status: 'VERIFIED',
+      status: 'UNVERIFIED',
     };
 
     await mysql
@@ -709,6 +832,33 @@ const updateBooking = async (args = {}) => {
   return response;
 };
 
+const updateUserStatus = async (customerID) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const query =
+    'UPDATE customer SET status="VERIFIED", email_token=NULL, email_token_expire=NULL WHERE customer_id=:customerID';
+
+  await mysql
+    .commit(query, { customerID })
+    .then(() => {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Your account has been successfully verified.';
+    })
+    .catch((err) => {
+      console.log(err);
+      response.status = 500;
+      response.error = true;
+      response.message = 'Something went wrong while updating your status. Please contact our support team.';
+    });
+
+  return response;
+};
+
 const updateUserDetails = async (args = {}) => {
   const response = {
     status: 400,
@@ -912,6 +1062,8 @@ const removeUser = async (args = {}) => {
 
 module.exports = {
   permit,
+  verifyToken,
+  sendVerificationLink,
   checkPasswordMatch,
   checkBookingExists,
   getUserDetails,
@@ -927,6 +1079,7 @@ module.exports = {
   insertBooking,
   insertUserBooking,
   insertPassenger,
+  updateUserStatus,
   updateUserDetails,
   updateUserPassword,
   updateBooking,

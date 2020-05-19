@@ -49,12 +49,13 @@ block content
 									h1.flex-vertical-center.flex-column.flex-md-row.font-size-25.font-weight-medium.text-center.text-md-left.mb-0
 										span.mb-2.mb-md-0.mr-md-2 #{details.firstName} #{details.lastName}
 										if !details.isVerified
-											span.badge.badge-soft-danger.font-size-14.font-weight-normal(
+											a.badge.badge-soft-danger.font-size-14.font-weight-normal(
+												href=`/user/account/verify/resend?email=${details.email}`,
 												data-toggle='popover',
 												data-trigger='hover',
 												data-html='true',
 												data-placement='top',
-												data-content='<span class="font-size-13 font-weight-medium text-gray-1">Please verify your email.</span'
+												data-content='<span class="font-size-13 font-weight-medium text-gray-1">Please verify your email. Click below to resend you the verification link.</span'
 											) Unverified
 									hr
 									ul.font-size-16
