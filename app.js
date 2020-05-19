@@ -72,7 +72,7 @@ app.use('/flight', flightsRouter);
 app.use('/booking', bookingRouter);
 
 app.use((req, res, next) => {
-  return next(createError(400));
+  return next(createError(404));
 });
 
 app.use((err, req, res, next) => {

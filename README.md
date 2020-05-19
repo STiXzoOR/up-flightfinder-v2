@@ -40,8 +40,8 @@ The goal is to build a web application which enables the user not only to search
     - `--database-host`: database host location. **Default: localhost**.
     - `--use-mailgun`: use mailgun service to send emails. **Default: disabled**.
       - `--mailgun-api-key`: mailgun generated api key.
-      - `--mailgun-base-url`: mailgun base url server. **Default: US**.
-      - `--mailgun-api-domain`: mailgun api assigned domain.
+      - `--mailgun-base`: mailgun base url server. **Default: US**.
+      - `--mailgun-domain`: mailgun api assigned domain.
       - `--mailgun-sender-email`: mailgun sender email.
 
 - Navigate to `./config/python_scripts/database` and run `python generate_db.py` without any arguments to create, initialize and fill the database.
