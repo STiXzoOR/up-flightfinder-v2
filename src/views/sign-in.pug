@@ -12,8 +12,8 @@ block content
 	main.bg-gray(role='main')
 		.container.py-5.py-lg-12
 			.row.align-items-center.justify-content-center
-				.col-lg-6.order-2.order-lg-1.px-md-12.px-lg-0.px-xl-8
-					h3.section-title.section-title-lg-left.section-title-gutter-sm.text-center.text-lg-left.mb-5 Account sign in
+				.col-md-10.col-lg-7.col-xl-6
+					h3.section-title.section-title-left.section-title-gutter-sm.mb-5 Account sign in
 					+showAlert
 					.card.shadow-soft
 						.card-body.p-4
@@ -27,7 +27,7 @@ block content
 								.form-group
 									label.flex-center-between(for='password')
 										span.text-muted.required Password
-										a.font-size-14(href='#!') Forgot your password
+										a.font-size-14(href='/user/forgot-password') Forgot your password
 									.prepend-icon
 										i.fas.fa-lock.fa-fw
 										input#password.form-control(type='password', name='password', placeholder='Password', required='')
@@ -37,8 +37,6 @@ block content
 									label.custom-control-label.font-size-15(for='rememberMyPassword') Remember my password
 								.form-group
 									button.btn.btn-primary.btn-block(type='submit') Sign in
-							p.font-size-14.mb-0.mt-1
+							p.font-size-14.text-center.mt-1.mb-0
 								| Don&apos;t have an account?
 								a(href='/user/sign-up') &nbsp;Sign up now
-				.col-lg-6.text-center.order-1.order-lg-2.mb-3.mb-lg-0.mt-lg-10.px-lg-8
-					img.img-fluid.w-75.w-md-65.w-lg-100(src='/static/images/svg/undraw_world.svg', alt='Welcome')
