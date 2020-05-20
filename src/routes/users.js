@@ -152,11 +152,18 @@ router.post('/edit/password', permit({ roles: 'USER' }), async (req, res, next) 
   try {
     const response = await updateUserPassword({ customerID: req.user.id, ...body });
 
-    res.flash(response.error ? 'error' : 'success', response.message);
-    return res.redirect('/user/profile');
+    if (response.error) {
+      res.flash('error', response.message);
+      return res.redirect('/user/profile');
+    }
+
+    return req.session.destroy(() => {
+      req.logout();
+      return res.redirect('/user/sign-in');
+    });
   } catch (err) {
     console.log(err);
-    return next(createError(err));
+    return next(err);
   }
 });
 
@@ -209,12 +216,10 @@ if (useMailgun) {
     const route = `/user/${req.isAuthenticated() ? 'profile' : 'sign-in'}`;
 
     try {
-      let response;
-
-      response = await getUserDetails({ args: { email }, byID: false, byEmail: true, partial: true });
+      let response = await getUserDetails({ args: { email }, byID: false, byEmail: true, partial: true });
 
       if (response.error) {
-        return next(createError(response.status));
+        return next(createError(response.status, response.message));
       }
 
       const data = response.result[0];

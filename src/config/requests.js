@@ -12,8 +12,9 @@ try {
 
 const useMailgun = process.env.MAILGUN_ENABLED;
 
-// TODO #1: Write check if user exists standalone function
-// TODO #2: Replace everything with Sequelize ORM
+// TODO #1: Replace sendVerificationLink function with class
+// TODO #2: Write checkUserExists standalone function
+// TODO #3: Replace everything with Sequelize ORM
 
 const permit = ({ roles = [], requireVerification = true } = {}) => {
   if (typeof roles === 'string') {
@@ -226,7 +227,7 @@ const getUserDetails = async ({ args = {}, byID = true, byEmail = false, partial
 
   let query = !partial
     ? 'SELECT DISTINCT c.first_name as firstName, c.last_name as lastName, c.email as email, c.gender as gender, c.mobile as mobile, DATE_FORMAT(c.joined_date, "%a, %d %b") as date, c.address_line_1 as addressLine1, c.address_line_2 as addressLine2, c.city as city, c.region as region, IF(c.country IS NOT NULL, cs.name, c.country) as country, c.postal_code as postalCode, c.status = "VERIFIED" as isVerified FROM customer as c, countries as cs WHERE IF(c.country IS NOT NULL, cs.country_code=c.country, 1)'
-    : 'SELECT c.customer_id as id, c.first_name as firstName, c.last_name as lastName, c.customer_type as role, c.status = "VERIFIED" as isVerified FROM customer as c WHERE 1';
+    : 'SELECT c.customer_id as id, c.first_name as firstName, c.last_name as lastName, c.email as email, c.customer_type as role, c.status = "VERIFIED" as isVerified FROM customer as c WHERE 1';
 
   if (byID && byEmail) {
     query += ' and c.customer_id=:customerID and c.email=:email';
