@@ -41,6 +41,17 @@ class MailgunWrapper {
     });
   }
 
+  sendWelcome(data) {
+    const actionURL = `${data.url}/user/sign-in`;
+
+    return this.send({
+      to: data.recipient,
+      subject: 'Welcome on board',
+      template: this.templates.welcome,
+      actionURL,
+    });
+  }
+
   sendVerifyAccount(data) {
     const actionURL = `${data.url}/user/account/verify?token=${data.token}`;
 
@@ -53,12 +64,23 @@ class MailgunWrapper {
   }
 
   sendResetPassword(data) {
-    const actionURL = `${data.url}/user/password/reset?token=${data.token}`;
+    const actionURL = `${data.url}/user/account/reset-password?token=${data.token}`;
 
     return this.send({
       to: data.recipient,
       subject: 'Reset your password',
       template: this.templates.resetPassword,
+      actionURL,
+    });
+  }
+
+  sendChangedPassword(data) {
+    const actionURL = `${data.url}/user/sign-in`;
+
+    return this.send({
+      to: data.recipient,
+      subject: 'Your password has been changed',
+      template: this.templates.updatedPassword,
       actionURL,
     });
   }
