@@ -17,6 +17,12 @@ const {
   removeUser,
 } = require('../config/requests');
 
+let mailgun = false;
+try {
+  mailgun = require('../config/mailgun');
+  // eslint-disable-next-line no-empty
+} catch (err) {}
+
 require('../config/passport')(passport);
 
 const router = express.Router();
@@ -150,7 +156,7 @@ router.post('/edit/password', permit({ roles: 'USER' }), async (req, res, next) 
   const { body } = req;
 
   try {
-    const response = await updateUserPassword({ customerID: req.user.id, ...body });
+    const response = await updateUserPassword({ args: { customerID: req.user.id, ...body } });
 
     if (response.error) {
       res.flash('error', response.message);
@@ -187,6 +193,103 @@ router.post('/delete', permit({ roles: 'USER' }), async (req, res, next) => {
 });
 
 if (useMailgun) {
+  router.get('/forgot-password', (req, res, next) => {
+    return res.render('forgot-password');
+  });
+
+  router.post('/forgot-password', async (req, res, next) => {
+    const { email } = req.body;
+
+    try {
+      let response = await getUserDetails({ args: { email }, byID: false, byEmail: true, partial: true });
+
+      if (response.error) {
+        if (response.status === 400 && typeof response.message === 'string') {
+          res.flash('error', response.message);
+          return res.redirect('/user/forgot-password');
+        }
+
+        return next(createError(response.status, response.message));
+      }
+
+      const data = response.result[0];
+
+      const args = {
+        email,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        url: req.getUrl(),
+      };
+
+      response = await sendVerificationLink({ args, type: 'password' });
+
+      res.flash(response.error ? 'error' : 'success', response.message);
+      return res.redirect('/user/sign-in');
+    } catch (err) {
+      console.log(err);
+      return next(err);
+    }
+  });
+
+  router.get('/account/reset-password', validate('validateToken'), async (req, res, next) => {
+    const { token } = req.query;
+
+    try {
+      const response = await verifyToken({ token, type: 'password' });
+
+      if (response.error) {
+        res.flash('error', response.message);
+        return res.redirect('/user/sign-in');
+      }
+
+      return res.render('reset-password', { customerID: response.result[0].id });
+    } catch (err) {
+      console.log(err);
+      return next(err);
+    }
+  });
+
+  router.post('/account/reset-password', async (req, res, next) => {
+    const { body } = req;
+    const { token } = req.query;
+    const route = `/user/reset-password?token=${token}`;
+
+    try {
+      let response = await getUserDetails({ args: { customerID: body.customerID }, partial: true });
+
+      if (response.error) {
+        if (response.status === 400 && typeof response.message === 'string') {
+          res.flash('error', response.message);
+          return res.redirect('/user/sign-in');
+        }
+
+        return next(createError(response.status, response.message));
+      }
+
+      const data = response.result[0];
+
+      response = await updateUserPassword({ args: body, matchPasswords: false, expireToken: true });
+
+      if (response.error) {
+        res.flash('error', response.message);
+        return res.redirect(route);
+      }
+
+      const args = {
+        url: req.getUrl(),
+        recipient: `${data.firstName} ${data.lastName} <${data.email}>`,
+      };
+
+      await mailgun.sendChangedPassword(args);
+
+      res.flash('success', response.message);
+      return res.redirect('/user/sign-in');
+    } catch (err) {
+      console.log(err);
+      return next(err);
+    }
+  });
+
   router.get('/account/verify', validate('validateToken'), async (req, res, next) => {
     const { token } = req.query;
     const route = `/user/${req.isAuthenticated() ? 'profile' : 'sign-in'}`;

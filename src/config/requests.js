@@ -896,28 +896,36 @@ const updateUserDetails = async (args = {}) => {
   return response;
 };
 
-const updateUserPassword = async (args = {}) => {
+const updateUserPassword = async ({ args = {}, matchPasswords = true, expireToken = false }) => {
   const response = {
     status: 400,
     error: true,
     message: '',
   };
 
-  const responsePassword = await checkPasswordMatch(args);
+  if (matchPasswords) {
+    const responsePassword = await checkPasswordMatch(args);
 
-  if (responsePassword.error) return responsePassword;
+    if (responsePassword.error) return responsePassword;
+  }
 
-  const query = 'UPDATE customer SET password=:password WHERE customer_id=:customerID';
+  let query = 'UPDATE customer SET password=:password';
+
+  if (expireToken) {
+    query += ', password_token=NULL, password_token_expire=NULL';
+  }
+
+  query += ' WHERE customer_id=:customerID';
 
   const salt = bcrypt.genSaltSync(10);
   const password = bcrypt.hashSync(args.password, salt);
 
   await mysql
-    .commit(query, { customerID: args.customerID, password })
+    .commit(query, { ...args, password })
     .then(() => {
       response.status = 200;
       response.error = false;
-      response.message = 'Your password has been successfully updated.';
+      response.message = 'Your password has been successfully changed. You can now get back into your account.';
     })
     .catch((err) => {
       console.log(err);
