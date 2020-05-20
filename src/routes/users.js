@@ -192,18 +192,45 @@ if (useMailgun) {
     const route = `/user/${req.isAuthenticated() ? 'profile' : 'sign-in'}`;
 
     try {
-      let response;
-
-      response = await verifyToken({ token });
+      let response = await verifyToken({ token });
 
       if (response.error) {
         res.flash('error', response.message);
         return res.redirect(route);
       }
 
-      response = await updateUserStatus(response.result[0].id);
+      const customerID = response.result[0].id;
 
-      res.flash(response.error ? 'error' : 'success', response.message);
+      response = await updateUserStatus(customerID);
+
+      if (response.error) {
+        res.flash('error', response.message);
+        return res.redirect(route);
+      }
+
+      const { message } = response;
+
+      response = await getUserDetails({ args: { customerID }, partial: true });
+
+      if (response.error) {
+        if (response.status === 400 && typeof response.message === 'string') {
+          res.flash('error', response.message);
+          return res.redirect(route);
+        }
+
+        return next(createError(response.status, response.message));
+      }
+
+      const data = response.result[0];
+
+      const args = {
+        url: req.getUrl(),
+        recipient: `${data.firstName} ${data.lastName} <${data.email}>`,
+      };
+
+      await mailgun.sendWelcome(args);
+
+      res.flash('success', message);
       return res.redirect(route);
     } catch (err) {
       console.log(err);
