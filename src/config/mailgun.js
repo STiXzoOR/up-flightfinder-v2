@@ -97,14 +97,20 @@ class MailgunWrapper {
   }
 
   addMember(list, member) {
-    return this._getList(list).members().create(member);
-  }
-
-  removeMember(list, member) {
-    return this._getList(list).members(member.email).update(member.info);
+    return this._getList(list)
+      .members()
+      .create({
+        subscribed: true,
+        address: member.email,
+        name: `${member.firstName} ${member.lastName}`.trim(),
+      });
   }
 
   updateMember(list, member) {
+    return this._getList(list).members(member.email).update(member.info);
+  }
+
+  removeMember(list, member) {
     return this._getList(list).members(member).delete();
   }
 
