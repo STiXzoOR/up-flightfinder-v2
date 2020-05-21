@@ -1,0 +1,29 @@
+extends layout
+include mixins/_alert
+include mixins/_preloader
+include mixins/_password-strength
+
+block title
+	title Newsletter unsubscribe - Flight Finder
+
+block preloader
+	+preLoaderImage#preloader
+
+block content
+	main.bg-gray(role='main')
+		.container.py-5.py-lg-12
+			.row.align-items-center.justify-content-center
+				.col-md-10.col-lg-7.col-xl-6
+					h3.section-title.section-title-left.section-title-gutter-sm.mb-5 Unsubscribe
+					p.text-gray-1.mb-5 If you no more wish to receive our latest offers and news, please fill in the form below:
+					+showAlert
+					.card.shadow-soft
+						.card-body.p-4
+							form#newsletterUnsubscribeForm.needs-validation(method='POST', action='/newsletter/unsubscribe', novalidate='')
+								.form-group
+									label.text-muted.required(for='email') Email address
+									.prepend-icon
+										i.fas.fa-envelope.fa-fw
+										input#email.form-control(type='email', name='email', placeholder='johndoe@placeholder.com', required='')
+										.invalid-feedback Email address is required.
+								button.btn.btn-primary.btn-block(type='submit') Unsubscribe

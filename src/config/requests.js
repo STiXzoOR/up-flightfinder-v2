@@ -1,16 +1,14 @@
+/* eslint-disable vars-on-top */
+/* eslint-disable no-var */
 /* eslint-disable global-require */
+const useMailgun = process.env.MAILGUN_ENABLED;
+
 const createError = require('http-errors');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const mysql = require('./mysql');
 
-let mailgun = false;
-try {
-  mailgun = require('./mailgun');
-  // eslint-disable-next-line no-empty
-} catch (err) {}
-
-const useMailgun = process.env.MAILGUN_ENABLED;
+if (useMailgun) var mailgun = require('./mailgun');
 
 // TODO #1: Replace sendVerificationLink function with class
 // TODO #2: Write checkUserExists standalone function
@@ -104,7 +102,12 @@ const verifyToken = async ({ token = '', type = 'email' } = {}) => {
     message: '',
   };
 
-  const query = `SELECT customer_id as id FROM customer WHERE ${type}_token=:token and ${type}_token_expire > NOW()`;
+  let query = `SELECT customer_id as id FROM customer WHERE ${type}_token=:token and ${type}_token_expire > NOW()`;
+
+  if (type === 'newsletter') {
+    query =
+      'SELECT email, first_name as firstName, last_name as lastName FROM newsletter WHERE token=:token and token_expire > NOW()';
+  }
 
   try {
     const data = await mysql.fetchOne(query, { token });
@@ -157,22 +160,51 @@ const sendVerificationLink = async ({ args = {}, type = 'email' } = {}) => {
     },
     newsletter: {
       messages: {
-        success: '',
-        error: `An email to verify your subscription was sent to: ${args.email}. The link will expire after 30 minutes.`,
+        success: `An email to verify your subscription was sent to: ${args.email}. The link will expire after 30 minutes.`,
+        error: 'Something went wrong while sending you the verification code. Please contact our support team.',
       },
       tokenDuration: 1800000,
       send: (data) => mailgun.sendVerifySubscription(data),
     },
   };
 
-  const query = `UPDATE customer SET ${type}_token=:token, ${type}_token_expire=:tokenExpire WHERE email=:email`;
+  const isNewsletter = type === 'newsletter';
 
-  try {
-    const token = generateToken();
-    const tokenExpire = new Date(Date.now() + config[type].tokenDuration);
+  let needsUpdate = false;
+  let query = `UPDATE customer SET ${type}_token=:token, ${type}_token_expire=:tokenExpire WHERE email=:email`;
+
+  if (isNewsletter) {
+    query = `INSERT INTO newsletter (email, first_name, last_name, token, token_expire) VALUES(:email, :firstName, :lastName, :token, :tokenExpire)`;
+  }
+
+  const token = generateToken();
+  const tokenExpire = new Date(Date.now() + config[type].tokenDuration);
+
+  await mysql
+    .commit(query, { email: args.email, firstName: args.firstName, lastName: args.lastName, token, tokenExpire })
+    .then(() => {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Verification token was successfully stored.';
+    })
+    .catch((err) => {
+      console.log(err);
+
+      if (isNewsletter) {
+        needsUpdate = true;
+        return;
+      }
+
+      response.status = 500;
+      response.error = true;
+      response.message = 'Something went wrong while updating your account. Please contact our support team.';
+    });
+
+  if (isNewsletter && needsUpdate) {
+    query = `UPDATE newsletter SET first_name=:firstName, last_name=:lastName, token=:token, token_expire=:tokenExpire WHERE email=:email`;
 
     await mysql
-      .commit(query, { email: args.email, token, tokenExpire })
+      .commit(query, { email: args.email, firstName: args.firstName, lastName: args.lastName, token, tokenExpire })
       .then(() => {
         response.status = 200;
         response.error = false;
@@ -184,38 +216,32 @@ const sendVerificationLink = async ({ args = {}, type = 'email' } = {}) => {
         response.error = true;
         response.message = 'Something went wrong while updating your account. Please contact our support team.';
       });
-
-    if (response.error) return response;
-
-    const data = {
-      url: args.url,
-      token,
-      recipient: `${args.firstName} ${args.lastName} <${args.email}>`,
-    };
-
-    await config[type]
-      .send(data)
-      .then((result) => {
-        console.log(result);
-        response.status = 200;
-        response.error = false;
-        response.message = config[type].messages.success;
-      })
-      .catch((err) => {
-        console.log(err);
-        response.status = 500;
-        response.error = true;
-        response.message = config[type].messages.error;
-      });
-
-    return response;
-  } catch (err) {
-    console.log(err);
-    response.status = 400;
-    response.error = true;
-    response.message = err;
-    return response;
   }
+
+  if (response.error) return response;
+
+  const data = {
+    url: args.url,
+    token,
+    recipient: `${args.firstName} ${args.lastName} <${args.email}>`,
+  };
+
+  await config[type]
+    .send(data)
+    .then((result) => {
+      console.log(result);
+      response.status = 200;
+      response.error = false;
+      response.message = config[type].messages.success;
+    })
+    .catch((err) => {
+      console.log(err);
+      response.status = 500;
+      response.error = true;
+      response.message = config[type].messages.error;
+    });
+
+  return response;
 };
 
 const getUserDetails = async ({ args = {}, byID = true, byEmail = false, partial = false } = {}) => {
@@ -841,6 +867,35 @@ const updateBooking = async (args = {}) => {
   return response;
 };
 
+const insertNewsletterSubscriber = async (args = {}) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const query = 'UPDATE newsletter SET token=NULL, token_expire=NULL WHERE email=:email';
+
+  await mysql
+    .commit(query, { email: args.email })
+    .then(() => {
+      response.status = 200;
+      response.error = false;
+      response.message = `Thank you for subscribing. You will receive the latest news and offers to: ${args.email}.`;
+
+      return mailgun.addMember('newsletter', args);
+    })
+    .catch((err) => {
+      console.log(err);
+      response.status = 500;
+      response.error = true;
+      response.message =
+        'Something went wrong while updating your subscription settings. Please contact our support team.';
+    });
+
+  return response;
+};
+
 const updateUserStatus = async (customerID) => {
   const response = {
     status: 400,
@@ -932,6 +987,36 @@ const updateUserPassword = async ({ args = {}, matchPasswords = true, expireToke
       response.status = 500;
       response.error = true;
       response.message = 'Something went wrong while updating your password. Please contact our support team.';
+    });
+
+  return response;
+};
+
+const updateNewsletterSubscriber = async (args = {}) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const query = 'UPDATE newsletter SET first_name=:firstName, last_name=:lastName WHERE email=:email';
+
+  await mysql
+    .commit(query, { email: args.email })
+    .then(() => {
+      response.status = 200;
+      response.error = false;
+      response.message = `Your subscription details have been successfully updated.`;
+
+      const member = { email: args.email, info: { name: `${args.firstName} ${args.lastName}`.trim() } };
+      return mailgun.updateMember('newsletter', member);
+    })
+    .catch((err) => {
+      console.log(err);
+      response.status = 500;
+      response.error = true;
+      response.message =
+        'Something went wrong while updating your subscription details. Please contact our support team.';
     });
 
   return response;
@@ -1077,6 +1162,35 @@ const removeUser = async (args = {}) => {
   return response;
 };
 
+const removeNewsletterSubscriber = async (email) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const query = 'DELETE FROM newsletter WHERE email=:email';
+
+  await mysql
+    .commit(query, { email })
+    .then(() => {
+      response.status = 200;
+      response.error = false;
+      response.message = `You have been unsubscribed from our newsletter list.`;
+
+      return mailgun.removeMember('newsletter', email);
+    })
+    .catch((err) => {
+      console.log(err);
+      response.status = 500;
+      response.error = true;
+      response.message =
+        'Something went wrong while unsubscrining you from our newsletter list. Please contact our support team.';
+    });
+
+  return response;
+};
+
 module.exports = {
   useMailgun,
   permit,
@@ -1097,10 +1211,13 @@ module.exports = {
   insertBooking,
   insertUserBooking,
   insertPassenger,
+  insertNewsletterSubscriber,
   updateUserStatus,
   updateUserDetails,
   updateUserPassword,
+  updateNewsletterSubscriber,
   updateBooking,
   cancelBooking,
   removeUser,
+  removeNewsletterSubscriber,
 };

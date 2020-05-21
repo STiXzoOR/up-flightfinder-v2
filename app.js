@@ -1,5 +1,7 @@
-require('dotenv').config();
-
+/* eslint-disable vars-on-top */
+/* eslint-disable no-var */
+/* eslint-disable global-require */
+const env = require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const session = require('express-session');
@@ -17,6 +19,8 @@ const pagesRouter = require('./src/routes/pages');
 const usersRouter = require('./src/routes/users');
 const flightsRouter = require('./src/routes/flight');
 const bookingRouter = require('./src/routes/booking');
+
+if (env.parsed.MAILGUN_ENABLED) var newsletterRouter = require('./src/routes/newsletter');
 
 const app = express();
 const redisClient = redis.createClient();
@@ -70,6 +74,7 @@ app.use('/pages', pagesRouter);
 app.use('/user', usersRouter);
 app.use('/flight', flightsRouter);
 app.use('/booking', bookingRouter);
+if (env.parsed.MAILGUN_ENABLED) app.use('/newsletter', newsletterRouter);
 
 app.use((req, res, next) => {
   return next(createError(404));

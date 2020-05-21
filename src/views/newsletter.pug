@@ -1,0 +1,46 @@
+extends layout
+include mixins/_alert
+include mixins/_preloader
+include mixins/_password-strength
+
+block title
+	title Newsletter - Flight Finder
+
+block preloader
+	+preLoaderImage#preloader
+
+block content
+	main.bg-gray(role='main')
+		.container.py-5.py-lg-12
+			.row.align-items-center.justify-content-center
+				.col-md-10.col-lg-7.col-xl-6
+					h3.section-title.section-title-left.section-title-gutter-sm.mb-5 Newsletter
+					p.text-gray-1.mb-5 Sign up now to our newsletter and learn about the latest news and offers of Flight Finder.
+					+showAlert
+					.card.shadow-soft
+						.card-body.p-4
+							form#newsletterForm.needs-validation(method='POST', action='/newsletter/subscribe', novalidate='')
+								.form-group
+									label.text-muted.required(for='firstName') First name
+									.prepend-icon
+										i.fas.fa-user.fa-fw
+										input#firstName.form-control(type='text', name='firstName', placeholder='John', required='')
+										.invalid-feedback First name is required.
+								.form-group
+									label.text-muted.required(for='lastName') Last name
+									.prepend-icon
+										i.fas.fa-user.fa-fw
+										input#lastName.form-control(type='text', name='lastName', placeholder='Doe', required='')
+										.invalid-feedback Last name is required.
+								.form-group
+									label.text-muted.required(for='email') Email address
+									.prepend-icon
+										i.fas.fa-envelope.fa-fw
+										input#email.form-control(type='email', name='email', placeholder='johndoe@placeholder.com', required='')
+										.invalid-feedback Email address is required.
+								.form-group.custom-control.custom-checkbox.mt-5
+									input#acceptPP.custom-control-input(type='checkbox', name='acceptPP', required='')
+									label.custom-control-label.font-size-15(for='acceptPP')
+										| I have read and accept the
+										a(href='/pages/privacy-policy') &nbsp;Privacy Policy
+								button.btn.btn-primary.btn-block(type='submit') Subscribe now

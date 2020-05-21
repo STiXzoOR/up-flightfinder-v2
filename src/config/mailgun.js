@@ -96,6 +96,17 @@ class MailgunWrapper {
     });
   }
 
+  sendUnsubscribed(data) {
+    const actionURL = `${data.url}/newsletter/subscribe?email=${data.email}&firstName=${data.firstName}&lastName=${data.lastName}`;
+
+    return this.send({
+      to: data.recipient,
+      subject: 'Unsubscribed from newsletter',
+      template: this.templates.unsubscribed,
+      actionURL,
+    });
+  }
+
   addMember(list, member) {
     return this._getList(list)
       .members()
