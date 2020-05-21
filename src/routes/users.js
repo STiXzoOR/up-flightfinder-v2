@@ -1,3 +1,6 @@
+/* eslint-disable vars-on-top */
+/* eslint-disable global-require */
+/* eslint-disable no-var */
 const express = require('express');
 const createError = require('http-errors');
 const passport = require('passport');
@@ -17,11 +20,7 @@ const {
   removeUser,
 } = require('../config/requests');
 
-let mailgun = false;
-try {
-  mailgun = require('../config/mailgun');
-  // eslint-disable-next-line no-empty
-} catch (err) {}
+if (useMailgun) var mailgun = require('../config/mailgun');
 
 require('../config/passport')(passport);
 
@@ -112,19 +111,19 @@ router.get('/profile', permit({ roles: 'USER', requireVerification: false }), as
     const details = await getUserDetails({ args: { customerID } });
 
     if (details.error) {
-      return next(createError(details.status));
+      return next(createError(details.status, details.message));
     }
 
     const bookings = await getUserBookings(customerID);
 
     if (bookings.error && bookings.status === 500) {
-      return next(createError(bookings.status));
+      return next(createError(bookings.status, bookings.message));
     }
 
     const countries = await getCountries();
 
     if (countries.error) {
-      return next(createError(countries.status));
+      return next(createError(countries.status, countries.message));
     }
 
     return res.render('profile', {
@@ -134,7 +133,7 @@ router.get('/profile', permit({ roles: 'USER', requireVerification: false }), as
     });
   } catch (err) {
     console.log(err);
-    return next(createError(err));
+    return next(err);
   }
 });
 
@@ -148,7 +147,7 @@ router.post('/edit/personal', permit({ roles: 'USER' }), async (req, res, next) 
     res.flash(response.error ? 'error' : 'success', response.message);
     return res.redirect('/user/profile');
   } catch (err) {
-    return next(createError(err));
+    return next(err);
   }
 });
 
@@ -188,7 +187,7 @@ router.post('/delete', permit({ roles: 'USER' }), async (req, res, next) => {
     });
   } catch (err) {
     console.log(err);
-    return next(createError(err));
+    return next(err);
   }
 });
 
