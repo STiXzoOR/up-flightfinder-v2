@@ -136,7 +136,8 @@ const SCHEMAS = {
 
 const validateMiddleware = (name) => validate(kindOf(name) === 'string' ? SCHEMAS[name] : name, struct);
 const validateVerbose = (name, data) => {
-  const fields = Array.isArray(SCHEMAS[name]) ? SCHEMAS[name] : [SCHEMAS[name]];
+  const schemaSource = kindOf(name) === 'string' ? SCHEMAS[name] : name;
+  const fields = Array.isArray(schemaSource) ? schemaSource : [schemaSource];
   const Schema = struct(...fields);
 
   return Schema.validate(data);
