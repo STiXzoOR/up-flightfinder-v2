@@ -43,6 +43,7 @@ The goal is to build a web application which enables the user not only to search
       - `--mailgun-base`: mailgun base url server. **Default: US**.
       - `--mailgun-domain`: mailgun api assigned domain.
       - `--mailgun-sender-email`: mailgun sender email.
+  - example: `python generate_dotenv.py --database-user flightfinder --database-password test-flight`
 
 - Navigate to `./config/python_scripts/database` and run `python generate_db.py` without any arguments to create, initialize and fill the database.
 
@@ -51,6 +52,7 @@ The goal is to build a web application which enables the user not only to search
     - `--init-db`: initializes/resets database with the default values.
     - `--generate-flights`: generates flights.
       - `--days`: specify for how many days to generate flights. **Default: 30**.
+  - example: `python generate_db.py --generate-flights --days 60`
   - When the script if finished, we are done with the python part and can safely deactivate the virtual environment by running `deactivate`
 
 > NPM

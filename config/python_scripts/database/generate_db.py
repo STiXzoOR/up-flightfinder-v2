@@ -372,7 +372,7 @@ if __name__ == "__main__":
         "--days",
         metavar="days",
         type=int,
-        default=30,
+        default=0,
         action="store",
         help="specify for how many days to generate flights",
     )
