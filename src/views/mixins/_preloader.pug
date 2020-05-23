@@ -6,8 +6,4 @@ mixin preLoader(text='Loading...')
 			h5.font-size-22.font-weight-medium.mb-0.ml-3(aria-hidden='true') #{text}
 
 mixin preLoaderImage(bg='white')
-	.page-preloader.page-preloader-image(
-		id!=attributes.id,
-		class!=attributes.class,
-		style=`background-image: url('/static/images/preloader/preloader_${bg}.gif');`
-	)
+	.page-preloader.page-preloader-image(id!=attributes.id, class!=attributes.class, data-bg=`${bg}`)

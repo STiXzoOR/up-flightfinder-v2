@@ -2873,6 +2873,14 @@ label.required::after {
 	background-repeat: no-repeat;
 }
 
+.page-preloader-image[data-bg='white'] {
+	background-image: url('/static/images/preloader/preloader_white.gif');
+}
+
+.page-preloader-image[data-bg='gray'] {
+	background-image: url('/static/images/preloader/preloader_gray.gif');
+}
+
 .smooth-scroll {
 	scroll-behavior: smooth;
 }
@@ -3072,7 +3080,7 @@ ol.list-styled.list-styled-latin {
 	border-color: transparent;
 }
 
-.list-group-borderless>.list-group-item {
+.list-group-borderless > .list-group-item {
 	border: none;
 }
 
