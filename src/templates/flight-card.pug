@@ -1,0 +1,204 @@
+if isEmpty
+	.flex-center.h-lg-100.p-5.p-lg-0
+		h5.font-size-24.mb-0
+			.flex-center.flex-column
+				i.far.fa-sad-tear.fa-fw.font-size-55.mb-3
+				span Sorry, we couldn&apos;t find any flights for these dates.
+else
+	each flight, index in flights.data
+		div(id=`flight-${index + skip}`)
+			form(id=`flightSelectForm-${index + skip}`, action='/booking/new-booking')
+				.flight-card.card.mb-5(class=query.isRoundtrip ? "flight-roundtrip" : "flight-oneway")
+					input(type='hidden', name='isRoundtrip', value=`${query.isRoundtrip}`)
+					input(type='hidden', name='fromCity', value=`${flight.departFromCity}`)
+					input(type='hidden', name='toCity', value=`${flight.departToCity}`)
+					input(type='hidden', name='departFlightID', value=`${flight.departFlightID}`)
+					input(type='hidden', name='departDate', value=`${query.isRoundtrip ? query.dates.from : query.dates}`)
+
+					if query.isRoundtrip
+						input(type='hidden', name='returnFlightID', value=`${flight.returnFlightID}`)
+						input(type='hidden', name='returnDate', value=`${query.dates.to}`)
+
+					input(type='hidden', name='class', value=`${query.class}`)
+					input(type='hidden', name='quantity', value=`${query.passengers.total}`)
+
+					input(
+						type='hidden',
+						name='passengers',
+						value=`${JSON.stringify({ adults: query.passengers.adults, children: query.passengers.children, infants: query.passengers.infants })}`
+					)
+
+					.card-body
+						.row.align-items-center.text-center
+							.col-12.col-md.mb-3.mb-md-0
+								.price-divider.border-md-right-dashed.border-width-2
+									.flight-wrapper
+										.row.align-items-center.text-center
+											.col-3.col-sm-auto.col-md-3.col-lg-auto.col-xl-3
+												img.img-fluid(
+													src=`/static/images/airlines/${flight.departAirlineCode}.png`,
+													alt=`${flight.departAirlineName}`
+												)
+											.col-auto.pl-0.pl-sm-3
+												.flex-center.flex-column
+													i.fas.fa-plane-departure.fa-fw.font-size-20.text-lh-inherit.text-primary
+													span.font-weight-bold.font-size-19 #{flight.departTime}
+													span.font-size-14.text-gray-1 #{flight.departFromAirport}
+											.col.px-0.px-sm-3
+												.d-flex.flex-column.mt-2
+													span.font-size-14.font-weight-bold.mb-0 #{flight.departDuration.startsWith('0')? flight.departDuration.slice(1): flight.departDuration}
+													.border-top.border-primary.border-width-2.my-1
+													span.font-size-14.text-gray-1 Non Stop
+											.col-auto
+												.flex-center.flex-column
+													i.fas.fa-plane-arrival.fa-fw.font-size-20.text-lh-inherit.text-primary
+													span.font-weight-bold.font-size-19 #{flight.departArrivalTime}
+													span.font-size-14.text-gray-1 #{flight.departToAirport}
+										if query.isRoundtrip
+											hr
+											.row.align-items-center.text-center
+												.col-3.col-sm-auto.col-md-3.col-lg-auto.col-xl-3
+													img.img-fluid(
+														src=`/static/images/airlines/${flight.returnAirlineCode}.png`,
+														alt=`${flight.returnAirlineName}`
+													)
+												.col-auto.pl-0.pl-sm-3
+													.flex-center.flex-column
+														i.fas.fa-plane-departure.fa-fw.font-size-20.text-lh-inherit.text-primary
+														span.font-weight-bold.font-size-19 #{flight.returnTime}
+														span.font-size-14.text-gray-1 #{flight.returnFromAirport}
+												.col.px-0.px-sm-3
+													.d-flex.flex-column.mt-2
+														span.font-size-14.font-weight-bold.mb-0 #{flight.returnDuration.startsWith('0')? flight.returnDuration.slice(1): flight.returnDuration}
+														.border-top.border-primary.border-width-2.my-1
+														span.font-size-14.text-gray-1 Non Stop
+												.col-auto
+													.flex-center.flex-column
+														i.fas.fa-plane-arrival.fa-fw.font-size-20.text-lh-inherit.text-primary
+														span.font-weight-bold.font-size-19 #{flight.returnArrivalTime}
+														span.font-size-14.text-gray-1 #{flight.returnToAirport}
+							.col-12.col-md-auto.mb-n4.mb-md-0
+								.d-flex.d-md-block.mx-n4.mx-md-0
+									.mb-md-2.order-2.w-100.w-md-auto
+										.mb-2.text-lh-1dot4.d-none.d-md-block
+											span.font-weight-bold.font-size-22 &euro;#{flight.totalPrice.toLocaleString()}
+										button.btn.btn-book-now.btn-block.text-right.text-md-center.py-2.pr-4.px-md-3(type='Submit')
+											.d-flex.flex-column
+												span.font-size-14.font-size-md-16 Book now
+												span.font-weight-medium.font-size-22.d-md-none &euro;#{flight.totalPrice.toLocaleString()}
+									- var modalID = `flightDetailsModal${query.isRoundtrip ? "Roundtrip" : "Oneway"}-${index + skip}`
+									a.btn-link.btn-flight-details.order-1.w-75.w-sm-35.w-md-auto.py-2.pr-3.pl-4.p-md-0(
+										href=`#${modalID}`,
+										data-toggle='modal',
+										data-modal-target=`#${modalID}`
+									) Flight Details
+									.modal.modal-flight-details.fade(
+										id=`${modalID}`,
+										tabindex='-1',
+										role='dialog',
+										aria-labelledby=`${modalID}`,
+										aria-hidden='true'
+									)
+										.modal-dialog.modal-dialog-centered.modal-lg(role='document')
+											.modal-content
+												.modal-header.flex-center-between
+													h5.modal-title Flight Details
+													button.btn-modal-close(type='button', data-dismiss='modal', aria-label='Close')
+														span(aria-hidden='true') &#10005;
+												.modal-body.px-3.px-sm-4.pt-4.pb-2
+													h5.route-title
+														.route
+															span #{flight.departFromCity}
+															span.fas.fa-plane.fa-fw.text-muted.mx-2
+															span #{flight.departToCity}
+														ul.d-md-none.flex-vertical-center.font-size-14.font-weight-normal.text-left.text-muted.mt-2.ml-2
+															li.border-right.pl-1.pr-2 #{flight.departFlightID}
+															li.border-right.px-2 #{flight.departAirlineName}
+															li.pl-2 #{flight.departAirplaneName}
+													.row.align-items-center.text-center
+														.d-none.d-md-block.col-auto.col-lg
+															.flex-vertical-center
+																img.img-fluid.mr-3(src=`/static/images/airlines/${flight.departAirlineCode}.png`)
+																ul.d-flex.flex-column.font-size-14.text-left
+																	li #{flight.departFlightID}
+																	li #{flight.departAirlineName}
+																	li #{flight.departAirplaneName}
+														.col.col-sm-auto
+															.d-flex.flex-column.text-center.text-md-right
+																span.font-weight-bold.font-size-19.mb-0 #{flight.departTime}
+																span.font-size-14 #{flight.departDate}
+																span.font-size-13.text-gray-1 #{flight.departFromCity}, #{flight.departFromCountry}
+														.col.px-1.px-sm-3
+															.d-flex.flex-column
+																span.font-size-14.font-weight-bold.mb-0 #{flight.departClass}
+																.border-top.border-primary.border-width-2.my-1
+																span.font-size-14.text-gray-1 #{flight.departDuration.startsWith('0')? flight.departDuration.slice(1): flight.departDuration}
+														.col.col-sm-auto
+															.d-flex.flex-column.text-center.text-md-left
+																span.font-weight-bold.font-size-19.mb-0 #{flight.departArrivalTime}
+																span.font-size-14 #{flight.departArrivalDate}
+																span.font-size-13.text-gray-1 #{flight.departToCity}, #{flight.departToCountry}
+													hr.mb-2.mx-n3.mx-sm-n4
+													ul.flex-center-between
+														li.border-right.w-100.px-1.px-sm-4
+															i.fas.fa-wifi.fa-fw.text-primary.mr-2
+															span.font-size-15 Wifi
+														li.border-right.w-100.px-1.px-sm-4
+															i.fas.fa-utensils.fa-fw.text-primary.mr-2
+															span.font-size-15 Meal
+														li.w-100.px-1.px-sm-4
+															i.fas.fa-shopping-bag.fa-fw.text-primary.mr-2
+															span.font-size-15 Shopping
+													if query.isRoundtrip
+														hr.mx-n3.mx-sm-n4.mt-2.mb-4
+														h5.route-title
+															.route
+																span #{flight.returnFromCity}
+																span.fas.fa-plane.fa-fw.text-muted.mx-2
+																span #{flight.returnToCity}
+															ul.d-md-none.flex-vertical-center.font-size-14.font-weight-normal.text-left.text-muted.mt-2.ml-2
+																li.border-right.pl-1.pr-2 #{flight.returnFlightID}
+																li.border-right.px-2 #{flight.returnAirlineName}
+																li.pl-2 #{flight.returnAirplaneName}
+														.row.align-items-center.text-center
+															.d-none.d-md-block.col-auto.col-lg
+																.flex-vertical-center
+																	img.img-fluid.mr-3(src=`/static/images/airlines/${flight.returnAirlineCode}.png`)
+																	ul.d-flex.flex-column.font-size-14.text-left
+																		li #{flight.returnFlightID}
+																		li #{flight.returnAirlineName}
+																		li #{flight.returnAirplaneName}
+															.col.col-sm-auto
+																.d-flex.flex-column.text-center.text-md-right
+																	span.font-weight-bold.font-size-19.mb-0 #{flight.returnTime}
+																	span.font-size-14 #{flight.returnDate}
+																	span.font-size-13.text-gray-1 #{flight.returnFromCity}, #{flight.returnFromCountry}
+															.col.px-1.px-sm-3
+																.d-flex.flex-column
+																	span.font-size-14.font-weight-bold.mb-0 #{flight.returnClass}
+																	.border-top.border-primary.border-width-2.my-1
+																	span.font-size-14.text-gray-1 #{flight.returnDuration.startsWith('0')? flight.returnDuration.slice(1): flight.returnDuration}
+															.col.col-sm-auto
+																.d-flex.flex-column.text-center.text-md-left
+																	span.font-weight-bold.font-size-19.mb-0 #{flight.departArrivalTime}
+																	span.font-size-14 #{flight.returnArrivalDate}
+																	span.font-size-13.text-gray-1 #{flight.returnToCity}, #{flight.returnToCountry}
+														hr.mb-2.mx-n3.mx-sm-n4
+														ul.flex-center-between
+															li.border-right.w-100.px-1.px-sm-4
+																i.fas.fa-wifi.fa-fw.text-primary.mr-2
+																span.font-size-15 Wifi
+															li.border-right.w-100.px-1.px-sm-4
+																i.fas.fa-utensils.fa-fw.text-primary.mr-2
+																span.font-size-15 Meal
+															li.w-100.px-1.px-sm-4
+																i.fas.fa-shopping-bag.fa-fw.text-primary.mr-2
+																span.font-size-15 Shopping
+												.modal-footer.flex-center-between.justify-content-md-end
+													span.font-weight-medium.font-size-22.mr-sm-2 &euro;#{flight.totalPrice.toLocaleString()}
+													button.btn.btn-primary.font-weight-medium.font-size-16.py-2.px-4(type='Submit') Select
+	if ((skip + flights.data.length) < flights.total)
+		.text-center
+			a#loadMoreFlights.btn.btn-primary(href='javascript:void(0)', data-skip=`${skip + flights.data.length}`)
+				span#loader.spinner-border.spinner-border-sm(role='status', aria-hidden='true', style='display: none;')
+				span#text.align-middle.font-weight-medium.ml-2 Load more
