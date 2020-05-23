@@ -430,6 +430,7 @@ const getFlights = async ({
   isRoundtrip = false,
   args = {},
   WHERE = '',
+  HAVING = '',
   ORDER = '',
   LIMIT = '',
   FETCH_ALL = true,
@@ -443,19 +444,33 @@ const getFlights = async ({
   let query =
     'SELECT f.flight_id as departFlightID, f.airline as departAirlineCode, al.airline_name as departAirlineName, DATE_FORMAT(f.dep_date, "%a, %d %b") as departDate, f.from_airport as departFromAirport, aprt1.city as departFromCity, aprt1.country as departFromCountry, TIME_FORMAT(f.dep_time, "%H:%i") as departTime, CAST(f.dep_time as DATETIME) as departTimeObject, DATE_FORMAT(f.arr_date, "%a, %d %b") as departArrivalDate, f.to_airport as departToAirport, aprt2.city as departToCity, aprt2.country as departToCountry, TIME_FORMAT(f.arr_time, "%H:%i") as departArrivalTime, f.price as departPrice, f.taxes as departTaxes, f.class as departClass, TIME_FORMAT(f.duration, "%hh %im") as departDuration, CAST(f.duration as DATETIME) as departDurationObject, ap.airplane_name as departAirplaneName, f.taxes as totalTaxes, (f.price + f.taxes) as totalFarePrice, ((f.price+f.taxes)*:quantity) as totalPrice FROM flight as f, airline as al, airplane as ap, airport as aprt1, airport as aprt2';
 
+  let countQuery =
+    'SELECT COUNT(*) as total, MIN(((f.price+f.taxes)*:quantity)) as minTotalPrice, MAX(((f.price+f.taxes)*:quantity)) as maxTotalPrice, CAST(MIN(f.dep_time) as DATETIME) as minDepartTime, CAST(MAX(f.dep_time) as DATETIME) as maxDepartTime FROM flight as f, airline as al, airplane as ap, airport as aprt1, airport as aprt2';
+
   if (isRoundtrip) {
     query =
       'SELECT f1.flight_id as departFlightID, f1.airline as departAirlineCode, al1.airline_name as departAirlineName, DATE_FORMAT(f1.dep_date, "%a, %d %b") as departDate, f1.from_airport as departFromAirport, aprt1.city as departFromCity, aprt1.country as departFromCountry, TIME_FORMAT(f1.dep_time, "%H:%i") as departTime, CAST(f1.dep_time as DATETIME) as departTimeObject, DATE_FORMAT(f1.arr_date, "%a, %d %b") as departArrivalDate, f1.to_airport as departToAirport, aprt2.city as departToCity, aprt2.country as departToCountry, TIME_FORMAT(f1.arr_time, "%H:%i") as departArrivalTime, f1.price as departPrice, f1.taxes as departTaxes, f1.class as departClass, TIME_FORMAT(f1.duration, "%hh %im") as departDuration, CAST(f1.duration as DATETIME) as departDurationObject, ap1.airplane_name as departAirplaneName, f2.flight_id as returnFlightID, f2.airline as returnAirlineCode, al2.airline_name as returnAirlineName, DATE_FORMAT(f2.dep_date, "%a, %d %b") as returnDate, f2.from_airport as returnFromAirport, aprt3.city as returnFromCity, aprt3.country as returnFromCountry, TIME_FORMAT(f2.dep_time, "%H:%i") as returnTime, CAST(f2.dep_time as DATETIME) as returnTimeObject, DATE_FORMAT(f2.arr_date, "%a, %d %b") as returnArrivalDate, f2.to_airport as returnToAirport, aprt4.city as returnToCity, aprt4.country as returnToCountry, TIME_FORMAT(f2.arr_time, "%H:%i") as returnArrivalTime, f2.price as returnPrice, f2.taxes as returnTaxes, f2.class as returnClass, TIME_FORMAT(f2.duration, "%hh %im") as returnDuration, CAST(f2.duration as DATETIME) as returnDurationObject, ap2.airplane_name as returnAirplaneName, (f1.taxes + f2.taxes) as totalTaxes, (f1.price + f2.price + f1.taxes + f2.taxes) as totalFarePrice, ((f1.price + f2.price + f1.taxes + f2.taxes)*:quantity) as totalPrice FROM flight as f1, flight as f2, airline as al1, airline as al2, airplane as ap1, airplane as ap2, airport as aprt1, airport as aprt2, airport as aprt3, airport as aprt4';
+
+    countQuery =
+      'SELECT COUNT(*) as total, MIN(((f1.price + f2.price + f1.taxes + f2.taxes)*:quantity)) as minTotalPrice, MAX(((f1.price + f2.price + f1.taxes + f2.taxes)*:quantity)) as maxTotalPrice, CAST(MIN(f1.dep_time) as DATETIME) as minDepartTime, CAST(MAX(f1.dep_time) as DATETIME) as maxDepartTime, CAST(MIN(f2.dep_time) as DATETIME) as minReturnTime, CAST(MAX(f2.dep_time) as DATETIME) as maxReturnTime FROM flight as f1, flight as f2, airline as al1, airline as al2, airplane as ap1, airplane as ap2, airport as aprt1, airport as aprt2, airport as aprt3, airport as aprt4';
   }
 
-  if (WHERE) query += ` WHERE ${WHERE}`;
+  if (WHERE) {
+    countQuery += ` WHERE ${WHERE}`;
+    query += ` WHERE ${WHERE}`;
+  }
+
+  if (HAVING) {
+    countQuery += ` HAVING ${HAVING}`;
+    query += ` HAVING ${HAVING}`;
+  }
 
   if (ORDER) query += ` ORDER BY ${ORDER}`;
 
   if (LIMIT) query += ` LIMIT ${LIMIT}`;
 
   try {
-    const data = FETCH_ALL ? await mysql.fetch(query, args) : await mysql.fetchOne(query, args);
+    let data = await mysql.fetchOne(countQuery, args);
 
     if (data === null) {
       response.status = 500;
@@ -465,11 +480,33 @@ const getFlights = async ({
       response.status = 400;
       response.error = true;
       response.message = 'No results found for the requested query.';
+      response.result = { isEmpty: true };
+    } else {
+      response.status = 200;
+      response.error = false;
+      response.message = 'Counted flights.';
+    }
+
+    if (response.error) return response;
+
+    const counters = data[0];
+
+    data = FETCH_ALL ? await mysql.fetch(query, args) : await mysql.fetchOne(query, args);
+
+    if (data === null) {
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    } else if (data.length === 0) {
+      response.status = 400;
+      response.error = true;
+      response.message = 'No results found for the requested query.';
+      response.result = { isEmpty: true };
     } else {
       response.status = 200;
       response.error = false;
       response.message = 'Flights retrieved.';
-      response.result = data;
+      response.result = { isEmpty: false, data, counters };
     }
 
     return response;

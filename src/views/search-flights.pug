@@ -1,7 +1,6 @@
 extends layout
 include mixins/_preloader
 include mixins/_go-up
-include mixins/_flight-card
 
 block title
 	title Search flights - Flight Finder
@@ -200,9 +199,9 @@ block content
 												i.fas.fa-search.fa-fw.mr-1.mr-lg-0
 												span.d-inline-block.d-lg-none.font-weight-bold SEARCH FLIGHTS
 			+preLoaderImage('gray')#preLoaderFlights.position-relative.bg-gray.py-10.py-sm-15
-			if !flights.results
+			if flights.data.isEmpty
 				.p-5(style='display: none;')
-					h5.font-size-24
+					h5.font-size-24.mb-0
 						.flex-center.flex-column
 							i.far.fa-sad-tear.fa-fw.font-size-55.mb-3
 							span Sorry, we couldn&apos;t find any flights for these dates.
@@ -342,23 +341,31 @@ block content
 													if index > 4
 														- lastIndex = index
 														- break
-													- var airlineID = `${airline.name.split(" ")[0].toLowerCase()}Air`
-													li.flex-center-between.mb-3
+													- var airlineID = `${airline.split(" ")[0].toLowerCase()}Air`
+													li.mb-3
 														.custom-control.custom-checkbox
-															input.custom-control-input(id=airlineID, type='checkbox', checked='')
-															label.custom-control-label(for=airlineID) #{airline.name}
-														span.font-size-15 #{airline.total}
+															input.filter-airlines-item.custom-control-input(
+																id=airlineID,
+																type='checkbox',
+																value=`${airline}`,
+																checked=''
+															)
+															label.custom-control-label(for=airlineID) #{airline}
 
 												if airlines.length > 5
 													#moreAirlines.collapse
 														ul.text-gray-1
 															while lastIndex < airlines.length
-																- var airlineID = `${airlines[lastIndex].name.split(" ")[0].toLowerCase()}Air`
-																li.flex-center-between.mb-3
+																- var airlineID = `${airlines[lastIndex].split(" ")[0].toLowerCase()}Air`
+																li.mb-3
 																	.custom-control.custom-checkbox
-																		input.custom-control-input(id=airlineID, type='checkbox', checked='')
-																		label.custom-control-label(for=airlineID) #{airlines[lastIndex].name}
-																	span.font-size-15 #{airlines[lastIndex].total}
+																		input.filter-airlines-item.custom-control-input(
+																			id=airlineID,
+																			type='checkbox',
+																			value=`${airline}`,
+																			checked=''
+																		)
+																		label.custom-control-label(for=airlineID) #{airlines[lastIndex]}
 																- lastIndex += 1
 													a.btn.btn-link.link-collapse(
 														data-toggle='collapse',
@@ -372,7 +379,9 @@ block content
 					.col-lg-8.col-xl-9.mt-lg-1
 						.row.align-items-center.justify-content-between.mb-5
 							.col
-								p.mb-0 #{flights.total} Results
+								p.mb-0 
+									span#queryResultsTotal.mr-1 #{flights.data.total}
+									span Results
 							.col.col-md-5.col-xl-4.flex-vertical-center
 								p.d-none.d-sm-block.text-nowrap.mb-0.mr-2 Sort by
 								.custom-select2.w-100
@@ -386,12 +395,11 @@ block content
 										if query.isRoundtrip
 											option(value='returnTime') Return time
 						.flights-container
-							each flight, index in flights.results
-								+flightCard(index, query, flight)
+							!= flights.html
 		+goUpButton
 
 block append scripts
-	if flights.results
+	if !flights.data.isEmpty
 		- var minDepartTime = (maxDepartTime = new Date(`1970-01-01 ${flights.results[0].departTime}`))
 
 		if query.isRoundtrip
@@ -407,31 +415,31 @@ block append scripts
 				- minReturnTime = time < minReturnTime ? time : minReturnTime
 				- maxReturnTime = time > maxReturnTime ? time : maxReturnTime
 
-		if query.isRoundtrip
-			script.
-				$(() => {
-					$('#returnTimeRange').data('ionRangeSlider').update({
-						min: #{minReturnTime.valueOf()},
-						max: #{maxReturnTime.valueOf()},
-						from: #{minReturnTime.valueOf()},
-						to: #{maxReturnTime.valueOf()},
-						step: 1800000,
-						prettify: (timestamp) =>
-							new Date(timestamp).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }),
-					});
-				})
-				
 		script.
 			$(() => {
 				$('#departureTimeRange').data('ionRangeSlider').update({
-					min: #{minDepartTime.valueOf()},
-					max: #{maxDepartTime.valueOf()},
-					from: #{minDepartTime.valueOf()},
-					to: #{maxDepartTime.valueOf()},
+					min: #{flights.data.minDepartTime.valueOf()},
+					max: #{flights.data.maxDepartTime.valueOf()},
+					from: #{flights.data.minDepartTime.valueOf()},
+					to: #{flights.data.maxDepartTime.valueOf()},
 					step: 1800000,
 					prettify: (timestamp) =>
 						new Date(timestamp).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }),
 				});
+			});
+			
+		if query.isRoundtrip
+			script.
+				$(() => {
+					$('#returnTimeRange').data('ionRangeSlider').update({
+						min: #{flights.data.minReturnTime.valueOf()},
+						max: #{flights.data.maxReturnTime.valueOf()},
+						from: #{flights.data.minReturnTime.valueOf()},
+						to: #{flights.data.maxReturnTime.valueOf()},
+						step: 1800000,
+						prettify: (timestamp) =>
+							new Date(timestamp).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }),
+					});
 			});
 	if flights.results
 		script.

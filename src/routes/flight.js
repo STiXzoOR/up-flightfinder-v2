@@ -2,8 +2,10 @@ const express = require('express');
 const createError = require('http-errors');
 const { validate } = require('../config/superstruct');
 const { getAirports, getFlights } = require('../config/requests');
+const { compileFile } = require('../config/templates');
 
 const router = express.Router();
+const generateFlightsHTML = compileFile('flight-card');
 
 function parseQuery(query) {
   const parsedQuery = {
@@ -80,37 +82,40 @@ router.get('/search-flights', validate('searchFlightsQuery'), async (req, res, n
       return next(createError(flights.status, flights.message));
     }
 
+    flights = flights.result;
+
+    const flightsHTML = generateFlightsHTML(
+      !flights.isEmpty
+        ? {
+            query,
+            skip: (query.filters && query.filters.skip) || 0,
+            flights: { data: flights.data, total: flights.counters.total },
+          }
+        : { isEmpty: flights.isEmpty }
+    );
+
+    const airports = await getAirports();
+
+    if (airports.error) {
+      return next(createError(airports.status, airports.message));
+    }
+
     const airlines =
-      (flights.result &&
+      (!flights.isEmpty &&
         ((array) =>
-          array.reduce((accu, obj) => {
-            let index = accu.findIndex((item) => item.name === obj.departAirlineName);
-
-            if (index === -1) {
-              accu.push({ name: obj.departAirlineName, total: 1 });
-            } else {
-              accu[index].total += 1;
-            }
-
-            if (query.isRoundtrip) {
-              index = accu.findIndex((item) => item.name === obj.returnAirlineName);
-
-              if (index === -1) {
-                accu.push({ name: obj.returnAirlineName, total: 1 });
-              } else {
-                accu[index].total += 1;
-              }
-            }
+          array.reduce((accu, { departAirlineName, returnAirlineName }) => {
+            if (!accu.includes(departAirlineName)) accu.push(departAirlineName);
+            if (query.isRoundtrip && !accu.includes(returnAirlineName)) accu.push(returnAirlineName);
 
             return accu;
-          }, []))(flights.result)) ||
+          }, []))(flights.data)) ||
       [];
 
     return res.render('search-flights', {
       query,
       airports: airports.result,
       airlines,
-      flights: { results: flights.result, total: flights.result ? flights.result.length : 0 },
+      flights: { isEmpty: flights.isEmpty, data: flights.counters, html: flightsHTML },
     });
   } catch (err) {
     return next(err);
