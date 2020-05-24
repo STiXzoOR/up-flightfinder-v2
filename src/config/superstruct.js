@@ -119,6 +119,7 @@ const SCHEMAS = {
       return !dates.some((date) => date === false);
     }),
     passengersClass: 'passengersClassObject',
+    filters: 'json?',
   },
   newBookingQuery: {
     isRoundtrip: 'stringBoolean',

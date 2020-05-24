@@ -87,14 +87,6 @@ const paths = {
       src: 'node_modules/zxcvbn/dist/zxcvbn.js',
       dist: 'dist/static/vendors/zxcvbn',
     },
-    loadMore: {
-      src: 'node_modules/simple-load-more/jquery.simpleLoadMore.min.js',
-      dist: 'dist/static/vendord/simple-load-more/simpleLoadMore.min.js',
-    },
-    tinysort: {
-      src: 'node_modules/tinysort/dist/tinysort.min.js',
-      dist: 'dist/static/vendors/tinysort',
-    },
   },
 };
 

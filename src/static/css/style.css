@@ -4342,6 +4342,31 @@ a.badge-soft-white.focus {
 	transform: translate(50%, -50%) scale(0);
 }
 
+.btn-clear-filters.disabled {
+	opacity: 1;
+}
+
+.btn-clear-filters-mobile {
+	display: block;
+	visibility: hidden;
+	opacity: 0;
+	position: absolute;
+	bottom: 0;
+	z-index: 3;
+	font-weight: 500;
+	width: 100%;
+	padding: 1rem;
+	border-radius: 0 !important;
+	box-shadow: 0 -10px 15px -10px rgba(151, 164, 175, 0.5) !important;
+}
+
+@media (max-width: 991px) {
+.btn-clear-filters-mobile.show {
+	visibility: visible;
+	opacity: 1;
+}
+}
+
 /*-------------------------------------------*\
     2.6. Card
 \*-------------------------------------------*/
@@ -8422,6 +8447,17 @@ a.badge-soft-white.focus {
 	max-width: none;
 	position: absolute;
 	width: 100%;
+}
+
+.navdrawer .filter-list {
+	overflow-y: auto;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.navdrawer .filter-list::-webkit-scrollbar {
+	display: none;
 }
 
 /*-------------------------------------------*\

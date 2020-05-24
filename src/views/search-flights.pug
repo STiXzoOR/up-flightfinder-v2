@@ -208,8 +208,12 @@ block content
 			else
 				.row.justify-content-center(style='display: none;')
 					.col-lg-4.col-xl-3.mt-lg-1
-						.d-none.d-lg-block.bg-dark.text-white.border.border-bottom-0.rounded-top-5.shadow-soft.px-3.py-2
-							h4.text-lg-center.font-size-22.font-weight-bold.mb-0 FILTERS
+						a.btn.btn-link.btn-clear-filters.d-none.d-lg-block.bg-dark.text-white.border.border-bottom-0.rounded-0.rounded-top-5.shadow-soft.px-3.py-2.disabled(
+							href='javascript:void(0)'
+						)
+							h4.text-clear.text-lg-center.font-size-22.font-weight-bold.mb-0
+								i.fas.fa-trash.mr-2(style='display: none;')
+								span FILTERS
 						a.d-lg-none.btn.btn-white.btn-floating(
 							href='#filterList',
 							aria-controls='filterList',
@@ -222,97 +226,89 @@ block content
 							i.fas.fa-sliders-h.fa-fw.fa-rotate-90.mr-2
 							| Filters
 						#filterList.navdrawer.navdrawer-permanent-lg.position-lg-relative.border-lg.border-lg-top-0.rounded-lg-bottom-5.w-lg-100.shadow-soft
-							.navdrawer-content.position-lg-relative
-								#stopsFilter.accordion.rounded-0
-									.card-collapse
-										h3.mb-0
-											button.btn.btn-link.btn-block.card-btn.btn-section.px-xl-4.collapsed(
-												type='button',
-												data-toggle='collapse',
-												data-target='#stopsFilterSection',
-												aria-expanded='true',
-												aria-controls='stopsFilterSection'
-											)
-												span.section-header Stops
-												span.card-btn-caret
-													i.fas.fa-chevron-down.text-dark
-									#stopsFilterSection.collapse.show(aria-labelledby='Stops filter section', data-parent='#stopsFilter')
-										.card-body.pt-0.mt-2.px-5.px-xl-4.pb-4
-											ul.text-gray-1
-												li.mb-3
-													.custom-control.custom-checkbox
-														input#nonStop.custom-control-input(type='checkbox', checked='')
-														label.custom-control-label(for='nonStop') Non Stop
-												li.mb-3
-													.custom-control.custom-checkbox
-														input#oneStop.custom-control-input(type='checkbox', disabled)
-														label.custom-control-label(for='oneStop') 1 Stop
-												li.mb-3
-													.custom-control.custom-checkbox
-														input#twoStops.custom-control-input(type='checkbox', disabled)
-														label.custom-control-label(for='twoStops') 2 Stop
-												li.mb-1
-													.custom-control.custom-checkbox
-														input#threeStops.custom-control-input(type='checkbox', disabled)
-														label.custom-control-label(for='threeStops') 3 Stop
-								#priceFilter.accordion.rounded-0.border-top
-									.card-collapse
-										h3.mb-0
-											button.btn.btn-link.btn-block.card-btn.btn-section.px-xl-4.collapsed(
-												type='button',
-												data-toggle='collapse',
-												data-target='#priceFilterSection',
-												aria-expanded='true',
-												aria-controls='priceFilterSection'
-											)
-												span.section-header Price Range
-												span.card-btn-caret
-													i.fas.fa-chevron-down.text-dark
-									#priceFilterSection.collapse.show(aria-labelledby='Price filter section', data-parent='#priceFilter')
-										.card-body.pt-0.mt-2.px-5.px-xl-4.pb-4
-											input#priceRange.ion-range-slider-input(
-												type='text',
-												data-extra-classes='irs-with-indicator mx-2',
-												data-type='double',
-												data-grid='false',
-												data-hide-min-max='true',
-												data-hide-from-to='false',
-												data-min=`${flights.results[0].totalPrice}`,
-												data-max=`${flights.results[flights.results.length - 1].totalPrice}`,
-												data-from=`${flights.results[0].totalPrice + 30}`,
-												data-to=`${flights.results[flights.results.length - 1].totalPrice - 30}`,
-												data-prefix='€'
-											)
-								#timeFilter.accordion.rounded-0.border-top
-									.card-collapse
-										h3.mb-0
-											button.btn.btn-link.btn-block.card-btn.btn-section.px-xl-4.collapsed(
-												type='button',
-												data-toggle='collapse',
-												data-target='#timeFilterSection',
-												aria-expanded='true',
-												aria-controls='timeFilterSection'
-											)
-												span.section-header Time Range
-												span.card-btn-caret
-													i.fas.fa-chevron-down.text-dark
-									#timeFilterSection.collapse.show(aria-labelledby='Time filter section', data-parent='#timeFilter')
-										.card-body.pt-0.mt-2.px-5.px-xl-4.pb-4
-											div
-												label.section-subtitle.font-size-15.mb-2(for='departureTimeRange') Departure Time
-												input#departureTimeRange.ion-range-slider-input(
+							.navdrawer-content.position-lg-relative(style='overflow: unset;')
+								a.btn.btn-link.btn-clear-filters-mobile.bg-white.text-danger.border-top(href='javascript:void(0)')
+									i.fas.fa-trash.mr-2
+									| CLEAR FILTERS
+								.filter-list.position-lg-relative.pb-lg-0
+									#stopsFilter.accordion.rounded-0
+										.card-collapse
+											h3.mb-0
+												button.btn.btn-link.btn-block.card-btn.btn-section.px-xl-4.collapsed(
+													type='button',
+													data-toggle='collapse',
+													data-target='#stopsFilterSection',
+													aria-expanded='true',
+													aria-controls='stopsFilterSection'
+												)
+													span.section-header Stops
+													span.card-btn-caret
+														i.fas.fa-chevron-down.text-dark
+										#stopsFilterSection.collapse.show(aria-labelledby='Stops filter section', data-parent='#stopsFilter')
+											.card-body.pt-0.mt-2.px-5.px-xl-4.pb-4
+												ul.text-gray-1
+													li.mb-3
+														.custom-control.custom-checkbox
+															input#nonStop.filter-stops-item.custom-control-input(type='checkbox', value='0', checked='')
+															label.custom-control-label(for='nonStop') Non Stop
+													li.mb-3
+														.custom-control.custom-checkbox
+															input#oneStop.filter-stops-item.custom-control-input(type='checkbox', value='1', disabled)
+															label.custom-control-label(for='oneStop') 1 Stop
+													li.mb-3
+														.custom-control.custom-checkbox
+															input#twoStops.filter-stops-item.custom-control-input(type='checkbox', value='2', disabled)
+															label.custom-control-label(for='twoStops') 2 Stop
+													li.mb-1
+														.custom-control.custom-checkbox
+															input#threeStops.filter-stops-item.custom-control-input(type='checkbox', value='3', disabled)
+															label.custom-control-label(for='threeStops') 3 Stop
+									#priceFilter.accordion.rounded-0.border-top
+										.card-collapse
+											h3.mb-0
+												button.btn.btn-link.btn-block.card-btn.btn-section.px-xl-4.collapsed(
+													type='button',
+													data-toggle='collapse',
+													data-target='#priceFilterSection',
+													aria-expanded='true',
+													aria-controls='priceFilterSection'
+												)
+													span.section-header Price Range
+													span.card-btn-caret
+														i.fas.fa-chevron-down.text-dark
+										#priceFilterSection.collapse.show(aria-labelledby='Price filter section', data-parent='#priceFilter')
+											.card-body.pt-0.mt-2.px-5.px-xl-4.pb-4
+												input#priceRange.ion-range-slider-input(
 													type='text',
 													data-extra-classes='irs-with-indicator mx-2',
 													data-type='double',
 													data-grid='false',
 													data-hide-min-max='true',
-													data-hide-from-to='false'
+													data-hide-from-to='false',
+													data-min=`${flights.data.minTotalPrice}`,
+													data-max=`${flights.data.maxTotalPrice}`,
+													data-from=`${flights.data.minTotalPrice}`,
+													data-to=`${flights.data.maxTotalPrice}`,
+													data-prefix='€'
 												)
-											if query.isRoundtrip
-												hr
+									#timeFilter.accordion.rounded-0.border-top
+										.card-collapse
+											h3.mb-0
+												button.btn.btn-link.btn-block.card-btn.btn-section.px-xl-4.collapsed(
+													type='button',
+													data-toggle='collapse',
+													data-target='#timeFilterSection',
+													aria-expanded='true',
+													aria-controls='timeFilterSection'
+												)
+													span.section-header Time Range
+													span.card-btn-caret
+														i.fas.fa-chevron-down.text-dark
+										#timeFilterSection.collapse.show(aria-labelledby='Time filter section', data-parent='#timeFilter')
+											.card-body.pt-0.mt-2.px-5.px-xl-4.pb-4
 												div
-													label.section-subtitle.font-size-15.mb-2(for='returnTimeRange') Return Time
-													input#returnTimeRange.ion-range-slider-input(
+													label.section-subtitle.font-size-15.mb-2(for='departureTimeRange') Departure Time
+													input#departureTimeRange.ion-range-slider-input(
 														type='text',
 														data-extra-classes='irs-with-indicator mx-2',
 														data-type='double',
@@ -320,7 +316,19 @@ block content
 														data-hide-min-max='true',
 														data-hide-from-to='false'
 													)
-								#airlinesFilter.accordion.rounded-0.border-top
+												if query.isRoundtrip
+													hr
+													div
+														label.section-subtitle.font-size-15.mb-2(for='returnTimeRange') Return Time
+														input#returnTimeRange.ion-range-slider-input(
+															type='text',
+															data-extra-classes='irs-with-indicator mx-2',
+															data-type='double',
+															data-grid='false',
+															data-hide-min-max='true',
+															data-hide-from-to='false'
+														)
+									#airlinesFilter.accordion.rounded-0.border-top
 									.card-collapse
 										h3.mb-0
 											button.btn.btn-link.btn-block.card-btn.btn-section.px-xl-4.collapsed(
@@ -389,8 +397,8 @@ block content
 										name='sortBy',
 										data-minimum-results-for-search='Infinity'
 									)
-										option(value='lowest', selected='') Lowest price
-										option(value='fastest') Fastest
+										option(value='totalPrice', selected='') Lowest price
+										option(value='departDuration') Fastest
 										option(value='departTime') Departure time
 										if query.isRoundtrip
 											option(value='returnTime') Return time
@@ -400,20 +408,7 @@ block content
 
 block append scripts
 	if !flights.data.isEmpty
-		- var minDepartTime = (maxDepartTime = new Date(`1970-01-01 ${flights.results[0].departTime}`))
-
-		if query.isRoundtrip
-			- var minReturnTime = (maxReturnTime = new Date(`1970-01-01 ${flights.results[0].returnTime}`))
-
-		each flight in flights.results
-			- var time = new Date(`1970-01-01 ${flight.departTime}`)
-			- minDepartTime = time < minDepartTime ? time : minDepartTime
-			- maxDepartTime = time > maxDepartTime ? time : maxDepartTime
-
-			if query.isRoundtrip
-				- time = new Date(`1970-01-01 ${flight.returnTime}`)
-				- minReturnTime = time < minReturnTime ? time : minReturnTime
-				- maxReturnTime = time > maxReturnTime ? time : maxReturnTime
+		script(src='/static/js/filter-flights.js')
 
 		script.
 			$(() => {
@@ -440,111 +435,8 @@ block append scripts
 						prettify: (timestamp) =>
 							new Date(timestamp).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }),
 					});
-			});
-	if flights.results
-		script.
-			function initLoadMoreFlights() {
-				$(".flights-container").simpleLoadMore({
-					item: ".flight-card",
-					count: 5,
-					cssClass: 'load-more-flights',
-					btnHTML: '<div class="text-center"><a href="#" class="btn btn-sm btn-primary load-more-flights__btn" data-load-next="5">Load more</a></div>'
-				});
-			}
-			
-			function resetLoadMoreFlights() {
-				let items = $(".flights-container").find('.load-more-flights__item')
-				items = items.filter(':hidden');
-			
-				items.show()
-				$('.load-more-flights__btn').parent().remove();
-			}
-			
-			function setNext(el) {
-				const nextID = $('.load-more-flights__item:hidden').length
-					? $('.load-more-flights__item:hidden').first().closest('[id^="flight-"]').attr('id').replace('flight-', '')
-					: '';
+				})
 				
-				$(el).data('load-next', nextID).attr('data-load-next', nextID);
-			}
-			
-			$('#sortFlightsBy').on('change', function sort() {
-				let preloader = $('#preLoaderSorting');
-			
-				if(!preloader.length) {
-					preloader = $('#preLoaderFlights')
-						.clone()
-						.attr('id', 'preLoaderSorting')
-						.removeClass()
-						.addClass('page-preloader-image h-lg-100 py-10 py-sm-15');
-			
-					preloader.insertAfter('.flights-container');
-				}
-				
-				const value = $(this).val();
-				let attr = '';
-			
-				switch (value) {
-					case 'lowest':
-						attr = 'price';
-						break;
-					case 'fastest':
-						attr = 'duration';
-						break;
-					case 'departTime':
-						attr = 'depart-time';
-						break;
-					case 'returnTime':
-						attr = 'return-time';
-						break;
-					default:
-				}
-			
-				$('.flights-container').fadeOut(400, () => {
-					preloader.fadeIn();
-			
-					resetLoadMoreFlights();
-					
-					tinysort('[id^="flight-"]', {
-						data: attr,
-					});
-			
-					initLoadMoreFlights();
-			
-					setTimeout(() => {
-						preloader.hide();
-						$('.flights-container').fadeIn(() => {
-							if ($('.load-more-flights__btn').length) {
-								setNext('.load-more-flights__btn');
-							}
-						});
-					}, 1000)
-				});
-			});
-			
-			// TODO: Make it universal
-			$(document).on('click', '.load-more-flights__btn', function scroll() {
-				const ID = parseInt($(this).data('load-next'), 10);
-				setNext(this);
-			
-				setTimeout(() => {
-					const next = $(`#flight-${ID}`);
-			
-					const header = $('.page-header');
-					const headerStyles = getComputedStyle(header.get(0));
-					const headerPosition = headerStyles.position;
-					let offset = next.offset().top;
-			
-					if (header.length && headerPosition === 'fixed' && parseInt(headerStyles.top, 10) === 0) {
-					offset -= header.outerHeight() - parseInt(headerStyles.marginTop, 10);
-					}
-			
-					$('html').scrollTop(offset - 30);
-				}, 100);
-			});
-			
-			initLoadMoreFlights()
-			
 	script.
 		$(() => {
 			setTimeout(() => {
