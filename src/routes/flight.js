@@ -38,7 +38,6 @@ function parseQuery(query) {
   return parsedQuery;
 }
 
-// TODO: change hardcoded varibales to name parameters
 function generateConditions(query) {
   const data = {};
 
@@ -77,43 +76,59 @@ function generateConditions(query) {
     const { filters } = query;
 
     if (filters.orderBy) {
-      data.ORDER = filters.orderBy;
+      data.ORDER = ':orderBy';
+      data.args.orderBy = filters.orderBy;
     }
 
-    if (filters.skip && filters.loadMore) {
-      data.LIMIT = `${filters.skip},${filters.limit}`;
-    } else if (filters.limit) {
-      data.LIMIT = `0,${filters.limit}`;
+    if (filters.skip || filters.limit) {
+      data.LIMIT = ':skip,:limit';
+      data.args.skip = filters.skip;
+      data.args.limit = filters.limit;
     }
 
     if (filters.priceRange) {
       data.WHERE += ` and ((${
         query.isRoundtrip ? 'f1.price+f2.price+f1.taxes+f2.taxes' : 'f.price+f.taxes'
-      })*:quantity) BETWEEN ${filters.priceRange.from} AND ${filters.priceRange.to}`;
+      })*:quantity) BETWEEN :minPrice AND :maxPrice`;
+      data.args.minPrice = filters.priceRange.from;
+      data.args.maxPrice = filters.priceRange.to;
     }
 
     if (filters.departTimeRange) {
-      data.WHERE += ` and f${query.isRoundtrip ? 1 : ''}.dep_time BETWEEN "${filters.departTimeRange.from}" AND "${
-        filters.departTimeRange.to
-      }"`;
+      data.WHERE += ` and f${query.isRoundtrip ? 1 : ''}.dep_time BETWEEN :minDepartTime AND :maxDepartTime`;
+      data.args.minDepartTime = filters.departTimeRange.from;
+      data.args.maxDepartTime = filters.departTimeRange.to;
     }
 
     if (filters.returnTimeRange) {
-      data.WHERE += ` and f2.dep_time BETWEEN "${filters.returnTimeRange.from}" AND "${filters.returnTimeRange.to}"`;
+      data.WHERE += ` and f2.dep_time BETWEEN :minReturnTime AND :maxReturnTime`;
+      data.args.minReturnTime = filters.returnTimeRange.from;
+      data.args.maxReturnTime = filters.returnTimeRange.to;
     }
 
     if (filters.stops) {
-      data.WHERE += ` and ((f${query.isRoundtrip ? 1 : ''}.stops${
-        query.isRoundtrip ? ' || f2.stops' : ''
-      }) IN (${filters.stops.toString()}))`;
+      const stops = filters.stops.toString();
+
+      if (query.isRoundtrip) {
+        data.WHERE += ` and IF(f1.stops IN (${stops}) or f2.stops IN (${stops}), 1, 0)`;
+      } else {
+        data.WHERE += ` and f.stops IN (${stops})`;
+      }
     }
 
-    if (filters.airlines && query.isRoundtrip) {
-      data.WHERE += ` and ((al1.airline_name || al2.airline_name) IN ("${filters.airlines.join('", "')}"))`;
-    } else if (filters.airlines) {
-      data.WHERE += ` and al.airline_name IN ("${filters.airlines.join('", "')}")`;
+    if (filters.airlines) {
+      const airlines = filters.airlines.join('", "');
+
+      if (query.isRoundtrip) {
+        data.WHERE += ` and IF(al1.airline_name IN ("${airlines}") or al2.airline_name IN ("${airlines}"), 1, 0)`;
+      } else {
+        data.WHERE += ` and al.airline_name IN ("${airlines}")`;
+      }
     }
   }
+
+  console.log(query.filters);
+  console.log(data.args);
 
   return data;
 }

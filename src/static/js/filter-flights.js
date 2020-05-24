@@ -249,7 +249,6 @@ $(() => {
 
   $(document).on('click', '#loadMoreFlights', function scroll() {
     filters.skip = parseInt($(this).data('skip'), 10);
-    filters.loadMore = true;
 
     $(this).find('#text').text('Loading...');
     $(this).find('#loader').show();
