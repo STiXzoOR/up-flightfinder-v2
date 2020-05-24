@@ -190,18 +190,6 @@ class FlightFilterHandler {
     ];
   }
 
-  getDefaultPriceRange() {
-    const { min, max } = this.elements.priceRange.result;
-
-    return { from: min, to: max };
-  }
-
-  getDefaultTimeRange(type) {
-    const { min, max } = this.elements[type].result;
-
-    return { from: tsToTime(min), to: tsToTime(max) };
-  }
-
   getOffset(element) {
     const headerStyles = getComputedStyle(this.elements.header.get(0));
     const headerPosition = headerStyles.position;

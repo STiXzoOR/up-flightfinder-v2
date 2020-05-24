@@ -199,7 +199,7 @@ block content
 												i.fas.fa-search.fa-fw.mr-1.mr-lg-0
 												span.d-inline-block.d-lg-none.font-weight-bold SEARCH FLIGHTS
 			+preLoaderImage('gray')#preLoaderFlights.position-relative.bg-gray.py-10.py-sm-15
-			if flights.data.isEmpty
+			if flights.isEmpty
 				.p-5(style='display: none;')
 					h5.font-size-24.mb-0
 						.flex-center.flex-column
@@ -407,26 +407,29 @@ block content
 		+goUpButton
 
 block append scripts
-	if !flights.data.isEmpty
+	if !flights.isEmpty
 		script(src='/static/js/filter-flights-v2.js')
 
+		script.
+			$(() => {
+				const flightFilterHandler = new FlightFilterHandler({
+					price: {
+						min: #{flights.data.minTotalPrice},
+						max: #{flights.data.maxTotalPrice},
+					},
+					departTime: {
+						min: #{flights.data.minDepartTime.valueOf()},
+						max: #{flights.data.maxDepartTime.valueOf()}
+					},
+					returnTime: {
+						min: #{(flights.data.minReturnTime && flights.data.minReturnTime.valueOf()) || 0},
+						max: #{(flights.data.maxReturnTime && flights.data.maxReturnTime.valueOf()) || 0},
+					}
+				});
+			})
+			
 	script.
 		$(() => {
-			const flightFilterHandler = new FlightFilterHandler({
-				price: {
-					min: #{flights.data.minTotalPrice},
-					max: #{flights.data.maxTotalPrice},
-				},
-				departTime: {
-					min: #{flights.data.minDepartTime.valueOf()},
-					max: #{flights.data.maxDepartTime.valueOf()}
-				},
-				returnTime: {
-					min: #{(flights.data.minReturnTime && flights.data.minReturnTime.valueOf()) || 0},
-					max: #{(flights.data.maxReturnTime && flights.data.maxReturnTime.valueOf()) || 0},
-				}
-			});
-			
 			setTimeout(() => {
 				$('#preLoaderFlights').fadeOut(500, () => {
 					$('#preLoaderFlights').next().fadeIn(500)

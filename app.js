@@ -58,7 +58,7 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   if (req.session.user === undefined || !req.isAuthenticated()) {
-    req.session.user = { id: 0 };
+    req.session.user = { id: 1 };
   }
 
   res.locals.user = {
