@@ -76,8 +76,7 @@ function generateConditions(query) {
     const { filters } = query;
 
     if (filters.orderBy) {
-      data.ORDER = ':orderBy';
-      data.args.orderBy = filters.orderBy;
+      data.ORDER = `${filters.orderBy}`;
     }
 
     if (filters.skip || filters.limit) {
