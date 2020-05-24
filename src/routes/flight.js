@@ -54,6 +54,7 @@ function generateConditions(query) {
     departDate: query.dates,
     quantity: query.passengers.total,
     class: query.class,
+    hasFilters: query.hasFilters,
   };
 
   if (query.isRoundtrip) {
@@ -160,21 +161,10 @@ router.get('/search-flights', validate('searchFlightsQuery'), async (req, res, n
       return next(createError(airports.status, airports.message));
     }
 
-    const airlines =
-      (!flights.isEmpty &&
-        ((array) =>
-          array.reduce((accu, { departAirlineName, returnAirlineName }) => {
-            if (!accu.includes(departAirlineName)) accu.push(departAirlineName);
-            if (query.isRoundtrip && !accu.includes(returnAirlineName)) accu.push(returnAirlineName);
-
-            return accu;
-          }, []))(flights.data)) ||
-      [];
-
     return res.render('search-flights', {
       query,
       airports: airports.result,
-      airlines,
+      airlines: flights.airlines,
       flights: { isEmpty: flights.isEmpty, data: flights.counters, html: flightsHTML },
     });
   } catch (err) {

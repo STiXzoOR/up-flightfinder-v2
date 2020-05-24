@@ -349,31 +349,31 @@ block content
 													if index > 4
 														- lastIndex = index
 														- break
-													- var airlineID = `${airline.split(" ")[0].toLowerCase()}Air`
+													- var airlineID = `${airline.name.split(" ")[0].toLowerCase()}Air`
 													li.mb-3
 														.custom-control.custom-checkbox
 															input.filter-airlines-item.custom-control-input(
 																id=airlineID,
 																type='checkbox',
-																value=`${airline}`,
+																value=`${airline.name}`,
 																checked=''
 															)
-															label.custom-control-label(for=airlineID) #{airline}
+															label.custom-control-label(for=airlineID) #{airline.name}
 
 												if airlines.length > 5
 													#moreAirlines.collapse
 														ul.text-gray-1
 															while lastIndex < airlines.length
-																- var airlineID = `${airlines[lastIndex].split(" ")[0].toLowerCase()}Air`
+																- var airlineID = `${airlines[lastIndex].name.split(" ")[0].toLowerCase()}Air`
 																li.mb-3
 																	.custom-control.custom-checkbox
 																		input.filter-airlines-item.custom-control-input(
 																			id=airlineID,
 																			type='checkbox',
-																			value=`${airline}`,
+																			value=`${airline.name}`,
 																			checked=''
 																		)
-																		label.custom-control-label(for=airlineID) #{airlines[lastIndex]}
+																		label.custom-control-label(for=airlineID) #{airlines[lastIndex].name}
 																- lastIndex += 1
 													a.btn.btn-link.link-collapse(
 														data-toggle='collapse',

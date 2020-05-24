@@ -10,7 +10,7 @@ const airlines = [
     return $(this).val();
   }),
 ];
-let filters = { orderBy: '', limit: 5, stops: [...stops], airlines: [...airlines] };
+let filters = { orderBy: '', skip: 0, limit: 5, stops: [...stops], airlines: [...airlines] };
 const searchParams = new URLSearchParams(window.location.search);
 
 function loadPreloader() {
@@ -126,16 +126,16 @@ function checkBoxFilter(event) {
   filterHandler();
 }
 
-async function filterHandler({ loadMore = false } = {}) {
+async function filterHandler({ loadMore = false, isReset = false } = {}) {
   const preloader = $('#preLoaderFiltering');
   const flightsContainer = $('.flights-container');
   const queryResultsTotal = $('#queryResultsTotal');
   const sortFlightsBy = $('#sortFlightsBy');
   const totalFlights = parseInt(queryResultsTotal.text(), 10);
 
-  if (!loadMore) {
+  if (!loadMore && !isReset) {
     filters.limit = filters.skip ? filters.skip + 5 : filters.limit;
-    if (filters.limit > totalFlights) filters.limit = totalFlights;
+    if (totalFlights !== 0 && filters.limit > totalFlights) filters.limit = totalFlights;
     filters.skip = 0;
   } else {
     filters.limit = 5;
@@ -241,10 +241,10 @@ $(() => {
       sortFlightsBy.first().prop('selected', true).trigger('change.select2');
     }
 
-    filters = { orderBy: '', limit: 5, stops: [...stops], airlines: [...airlines] };
+    filters = { orderBy: '', skip: 0, limit: 5, stops: [...stops], airlines: [...airlines] };
 
     $(this).blur().fadeOut();
-    filterHandler();
+    filterHandler({ isReset: true });
   });
 
   $(document).on('click', '#loadMoreFlights', function scroll() {
