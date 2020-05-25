@@ -434,12 +434,15 @@ const getFlights = async ({
   ORDER = '',
   LIMIT = '',
   FETCH_ALL = true,
+  getAirlines = true,
+  getCounters = true,
 } = {}) => {
   const response = {
     status: 400,
     error: true,
     message: '',
   };
+  let data = [];
 
   let query =
     'SELECT f.flight_id as departFlightID, f.airline as departAirlineCode, al.airline_name as departAirlineName, DATE_FORMAT(f.dep_date, "%a, %d %b") as departDate, f.from_airport as departFromAirport, aprt1.city as departFromCity, aprt1.country as departFromCountry, TIME_FORMAT(f.dep_time, "%H:%i") as departTime, DATE_FORMAT(f.arr_date, "%a, %d %b") as departArrivalDate, f.to_airport as departToAirport, aprt2.city as departToCity, aprt2.country as departToCountry, TIME_FORMAT(f.arr_time, "%H:%i") as departArrivalTime, f.price as departPrice, f.taxes as departTaxes, f.class as departClass, TIME_FORMAT(f.duration, "%hh %im") as departDuration, ap.airplane_name as departAirplaneName, f.taxes as totalTaxes, (f.price + f.taxes) as totalFarePrice, ((f.price+f.taxes)*:quantity) as totalPrice FROM flight as f, airline as al, airplane as ap, airport as aprt1, airport as aprt2';
@@ -476,29 +479,33 @@ const getFlights = async ({
 
   if (LIMIT) query += ` LIMIT ${LIMIT}`;
 
-  try {
-    let data = await mysql.fetchOne(countQuery, args);
+  console.log(query);
 
-    if (data === null) {
-      response.status = 500;
-      response.error = true;
-      response.message = 'Database internal error.';
-    } else if (data.length === 0) {
-      response.status = 400;
-      response.error = true;
-      response.message = 'No results found for the requested query.';
-      response.result = { isEmpty: true };
-    } else {
-      response.status = 200;
-      response.error = false;
-      response.message = 'Counted flights.';
+  try {
+    if (getCounters) {
+      data = await mysql.fetchOne(countQuery, args);
+
+      if (data === null) {
+        response.status = 500;
+        response.error = true;
+        response.message = 'Database internal error.';
+      } else if (data.length === 0) {
+        response.status = 400;
+        response.error = true;
+        response.message = 'No results found for the requested query.';
+        response.result = { isEmpty: true };
+      } else {
+        response.status = 200;
+        response.error = false;
+        response.message = 'Counted flights.';
+      }
+
+      if (response.error) return response;
+
+      var counters = data[0];
     }
 
-    if (response.error) return response;
-
-    const counters = data[0];
-
-    if (!args.hasFilters) {
+    if (getAirlines) {
       data = await mysql.fetch(airlinesQuery, args);
 
       if (data === null) {
@@ -519,8 +526,6 @@ const getFlights = async ({
       if (response.error) return response;
 
       var airlines = data;
-
-
     }
 
     data = FETCH_ALL ? await mysql.fetch(query, args) : await mysql.fetchOne(query, args);
@@ -538,7 +543,9 @@ const getFlights = async ({
       response.status = 200;
       response.error = false;
       response.message = 'Flights retrieved.';
-      response.result = { isEmpty: false, data, counters, airlines };
+      response.result = { isEmpty: false, data };
+      if (counters) response.result.counters = counters;
+      if (airlines) response.result.airlines = airlines;
     }
 
     return response;
@@ -559,7 +566,7 @@ const getBooking = async ({ args = {}, byID = false, byLastName = true } = {}) =
   };
 
   let query =
-    'SELECT booking_id as id, depart_flight_id as departFlightID, depart_flight_date as departDate, return_flight_id as returnFlightID, return_flight_date as returnDate, flight_class as class, DATE_FORMAT(booking_date, "%a, %d %b") as bookedDate, first_name as contactFirstName, last_name as contactLastName, email as contactEmail, mobile as contactMobile, total_passengers as quantity, price_per_passenger as pricePerPassenger, total_price as totalPrice, flight_type as flightType, status, status = "CANCELED" as isCanceled FROM booking WHERE booking_id=:bookingID';
+    'SELECT booking_id as id, depart_flight_id as departFlightID, depart_flight_date as departDate, return_flight_id as returnFlightID, return_flight_date as returnDate, flight_class as class, DATE_FORMAT(booking_date, "%a, %d %b") as bookedDate, first_name as contactFirstName, last_name as contactLastName, email as contactEmail, mobile as contactMobile, total_passengers as quantity, price_per_passenger as pricePerPassenger, total_price as totalPrice, flight_type as flightType, flight_type = "Roundtrip" as isRoundtrip, status, status = "CANCELED" as isCanceled FROM booking WHERE booking_id=:bookingID';
 
   if (byID) {
     query += ' and customer_id=:customerID';

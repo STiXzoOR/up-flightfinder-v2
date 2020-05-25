@@ -54,7 +54,14 @@ router.get('/new-booking', validate('newBookingQuery'), async (req, res, next) =
         'f1.flight_id=:departFlightID and f1.dep_date=:departDate and f1.class=:class and f2.flight_id=:returnFlightID and f2.dep_date=:returnDate and f2.class=:class and al1.airline_code=f1.airline and ap1.airplane_model=f1.airplane and aprt1.airport_code=f1.from_airport and aprt2.airport_code=f1.to_airport and al2.airline_code=f2.airline and ap2.airplane_model=f2.airplane and aprt3.airport_code=f2.from_airport and aprt4.airport_code=f2.to_airport and f1.dep_date >= CURRENT_DATE and f2.dep_date >= CURRENT_DATE';
     }
 
-    const flight = await getFlights({ isRoundtrip: query.isRoundtrip, args: query, WHERE, FETCH_ALL: false });
+    const flight = await getFlights({
+      isRoundtrip: query.isRoundtrip,
+      args: query,
+      WHERE,
+      getAirlines: false,
+      getCounters: false,
+      FETCH_ALL: false,
+    });
 
     if (flight.error) {
       return next(createError(flight.status, flight.message));
@@ -68,7 +75,7 @@ router.get('/new-booking', validate('newBookingQuery'), async (req, res, next) =
 
     req.session.flightData = query;
 
-    return res.render('new-booking', { query, flight: flight.result[0], countries: countries.result });
+    return res.render('new-booking', { query, flight: flight.result.data[0], countries: countries.result });
   } catch (err) {
     console.log(err);
     return next(err);
@@ -221,7 +228,7 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
       quantity: booking.quantity,
     };
 
-    if (booking.flightType === 'Roundtrip') {
+    if (booking.isRoundtrip) {
       WHERE =
         'f1.flight_id=:departFlightID and f1.dep_date=:departDate and f1.class=:class and f2.flight_id=:returnFlightID and f2.dep_date=:returnDate and f2.class=:class and al1.airline_code=f1.airline and ap1.airplane_model=f1.airplane and aprt1.airport_code=f1.from_airport and aprt2.airport_code=f1.to_airport and al2.airline_code=f2.airline and ap2.airplane_model=f2.airplane and aprt3.airport_code=f2.from_airport and aprt4.airport_code=f2.to_airport';
 
@@ -233,9 +240,11 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
     }
 
     let flight = await getFlights({
-      isRoundtrip: booking.flightType === 'Roundtrip',
+      isRoundtrip: booking.isRoundtrip,
       args,
       WHERE,
+      getAirlines: false,
+      getCounters: false,
       FETCH_ALL: false,
     });
 
@@ -243,8 +252,8 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
       return next(createError(flight.status, flight.message));
     }
 
-    [flight] = flight.result;
-    flight.isRoundtrip = booking.flightType === 'Roundtrip';
+    [flight] = flight.result.data;
+    flight.isRoundtrip = booking.isRoundtrip;
 
     let passengers = await getBookingPassengers(booking.id);
 

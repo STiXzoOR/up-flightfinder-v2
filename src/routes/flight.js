@@ -74,6 +74,7 @@ function generateConditions(query) {
 
   if (query.hasFilters) {
     const { filters } = query;
+    data.getAirlines = false;
 
     if (filters.orderBy) {
       data.ORDER = `${filters.orderBy}`;
@@ -125,9 +126,6 @@ function generateConditions(query) {
       }
     }
   }
-
-  console.log(query.filters);
-  console.log(data.args);
 
   return data;
 }
