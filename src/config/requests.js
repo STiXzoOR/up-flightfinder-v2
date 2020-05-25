@@ -1,3 +1,4 @@
+/* eslint-disable block-scoped-var */
 /* eslint-disable vars-on-top */
 /* eslint-disable no-var */
 /* eslint-disable global-require */
@@ -72,6 +73,12 @@ const checkPasswordMatch = async (args = {}) => {
 };
 
 const checkBookingExists = async ({ args = {}, byID = false, byLastName = true } = {}) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
   let query = 'SELECT booking_id FROM booking WHERE booking_id=:bookingID';
 
   if (byID) {
@@ -86,6 +93,64 @@ const checkBookingExists = async ({ args = {}, byID = false, byLastName = true }
     const data = await mysql.fetchOne(query, args);
 
     return data.length !== 0;
+  } catch (err) {
+    console.log(err);
+    response.status = 400;
+    response.error = true;
+    response.message = err;
+    return response;
+  }
+};
+
+const checkBookingAlreadyBooked = async (args = {}) => {
+  const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const queryBooked =
+    'SELECT booking_id FROM booking WHERE customer_id=:customerID and depart_flight_id=:flightID and depart_flight_date=:departDate and flight_class=:class';
+  const queryCanBook =
+    'SELECT IF(f1.arr_date < f2.dep_date or (f1.arr_date >= f2.dep_date and b.status="CANCELED"), 1, 0) as canBook FROM booking as b, flight as f1, flight as f2, (SELECT IF(MAX(return_flight_date) IS NOT NULL, IF(MAX(depart_flight_date) > MAX(return_flight_date), MAX(depart_flight_date), MAX(return_flight_date)), MAX(depart_flight_date)) as max_date FROM booking WHERE customer_id=:customerID) as t WHERE IF(b.return_flight_date IS NOT NULL and b.return_flight_date=t.max_date, (b.return_flight_date=t.max_date and f1.flight_id=b.return_flight_id and f1.dep_date=b.return_flight_date), (b.depart_flight_date=t.max_date and f1.flight_id=b.depart_flight_id and f1.dep_date=b.depart_flight_date)) and f1.class=b.flight_class and b.customer_id=:customerID and f2.flight_id=:flightID and f2.dep_date=:departDate and f2.class=:class';
+
+  console.log(args);
+
+  try {
+    let data = await mysql.fetchOne(queryBooked, args.alreadyBooked || args);
+
+    if (data === null) {
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    } else {
+      response.status = 200;
+      response.error = false;
+    }
+
+    if (response.error) return response;
+    if (data.length === 0) return true;
+
+    data = await mysql.fetchOne(queryCanBook, args.canBook || args);
+
+    if (data === null) {
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    } else if (data.length === 0) {
+      response.status = 400;
+      response.error = true;
+      response.message = 'No results found for the requested query.';
+    } else {
+      response.status = 200;
+      response.error = false;
+    }
+
+    if (response.error) return response;
+
+    console.log(data);
+
+    return data[0].canBook;
   } catch (err) {
     console.log(err);
     response.status = 400;
@@ -1274,6 +1339,7 @@ module.exports = {
   sendVerificationLink,
   checkPasswordMatch,
   checkBookingExists,
+  checkBookingAlreadyBooked,
   getUserDetails,
   getSessionUser,
   getCountries,

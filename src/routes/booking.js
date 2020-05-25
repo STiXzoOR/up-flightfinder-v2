@@ -13,6 +13,7 @@ const {
   updateBooking,
   cancelBooking,
   checkBookingExists,
+  checkBookingAlreadyBooked,
 } = require('../config/requests');
 
 const router = express.Router();
@@ -46,6 +47,40 @@ router.get('/new-booking', validate('newBookingQuery'), async (req, res, next) =
   query.passengers = JSON.parse(query.passengers);
 
   try {
+    if (req.user && req.user.role === 'USER') {
+      let args = {
+        customerID: req.user.id,
+        flightID: query.departFlightID,
+        departDate: query.departDate,
+        class: query.class,
+      };
+
+      if (query.isRoundtrip) {
+        args = {
+          alreadyBooked: { ...args },
+          canBook: { ...args },
+        };
+
+        args.canBook.flightID = query.returnFlightID;
+        args.canBook.departDate = query.returnDate;
+      }
+
+      const canBook = await checkBookingAlreadyBooked(args);
+
+      if (typeof canBook === 'object' && canBook.err) {
+        return next(createError(canBook.status, canBook.message));
+      }
+
+      if (!canBook) {
+        res.flash(
+          'error',
+          "You can't book this flight route right now as you have recently booked a similar flight route. You can only book a flight route which doesn't overlap with your last booking. Meanwhile you can manage your latest booking below."
+        );
+
+        return res.redirect('/user/profile');
+      }
+    }
+
     let WHERE =
       'f.flight_id=:departFlightID and f.dep_date=:departDate and f.class=:class and al.airline_code=f.airline and ap.airplane_model=f.airplane and aprt1.airport_code=f.from_airport and aprt2.airport_code=f.to_airport and f.dep_date >= CURRENT_DATE';
 
