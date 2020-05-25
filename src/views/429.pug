@@ -1,0 +1,15 @@
+extends layout
+
+block title
+	title Too many requests - Flight Finder
+
+block content
+	main(role='main')
+		.container.py-5.py-md-10
+			.row.justify-content-center.align-items-center
+				.col-md-5.text-center.text-md-left.order-2.order-md-1
+					h1.text-dark.font-weight-bold.text-md-nowrap.text-lh-1.mb-4 Too many requests
+					p.text-muted.text-justify.mb-4 We are sorry, but you have sent too many #{message.toLowerCase()}. Please try again later.
+					a.btn.btn-primary.px-4(href='/') Back to Home
+				.col-md-7.text-center.order-1.order-md-2.mb-4.mb-md-0
+					img.img-fluid.w-xl-90(src='/static/images/svg/undraw_deliveries.svg', alt='Too Many Requests')

@@ -88,7 +88,9 @@ app.use((err, req, res, next) => {
   }
 
   const error = err.status || 500;
-  return res.status(error).render(`${error}`);
+  const message = error === 429 ? err.message : undefined;
+
+  return res.status(error).render(`${error}`, { message });
 });
 
 module.exports = app;
