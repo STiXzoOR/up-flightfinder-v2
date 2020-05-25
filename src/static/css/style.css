@@ -4361,10 +4361,10 @@ a.badge-soft-white.focus {
 }
 
 @media (max-width: 991px) {
-.btn-clear-filters-mobile.show {
-	visibility: visible;
-	opacity: 1;
-}
+	.btn-clear-filters-mobile.show {
+		visibility: visible;
+		opacity: 1;
+	}
 }
 
 /*-------------------------------------------*\
@@ -19594,7 +19594,98 @@ a.text-dark-2:focus {
 }
 
 /*-------------------------------------------*\
-    2.20.9 Position
+    2.20.9 Text Align
+\*-------------------------------------------*/
+
+.text-justify {
+	text-align: justify !important;
+}
+
+.text-left {
+	text-align: left !important;
+}
+
+.text-right {
+	text-align: right !important;
+}
+
+.text-center {
+	text-align: center !important;
+}
+
+@media (min-width: 576px) {
+	.text-sm-justify {
+		text-align: justify !important;
+	}
+
+	.text-sm-left {
+		text-align: left !important;
+	}
+
+	.text-sm-right {
+		text-align: right !important;
+	}
+
+	.text-sm-center {
+		text-align: center !important;
+	}
+}
+
+@media (min-width: 768px) {
+	.text-md-justify {
+		text-align: justify !important;
+	}
+
+	.text-md-left {
+		text-align: left !important;
+	}
+
+	.text-md-right {
+		text-align: right !important;
+	}
+
+	.text-md-center {
+		text-align: center !important;
+	}
+}
+
+@media (min-width: 992px) {
+	.text-lg-justify {
+		text-align: justify !important;
+	}
+
+	.text-lg-left {
+		text-align: left !important;
+	}
+
+	.text-lg-right {
+		text-align: right !important;
+	}
+
+	.text-lg-center {
+		text-align: center !important;
+	}
+}
+
+@media (min-width: 1200px) {
+	.text-xl-justify {
+		text-align: justify !important;
+	}
+
+	.text-xl-left {
+		text-align: left !important;
+	}
+
+	.text-xl-right {
+		text-align: right !important;
+	}
+
+	.text-xl-center {
+		text-align: center !important;
+	}
+}
+/*-------------------------------------------*\
+    2.20.10 Position
 \*-------------------------------------------*/
 
 @media (min-width: 576px) {
@@ -19859,7 +19950,7 @@ a.text-dark-2:focus {
 }
 
 /*-------------------------------------------*\
-    2.20.10 Background
+    2.20.11 Background
 \*-------------------------------------------*/
 
 .bg-gray {
@@ -20682,7 +20773,7 @@ button.bg-soft-gray:focus {
 }
 
 /*-------------------------------------------*\
-    2.20.11 Dividers
+    2.20.12 Dividers
 \*-------------------------------------------*/
 
 .vr {
@@ -20700,7 +20791,7 @@ button.bg-soft-gray:focus {
 }
 
 /*-------------------------------------------*\
-    2.20.12 Animations
+    2.20.13 Animations
 \*-------------------------------------------*/
 
 .fadeIn {
@@ -20885,7 +20976,7 @@ button.bg-soft-gray:focus {
 }
 
 /*-------------------------------------------*\
-    2.20.13 Font Awesome
+    2.20.14 Font Awesome
 \*-------------------------------------------*/
 
 :root .fa-rotate-45,
