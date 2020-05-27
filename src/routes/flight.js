@@ -142,7 +142,8 @@ router.get('/search-flights', flightSearchLimiter, validate('searchFlightsQuery'
     const conditions = generateConditions(query);
     let flights = await getFlights({ isRoundtrip: query.isRoundtrip, ...conditions });
 
-    if (flights.error && flights.status === 500) {
+    if (flights.error && (flights.tryCatchError || flights.status === 500)) {
+      if (flights.tryCatchError) return next(flights.result);
       return next(createError(flights.status, flights.message));
     }
 
@@ -171,6 +172,7 @@ router.get('/search-flights', flightSearchLimiter, validate('searchFlightsQuery'
     const airports = await getAirports();
 
     if (airports.error) {
+      if (airports.tryCatchError) return next(airports.result);
       return next(createError(airports.status, airports.message));
     }
 

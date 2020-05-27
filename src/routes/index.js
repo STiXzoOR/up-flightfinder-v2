@@ -11,6 +11,8 @@ router.get('/', async (req, res, next) => {
 
     if (airports.error || destinations.error) {
       const response = (airports.error && airports) || destinations;
+
+      if (response.tryCatchError) return next(response.result);
       return next(createError(response.status, response.message));
     }
 

@@ -22,12 +22,13 @@ router.get('/', (req, res, next) => {
   return next(createError(400));
 });
 
-router.post('/add', permit('USER'), async (req, res, next) => {
+router.post('/add', permit({ roles: 'USER' }), async (req, res, next) => {
   const { body } = req;
 
   try {
     const response = await insertUserBooking({ customerID: req.user.id, ...body });
 
+    if (response.error && response.tryCatchError) return next(response.result);
     if (!response.error) {
       response.message = 'The booking has been successfully added to your bookings history.';
     }
@@ -66,11 +67,12 @@ router.get('/new-booking', validate('newBookingQuery'), async (req, res, next) =
 
       const canBook = await checkBookingAlreadyBooked(args);
 
-      if (typeof canBook === 'object' && canBook.err) {
+      if (canBook.error) {
+        if (canBook.tryCatchError) return next(canBook.result);
         return next(createError(canBook.status, canBook.message));
       }
 
-      if (!canBook) {
+      if (!canBook.result) {
         res.flash(
           'error',
           "You can't book this flight route right now as you have recently booked a similar flight route. You can only book a flight route which doesn't overlap with your last booking. Meanwhile you can manage your latest booking below."
@@ -98,12 +100,14 @@ router.get('/new-booking', validate('newBookingQuery'), async (req, res, next) =
     });
 
     if (flight.error) {
+      if (flight.tryCatchError) return next(flight.result);
       return next(createError(flight.status, flight.message));
     }
 
     const countries = await getCountries();
 
     if (countries.error) {
+      if (countries.tryCatchError) return next(countries.result);
       return next(createError(countries.status, countries.message));
     }
 
@@ -137,7 +141,12 @@ router.post('/new-booking/thank-you', async (req, res, next) => {
       bookingID = await Math.random().toString(36).toUpperCase().substr(2, 6);
       found = await checkBookingExists({ args: { bookingID }, byLastName: false });
 
-      if (typeof found !== 'boolean') return next(found);
+      if (found.error) {
+        if (found.tryCatchError) return next(found.result);
+        return next(createError(found.status, found.message));
+      }
+
+      found = found.result;
     } while (found);
 
     for (let i = 0; i < flightData.quantity; i++) {
@@ -201,10 +210,11 @@ router.post('/new-booking/thank-you', async (req, res, next) => {
       bookingDetails.returnDate = flightData.returnDate;
     }
 
-    const bookingResponse = await insertBooking({ args: bookingDetails });
+    const response = await insertBooking({ args: bookingDetails });
 
-    if (bookingResponse.error) {
-      return next(createError(bookingResponse.status, bookingResponse.message));
+    if (response.error) {
+      if (response.tryCatchError) return next(response.result);
+      return next(createError(response.status, response.message));
     }
 
     await Promise.all(passengerInfo.map(async (passenger) => insertPassenger(passenger))).catch((err) => {
@@ -233,7 +243,18 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
   const byID = /(\/user\/profile)/.test(req.get('Referrer'));
 
   try {
-    if (!(await checkBookingExists({ args: { bookingID, customerID, lastName }, byID, byLastName: true }))) {
+    const bookingExists = await checkBookingExists({
+      args: { bookingID, customerID, lastName },
+      byID,
+      byLastName: true,
+    });
+
+    if (bookingExists.error) {
+      if (bookingExists.tryCatchError) return next(bookingExists.result);
+      return next(createError(bookingExists.status, bookingExists.message));
+    }
+
+    if (!bookingExists.result) {
       res.flash(
         'error',
         'We are unable to find the booking reference you provided. Please validate that your information is correct and try again.'
@@ -244,6 +265,7 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
     let booking = await getBooking({ args: { bookingID, customerID, lastName }, byID });
 
     if (booking.error) {
+      if (booking.tryCatchError) return next(booking.result);
       return next(createError(booking.status, booking.message));
     }
 
@@ -280,6 +302,7 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
     });
 
     if (flight.error) {
+      if (flight.tryCatchError) return next(flight.result);
       return next(createError(flight.status, flight.message));
     }
 
@@ -289,6 +312,7 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
     let passengers = await getBookingPassengers(booking.id);
 
     if (passengers.error) {
+      if (passengers.tryCatchError) return next(passengers.result);
       return next(createError(passengers.status, passengers.message));
     }
 
@@ -306,6 +330,8 @@ router.post('/manage-booking/bookingID=:bookingID&lastName=:lastName/edit', asyn
 
   try {
     const response = await updateBooking({ ...params, ...body });
+
+    if (response.error && response.tryCatchError) return next(response.result);
 
     res.flash(response.error ? 'error' : 'success', response.message);
     return res.redirect(
@@ -326,6 +352,7 @@ router.post('/manage-booking/bookingID=:bookingID&lastName=:lastName/cancel', as
     const response = await cancelBooking({ ...params, ...body });
 
     if (response.error) {
+      if (response.tryCatchError) return next(response.result);
       res.flash('error', response.message);
     }
 

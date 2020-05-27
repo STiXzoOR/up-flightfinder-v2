@@ -65,10 +65,10 @@ const checkPasswordMatch = async (args = {}) => {
 
     return response;
   } catch (err) {
-    console.log(err);
-    response.status = 400;
     response.error = true;
-    response.message = err;
+    response.tryCatchError = true;
+    response.status = err.status;
+    response.result = err;
     return response;
   }
 };
@@ -93,12 +93,22 @@ const checkBookingExists = async ({ args = {}, byID = false, byLastName = true }
   try {
     const data = await mysql.fetchOne(query, args);
 
-    return data.length !== 0;
+    if (data === null) {
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    } else {
+      response.status = 200;
+      response.error = false;
+      response.result = data.length === 0;
+    }
+
+    return response;
   } catch (err) {
-    console.log(err);
-    response.status = 400;
     response.error = true;
-    response.message = err;
+    response.tryCatchError = true;
+    response.status = err.status;
+    response.result = err;
     return response;
   }
 };
@@ -125,10 +135,10 @@ const checkBookingAlreadyBooked = async (args = {}) => {
     } else {
       response.status = 200;
       response.error = false;
+      response.result = data.length === 0;
     }
 
-    if (response.error) return response;
-    if (data.length === 0) return true;
+    if (response.error || data.length === 0) return response;
 
     data = await mysql.fetchOne(queryCanBook, args.canBook || args);
 
@@ -143,16 +153,15 @@ const checkBookingAlreadyBooked = async (args = {}) => {
     } else {
       response.status = 200;
       response.error = false;
+      response.result = data[0].canBook;
     }
 
-    if (response.error) return response;
-
-    return data[0].canBook;
+    return response;
   } catch (err) {
-    console.log(err);
-    response.status = 400;
     response.error = true;
-    response.message = err;
+    response.tryCatchError = true;
+    response.status = err.status;
+    response.result = err;
     return response;
   }
 };
@@ -345,10 +354,10 @@ const getUserDetails = async ({ args = {}, byID = true, byEmail = false, partial
 
     return response;
   } catch (err) {
-    console.log(err);
-    response.status = 400;
     response.error = true;
-    response.message = err;
+    response.tryCatchError = true;
+    response.status = err.status;
+    response.result = err;
     return response;
   }
 };
@@ -368,10 +377,10 @@ const getSessionUser = async (args = {}) => {
 
     return !responsePassword.error ? response : responsePassword;
   } catch (err) {
-    console.log(err);
-    response.status = 400;
     response.error = true;
-    response.message = err;
+    response.tryCatchError = true;
+    response.status = err.status;
+    response.result = err;
     return response;
   }
 };
@@ -405,10 +414,10 @@ const getCountries = async () => {
 
     return response;
   } catch (err) {
-    console.log(err);
-    response.status = 400;
     response.error = true;
-    response.message = err;
+    response.tryCatchError = true;
+    response.status = err.status;
+    response.result = err;
     return response;
   }
 };
@@ -443,10 +452,10 @@ const getPopularDestinations = async () => {
 
     return response;
   } catch (err) {
-    console.log(err);
-    response.status = 400;
     response.error = true;
-    response.message = err;
+    response.tryCatchError = true;
+    response.status = err.status;
+    response.result = err;
     return response;
   }
 };
@@ -480,10 +489,10 @@ const getAirports = async () => {
 
     return response;
   } catch (err) {
-    console.log(err);
-    response.status = 400;
     response.error = true;
-    response.message = err;
+    response.tryCatchError = true;
+    response.status = err.status;
+    response.result = err;
     return response;
   }
 };
@@ -610,10 +619,10 @@ const getFlights = async ({
 
     return response;
   } catch (err) {
-    console.log(err);
-    response.status = 400;
     response.error = true;
-    response.message = err;
+    response.tryCatchError = true;
+    response.status = err.status;
+    response.result = err;
     return response;
   }
 };
@@ -656,10 +665,10 @@ const getBooking = async ({ args = {}, byID = false, byLastName = true } = {}) =
 
     return response;
   } catch (err) {
-    console.log(err);
-    response.status = 400;
     response.error = true;
-    response.message = err;
+    response.tryCatchError = true;
+    response.status = err.status;
+    response.result = err;
     return response;
   }
 };
@@ -694,10 +703,10 @@ const getBookingPassengers = async (bookingID = '') => {
 
     return response;
   } catch (err) {
-    console.log(err);
-    response.status = 400;
     response.error = true;
-    response.message = err;
+    response.tryCatchError = true;
+    response.status = err.status;
+    response.result = err;
     return response;
   }
 };
@@ -732,10 +741,10 @@ const getUserBookings = async (userID = '') => {
 
     return response;
   } catch (err) {
-    console.log(err);
-    response.status = 400;
     response.error = true;
-    response.message = err;
+    response.tryCatchError = true;
+    response.status = err.status;
+    response.result = err;
     return response;
   }
 };
@@ -790,10 +799,10 @@ const insertUser = async (args = {}) => {
 
     return response;
   } catch (err) {
-    console.log(err);
-    response.status = 400;
     response.error = true;
-    response.message = err;
+    response.tryCatchError = true;
+    response.status = err.status;
+    response.result = err;
     return response;
   }
 };
@@ -900,7 +909,8 @@ const insertUserBooking = async (args = {}) => {
 
     const exists = await checkBookingExists({ args, byID: true });
 
-    if (exists) {
+    if (exists.error) return exists;
+    if (exists.result) {
       response.message = 'The booking you are trying to add already exists in your bookings history.';
       return response;
     }
@@ -909,10 +919,10 @@ const insertUserBooking = async (args = {}) => {
 
     return await insertBooking({ args: data[0], updateFlight: false });
   } catch (err) {
-    console.log(err);
-    response.status = 400;
     response.error = true;
-    response.message = err;
+    response.tryCatchError = true;
+    response.status = err.status;
+    response.result = err;
     return response;
   }
 };
@@ -1199,10 +1209,10 @@ const cancelBooking = async (args = {}) => {
 
     [booking] = data;
   } catch (err) {
-    console.log(err);
-    response.status = 400;
     response.error = true;
-    response.message = err;
+    response.tryCatchError = true;
+    response.status = err.status;
+    response.result = err;
     return response;
   }
 

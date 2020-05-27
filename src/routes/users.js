@@ -40,7 +40,9 @@ router.get('/sign-up', (req, res, next) => {
 });
 
 router.get('/sign-out', permit({ roles: 'USER' }), (req, res) => {
-  req.session.destroy(() => {
+  req.session.destroy((err) => {
+    if (err) return next(err);
+
     req.logout();
     return res.redirect('/');
   });
@@ -53,6 +55,8 @@ router.post('/sign-in', (req, res, next) => {
     }
 
     if (response.error) {
+      if (response.tryCatchError) return next(response.result);
+
       res.flash('error', response.message);
       return res.redirect('/user/sign-in');
     }
@@ -78,6 +82,8 @@ router.post('/sign-up', createAccountLimiter, async (req, res, next) => {
     let response = await insertUser(body);
 
     if (response.error) {
+      if (response.tryCatchError) return next(response.result);
+
       res.flash('error', response.message);
       return res.redirect('/user/sign-up');
     }
@@ -93,6 +99,8 @@ router.post('/sign-up', createAccountLimiter, async (req, res, next) => {
       response = await sendVerificationLink({ args });
 
       if (response.error) {
+        if (response.tryCatchError) return next(response.result);
+
         res.flash('error', response.message);
         return res.redirect('/user/sign-up');
       }
@@ -111,18 +119,21 @@ router.get('/profile', permit({ roles: 'USER', requireVerification: false }), as
     const details = await getUserDetails({ args: { customerID } });
 
     if (details.error) {
+      if (details.tryCatchError) return next(details.result);
       return next(createError(details.status, details.message));
     }
 
     const bookings = await getUserBookings(customerID);
 
-    if (bookings.error && bookings.status === 500) {
+    if (bookings.error && (bookings.tryCatchError || bookings.status === 500)) {
+      if (bookings.tryCatchError) return next(bookings.result);
       return next(createError(bookings.status, bookings.message));
     }
 
     const countries = await getCountries();
 
     if (countries.error) {
+      if (countries.tryCatchError) return next(countries.result);
       return next(createError(countries.status, countries.message));
     }
 
@@ -143,6 +154,8 @@ router.post('/edit/personal', permit({ roles: 'USER' }), async (req, res, next) 
   try {
     const response = await updateUserDetails({ customerID: req.user.id, ...body });
 
+    if (response.error && response.tryCatchError) return next(response.result);
+
     res.flash(response.error ? 'error' : 'success', response.message);
     return res.redirect('/user/profile');
   } catch (err) {
@@ -157,11 +170,15 @@ router.post('/edit/password', permit({ roles: 'USER' }), async (req, res, next) 
     const response = await updateUserPassword({ args: { customerID: req.user.id, ...body } });
 
     if (response.error) {
+      if (response.tryCatchError) return next(response.result);
+
       res.flash('error', response.message);
       return res.redirect('/user/profile');
     }
 
-    return req.session.destroy(() => {
+    return req.session.destroy((err) => {
+      if (err) return next(err);
+
       req.logout();
       return res.redirect('/user/sign-in');
     });
@@ -175,14 +192,13 @@ router.post('/delete', permit({ roles: 'USER' }), async (req, res, next) => {
     const response = await removeUser({ customerID: req.user.id, ...req.body });
 
     if (response.error) {
+      if (response.tryCatchError) return next(response.result);
+
       res.flash('error', response.message);
       return res.redirect('/user/profile');
     }
 
-    return req.session.destroy(() => {
-      req.logout();
-      return res.redirect('/');
-    });
+    return res.redirect('/user/sign-out');
   } catch (err) {
     return next(err);
   }
@@ -200,7 +216,9 @@ if (useMailgun) {
       let response = await getUserDetails({ args: { email }, byID: false, byEmail: true, partial: true });
 
       if (response.error) {
-        if (response.status === 400 && typeof response.message === 'string') {
+        if (response.tryCatchError) return next(response.result);
+
+        if (response.status === 400) {
           res.flash('error', response.message);
           return res.redirect('/user/forgot-password');
         }
@@ -219,6 +237,8 @@ if (useMailgun) {
 
       response = await sendVerificationLink({ args, type: 'password' });
 
+      if (response.error && response.tryCatchError) return next(response.result);
+
       res.flash(response.error ? 'error' : 'success', response.message);
       return res.redirect('/user/sign-in');
     } catch (err) {
@@ -233,6 +253,8 @@ if (useMailgun) {
       const response = await verifyToken({ token, type: 'password' });
 
       if (response.error) {
+        if (response.tryCatchError) return next(response.result);
+
         res.flash('error', response.message);
         return res.redirect('/user/sign-in');
       }
@@ -252,7 +274,9 @@ if (useMailgun) {
       let response = await getUserDetails({ args: { customerID: body.customerID }, partial: true });
 
       if (response.error) {
-        if (response.status === 400 && typeof response.message === 'string') {
+        if (response.tryCatchError) return next(response.result);
+
+        if (response.status === 400) {
           res.flash('error', response.message);
           return res.redirect('/user/sign-in');
         }
@@ -265,6 +289,8 @@ if (useMailgun) {
       response = await updateUserPassword({ args: body, matchPasswords: false, expireToken: true });
 
       if (response.error) {
+        if (response.tryCatchError) return next(response.result);
+
         res.flash('error', response.message);
         return res.redirect(route);
       }
@@ -291,6 +317,8 @@ if (useMailgun) {
       let response = await verifyToken({ token });
 
       if (response.error) {
+        if (response.tryCatchError) return next(response.result);
+
         res.flash('error', response.message);
         return res.redirect(route);
       }
@@ -300,6 +328,8 @@ if (useMailgun) {
       response = await updateUserStatus(customerID);
 
       if (response.error) {
+        if (response.tryCatchError) return next(response.result);
+
         res.flash('error', response.message);
         return res.redirect(route);
       }
@@ -309,7 +339,9 @@ if (useMailgun) {
       response = await getUserDetails({ args: { customerID }, partial: true });
 
       if (response.error) {
-        if (response.status === 400 && typeof response.message === 'string') {
+        if (response.tryCatchError) return next(response.result);
+
+        if (response.status === 400) {
           res.flash('error', response.message);
           return res.redirect(route);
         }
@@ -341,6 +373,7 @@ if (useMailgun) {
       let response = await getUserDetails({ args: { email }, byID: false, byEmail: true, partial: true });
 
       if (response.error) {
+        if (response.tryCatchError) return next(response.result);
         return next(createError(response.status, response.message));
       }
 
@@ -354,6 +387,8 @@ if (useMailgun) {
       };
 
       response = await sendVerificationLink({ args });
+
+      if (response.error && response.tryCatchError) return next(response.result);
 
       res.flash(response.error ? 'error' : 'success', response.message);
       return res.redirect(route);
