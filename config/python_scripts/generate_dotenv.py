@@ -8,11 +8,21 @@ WINDOWS = platform.system() == "Windows"
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
+    "--node-env",
+    metavar="env",
+    type=str,
+    default="dev",
+    action="store",
+    help="node environment (default: dev)",
+)
+
+parser.add_argument(
     "--debug",
     default="",
     action="store_true",
     help="enabled debugging mode (default: disabled)",
 )
+
 parser.add_argument(
     "--database-host",
     metavar="host",
@@ -21,6 +31,7 @@ parser.add_argument(
     action="store",
     help="database host to connect (default: localhost)",
 )
+
 parser.add_argument(
     "--database-user",
     metavar="username",
@@ -29,6 +40,7 @@ parser.add_argument(
     action="store",
     help="database user to connect (default: root)",
 )
+
 parser.add_argument(
     "--database-password",
     metavar="password",
@@ -84,9 +96,7 @@ args = parser.parse_args()
 if (
     args.use_mailgun
     and args.mailgun_base
-    and not (
-        args.mailgun_api_key and args.mailgun_domain and args.mailgun_sender_email
-    )
+    and not (args.mailgun_api_key and args.mailgun_domain and args.mailgun_sender_email)
 ):
     parser.error(
         "You can't use --mailgun-base without --mailgun-api-key, --mailgun-domain and --mailgun-sender-email!"
@@ -116,6 +126,7 @@ if args.use_mailgun:
     args.mailgun_base = "api{base}.mailgun.net".format(base=base)
 
 VARS = {
+    "NODE_ENV": args.env,
     "DEBUG_STATUS": args.debug,
     "SECRET_KEY": secrets.token_urlsafe(24),
     "DB_NAME": "flightfinder",
