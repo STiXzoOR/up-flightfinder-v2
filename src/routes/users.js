@@ -101,7 +101,6 @@ router.post('/sign-up', createAccountLimiter, async (req, res, next) => {
     res.flash('success', response.message);
     return res.redirect('/user/sign-in');
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 });
@@ -133,7 +132,6 @@ router.get('/profile', permit({ roles: 'USER', requireVerification: false }), as
       countries: countries.result,
     });
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 });
@@ -168,7 +166,6 @@ router.post('/edit/password', permit({ roles: 'USER' }), async (req, res, next) 
       return res.redirect('/user/sign-in');
     });
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 });
@@ -187,7 +184,6 @@ router.post('/delete', permit({ roles: 'USER' }), async (req, res, next) => {
       return res.redirect('/');
     });
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 });
@@ -226,7 +222,6 @@ if (useMailgun) {
       res.flash(response.error ? 'error' : 'success', response.message);
       return res.redirect('/user/sign-in');
     } catch (err) {
-      console.log(err);
       return next(err);
     }
   });
@@ -244,7 +239,6 @@ if (useMailgun) {
 
       return res.render('reset-password', { customerID: response.result[0].id });
     } catch (err) {
-      console.log(err);
       return next(err);
     }
   });
@@ -285,7 +279,6 @@ if (useMailgun) {
       res.flash('success', response.message);
       return res.redirect('/user/sign-in');
     } catch (err) {
-      console.log(err);
       return next(err);
     }
   });
@@ -336,7 +329,6 @@ if (useMailgun) {
       res.flash('success', message);
       return res.redirect(route);
     } catch (err) {
-      console.log(err);
       return next(err);
     }
   });
@@ -366,7 +358,6 @@ if (useMailgun) {
       res.flash(response.error ? 'error' : 'success', response.message);
       return res.redirect(route);
     } catch (err) {
-      console.log(err);
       return next(err);
     }
   });

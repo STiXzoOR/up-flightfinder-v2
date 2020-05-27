@@ -35,7 +35,6 @@ router.post('/add', permit('USER'), async (req, res, next) => {
     res.flash(response.error ? 'error' : 'success', response.message);
     return res.redirect('/user/profile');
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 });
@@ -112,7 +111,6 @@ router.get('/new-booking', validate('newBookingQuery'), async (req, res, next) =
 
     return res.render('new-booking', { query, flight: flight.result.data[0], countries: countries.result });
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 });
@@ -210,13 +208,11 @@ router.post('/new-booking/thank-you', async (req, res, next) => {
     }
 
     await Promise.all(passengerInfo.map(async (passenger) => insertPassenger(passenger))).catch((err) => {
-      console.log(err);
       return next(err);
     });
 
     return res.render('new-booking-booked', { booking: { ...flightData, ...bookingDetails } });
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 });
@@ -300,7 +296,6 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
 
     return res.render('manage-booking-post', { booking, flight, passengers });
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 });
@@ -319,7 +314,6 @@ router.post('/manage-booking/bookingID=:bookingID&lastName=:lastName/edit', asyn
       }`
     );
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 });
@@ -337,7 +331,6 @@ router.post('/manage-booking/bookingID=:bookingID&lastName=:lastName/cancel', as
 
     return res.redirect(`/booking/manage-booking/bookingID=${params.bookingID}&lastName=${params.lastName}`);
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 });

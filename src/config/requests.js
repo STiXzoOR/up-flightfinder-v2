@@ -7,6 +7,7 @@ const useMailgun = process.env.MAILGUN_ENABLED;
 const createError = require('http-errors');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
+const logger = require('./winston');
 const mysql = require('./mysql');
 
 if (useMailgun) var mailgun = require('./mailgun');
@@ -114,8 +115,6 @@ const checkBookingAlreadyBooked = async (args = {}) => {
   const queryCanBook =
     'SELECT IF(f1.arr_date < f2.dep_date or (f1.arr_date >= f2.dep_date and b.status="CANCELED"), 1, 0) as canBook FROM booking as b, flight as f1, flight as f2, (SELECT IF(MAX(return_flight_date) IS NOT NULL, IF(MAX(depart_flight_date) > MAX(return_flight_date), MAX(depart_flight_date), MAX(return_flight_date)), MAX(depart_flight_date)) as max_date FROM booking WHERE customer_id=:customerID) as t WHERE IF(b.return_flight_date IS NOT NULL and b.return_flight_date=t.max_date, (b.return_flight_date=t.max_date and f1.flight_id=b.return_flight_id and f1.dep_date=b.return_flight_date), (b.depart_flight_date=t.max_date and f1.flight_id=b.depart_flight_id and f1.dep_date=b.depart_flight_date)) and f1.class=b.flight_class and b.customer_id=:customerID and f2.flight_id=:flightID and f2.dep_date=:departDate and f2.class=:class';
 
-  console.log(args);
-
   try {
     let data = await mysql.fetchOne(queryBooked, args.alreadyBooked || args);
 
@@ -147,8 +146,6 @@ const checkBookingAlreadyBooked = async (args = {}) => {
     }
 
     if (response.error) return response;
-
-    console.log(data);
 
     return data[0].canBook;
   } catch (err) {
@@ -194,7 +191,7 @@ const verifyToken = async ({ token = '', type = 'email' } = {}) => {
 
     return response;
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return false;
   }
 };
@@ -253,7 +250,7 @@ const sendVerificationLink = async ({ args = {}, type = 'email' } = {}) => {
       response.message = 'Verification token was successfully stored.';
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
 
       if (isNewsletter) {
         needsUpdate = true;
@@ -276,7 +273,7 @@ const sendVerificationLink = async ({ args = {}, type = 'email' } = {}) => {
         response.message = 'Verification token was successfully stored.';
       })
       .catch((err) => {
-        console.log(err);
+        logger.error(err);
         response.status = 500;
         response.error = true;
         response.message = 'Something went wrong while updating your account. Please contact our support team.';
@@ -294,13 +291,13 @@ const sendVerificationLink = async ({ args = {}, type = 'email' } = {}) => {
   await config[type]
     .send(data)
     .then((result) => {
-      console.log(result);
+      logger.info(result);
       response.status = 200;
       response.error = false;
       response.message = config[type].messages.success;
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
       response.status = 500;
       response.error = true;
       response.message = config[type].messages.error;
@@ -544,8 +541,6 @@ const getFlights = async ({
 
   if (LIMIT) query += ` LIMIT ${LIMIT}`;
 
-  console.log(query);
-
   try {
     if (getCounters) {
       data = await mysql.fetchOne(countQuery, args);
@@ -787,7 +782,7 @@ const insertUser = async (args = {}) => {
         response.message = 'Sign up was successfull. Please sign in.';
       })
       .catch((err) => {
-        console.log(err);
+        logger.error(err);
         response.status = 500;
         response.error = true;
         response.message = 'Something went wrong while signing you up. Please contact our support team.';
@@ -821,7 +816,7 @@ const insertBooking = async ({ args = {}, updateFlight = true } = {}) => {
       response.message = 'Booking inserted.';
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
       response.status = 500;
       response.error = true;
       response.message = 'Database internal error.';
@@ -844,7 +839,7 @@ const insertBooking = async ({ args = {}, updateFlight = true } = {}) => {
         response.message = 'Flight updated.';
       })
       .catch((err) => {
-        console.log(err);
+        logger.error(err);
         response.status = 500;
         response.error = true;
         response.message = 'Database internal error.';
@@ -864,7 +859,7 @@ const insertBooking = async ({ args = {}, updateFlight = true } = {}) => {
           response.message = 'Flight updated.';
         })
         .catch((err) => {
-          console.log(err);
+          logger.error(err);
           response.status = 500;
           response.error = true;
           response.message = 'Database internal error.';
@@ -947,7 +942,7 @@ const insertPassenger = async (args = {}) => {
       response.message = 'Passenger inserted.';
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
       needsUpdate = true;
     });
 
@@ -960,7 +955,7 @@ const insertPassenger = async (args = {}) => {
         response.message = 'Passenger details updated.';
       })
       .catch((err) => {
-        console.log(err);
+        logger.error(err);
       });
   }
 
@@ -972,7 +967,7 @@ const insertPassenger = async (args = {}) => {
       response.message = 'Passenger assigned with the corresponding booking.';
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
       response.status = 500;
       response.error = true;
       response.message = 'Database internal error.';
@@ -999,7 +994,7 @@ const updateBooking = async (args = {}) => {
       response.message = 'Booking updated successfully. Navigate to passengers & contact to see the changes.';
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
       response.status = 500;
       response.error = true;
       response.message = 'Something went wrong while updating your booking. Please contact our support team.';
@@ -1027,7 +1022,7 @@ const insertNewsletterSubscriber = async (args = {}) => {
       return mailgun.addMember('newsletter', args);
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
       response.status = 500;
       response.error = true;
       response.message =
@@ -1055,7 +1050,7 @@ const updateUserStatus = async (customerID) => {
       response.message = 'Your account has been successfully verified.';
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
       response.status = 500;
       response.error = true;
       response.message = 'Something went wrong while updating your status. Please contact our support team.';
@@ -1082,7 +1077,7 @@ const updateUserDetails = async (args = {}) => {
       response.message = 'Your personal information has been successfully updated.';
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
       response.status = 500;
       response.error = true;
       response.message =
@@ -1124,7 +1119,7 @@ const updateUserPassword = async ({ args = {}, matchPasswords = true, expireToke
       response.message = 'Your password has been successfully changed. You can now get back into your account.';
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
       response.status = 500;
       response.error = true;
       response.message = 'Something went wrong while updating your password. Please contact our support team.';
@@ -1153,7 +1148,7 @@ const updateNewsletterSubscriber = async (args = {}) => {
       return mailgun.updateMember('newsletter', member);
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
       response.status = 500;
       response.error = true;
       response.message =
@@ -1221,7 +1216,7 @@ const cancelBooking = async (args = {}) => {
       response.message = 'Booking status updated.';
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
       response.status = 500;
       response.error = true;
       response.message = 'Database internal error.';
@@ -1243,7 +1238,7 @@ const cancelBooking = async (args = {}) => {
       response.message = 'Flight updated.';
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
       response.status = 500;
       response.error = true;
       response.message = 'Database internal error.';
@@ -1263,7 +1258,7 @@ const cancelBooking = async (args = {}) => {
         response.message = 'Flight updated.';
       })
       .catch((err) => {
-        console.log(err);
+        logger.error(err);
         response.status = 500;
         response.error = true;
         response.message = 'Database internal error.';
@@ -1294,7 +1289,7 @@ const removeUser = async (args = {}) => {
       response.message = 'Your account has been successfully deleted.';
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
       response.status = 500;
       response.error = true;
       response.message = 'Something went wrong while deleting your account. Please contact our support team.';
@@ -1322,7 +1317,7 @@ const removeNewsletterSubscriber = async (email) => {
       return mailgun.removeMember('newsletter', email);
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
       response.status = 500;
       response.error = true;
       response.message =

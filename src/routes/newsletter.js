@@ -2,6 +2,7 @@
 /* eslint-disable global-require */
 /* eslint-disable no-var */
 const express = require('express');
+const logger = require('../config/winston');
 const { validate, validateVerbose } = require('../config/superstruct');
 const {
   useMailgun,
@@ -34,10 +35,10 @@ router.all('/subscribe', async (req, res, next) => {
   await mailgun
     .getMember('newsletter', data.email)
     .then((member) => {
-      console.log(member);
+      logger.info(member);
       subscriberExists = true;
     })
-    .catch((err) => console.log(err));
+    .catch((err) => logger.error(err));
 
   if (subscriberExists) {
     res.flash('error', 'The provided email is already subscribed to our newsletter list.');
@@ -57,7 +58,6 @@ router.all('/subscribe', async (req, res, next) => {
     res.flash(response.error ? 'error' : 'success', response.message);
     return res.redirect('/newsletter');
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 });
@@ -78,7 +78,6 @@ router.get('/verify', validate('validateToken'), async (req, res, next) => {
     res.flash(response.error ? 'error' : 'success', response.message);
     return res.redirect('/newsletter');
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 });
@@ -95,11 +94,11 @@ router.post('/unsubscribe', async (req, res, next) => {
   await mailgun
     .getMember('newsletter', email)
     .then((data) => {
-      console.log(data);
+      logger.info(data);
       member = data.member;
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
       notFound = true;
     });
 
@@ -130,7 +129,6 @@ router.post('/unsubscribe', async (req, res, next) => {
     res.flash('success', response.message);
     return res.redirect('/newsletter');
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 });
