@@ -1,24 +1,32 @@
 const createError = require('http-errors');
 const RateLimit = require('express-rate-limit');
 const RedisStore = require('rate-limit-redis');
+const { isProduction } = require('./requests');
 
-const options = {
+// TODO: convert it into a Class object
+
+const createAccountLimiter = new RateLimit({
   store: new RedisStore({
     expiry: 3600,
   }),
-  handler: (req, res, next) => next(createError(options.statusCode, options.message)),
-};
-
-const createAccountLimiter = new RateLimit({
-  ...options,
   max: 3,
-  message: 'requests for creating new account',
+  message: 'Too many requests for creating new account.',
+  skip: () => !isProduction,
+  handler(req, res, next) {
+    return next(createError(this.statusCode, this.message));
+  },
 });
 
 const flightSearchLimiter = new RateLimit({
-  ...options,
+  store: new RedisStore({
+    expiry: 3600,
+  }),
   max: 15,
-  message: 'requests for new flight search',
+  message: 'Too many requests for new flight search.',
+  skip: () => !isProduction,
+  handler(req, res, next) {
+    return next(createError(this.statusCode, this.message));
+  },
 });
 
 module.exports = {
