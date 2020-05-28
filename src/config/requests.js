@@ -5,6 +5,7 @@
 /* eslint-disable no-var */
 /* eslint-disable global-require */
 const useMailgun = process.env.MAILGUN_ENABLED;
+const isProduction = process.env.NODE_ENV === 'prod';
 
 const createError = require('http-errors');
 const crypto = require('crypto');
@@ -15,8 +16,7 @@ const mysql = require('./mysql');
 if (useMailgun) var mailgun = require('./mailgun');
 
 // TODO #1: Replace sendVerificationLink function with class
-// TODO #2: Write checkUserExists standalone function
-// TODO #3: Replace everything with Sequelize ORM
+// TODO #2: Replace everything with Sequelize ORM
 
 const handleResponseError = (response = {}, options = {}) => {
   return (req, res, next) => {
@@ -45,8 +45,45 @@ const permit = ({ roles = [], requireVerification = true } = {}) => {
 
 const generateToken = () => crypto.randomBytes(40).toString('hex');
 
-const checkPasswordMatch = async (args = {}) => {
+const checkUserExists = async (customerID, { byID = true } = {}) => {
   const response = {
+    status: 400,
+    error: true,
+    message: '',
+  };
+
+  const query = `SELECT customer_id as id, email FROM customer WHERE ${byID ? 'customer_id' : 'email'}=:customerID`;
+
+  try {
+    const data = await mysql.fetchOne(query, { customerID });
+
+    if (data === null) {
+      response.status = 500;
+      response.error = true;
+      response.message = 'Database internal error.';
+    } else {
+      const found = data.length !== 0;
+
+      response.status = found ? 200 : 400;
+      response.error = false;
+      response.message = `A user with the provided ${byID ? 'id' : 'email'} ${
+        found ? 'already' : 'does not'
+      } exists. Please sign ${found ? 'in' : 'up'}.`;
+      response.result = found;
+    }
+
+    return response;
+  } catch (err) {
+    response.error = true;
+    response.tryCatchError = true;
+    response.status = err.status;
+    response.result = err;
+    return response;
+  }
+};
+
+const checkPasswordMatch = async (args = {}, { checkUserExistence = false } = {}) => {
+  let response = {
     status: 400,
     error: true,
     message: '',
@@ -55,16 +92,21 @@ const checkPasswordMatch = async (args = {}) => {
   const query = 'SELECT password From customer WHERE customer_id=:customerID';
 
   try {
+    if (checkUserExistence) {
+      response = await checkUserExists(args.customerID);
+
+      if (response.error || !response.result) {
+        response.error = true;
+        return response;
+      }
+    }
+
     const data = await mysql.fetch(query, { customerID: args.customerID });
 
     if (data === null) {
       response.status = 500;
       response.error = true;
       response.message = 'Database internal error.';
-    } else if (data.length === 0) {
-      response.status = 400;
-      response.error = true;
-      response.message = 'A user with the provided email does not exist. Please sign up.';
     } else if (bcrypt.compareSync(args.currentPassword, data[0].password)) {
       response.status = 200;
       response.error = false;
@@ -329,7 +371,7 @@ const sendVerificationLink = async ({ args = {}, type = 'email' } = {}) => {
 };
 
 const getUserDetails = async ({ args = {}, byID = true, byEmail = false, partial = false } = {}) => {
-  const response = {
+  let response = {
     status: 400,
     error: true,
     message: '',
@@ -348,16 +390,19 @@ const getUserDetails = async ({ args = {}, byID = true, byEmail = false, partial
   }
 
   try {
+    response = await checkUserExists(byID ? args.customerID : args.email, { byID });
+
+    if (response.error || !response.result) {
+      response.error = true;
+      return response;
+    }
+
     const data = await mysql.fetch(query, args);
 
     if (data === null) {
       response.status = 500;
       response.error = true;
       response.message = 'Database internal error.';
-    } else if (data.length === 0) {
-      response.status = 400;
-      response.error = true;
-      response.message = 'A user with the provided email does not exist. Please sign up.';
     } else {
       response.status = 200;
       response.error = false;
@@ -381,7 +426,10 @@ const getSessionUser = async (args = {}) => {
   try {
     response = await getUserDetails({ args, byID: false, byEmail: true, partial: true });
 
-    if (response.error) return response;
+    if (response.error || !response.result) {
+      response.error = true;
+      return response;
+    }
 
     const responsePassword = await checkPasswordMatch({
       customerID: response.result[0].id,
@@ -763,7 +811,7 @@ const getUserBookings = async (userID = '') => {
 };
 
 const insertUser = async (args = {}) => {
-  const response = {
+  let response = {
     status: 400,
     error: true,
     message: '',
@@ -772,17 +820,14 @@ const insertUser = async (args = {}) => {
   const salt = bcrypt.genSaltSync(10);
   const password = bcrypt.hashSync(args.password, salt);
 
-  const userExistsQuery = 'SELECT email FROM customer WHERE email=:email';
   const userInsertQuery =
     'INSERT INTO customer (first_name, last_name, email, password, mobile, gender, joined_date, status, customer_type) VALUES (:firstName, :lastName, :email, :password, :mobile, :gender, NOW(), :status, "USER")';
 
   try {
-    const result = await mysql.fetch(userExistsQuery, { email: args.email });
+    response = await checkUserExists(args.email, { byID: false });
 
-    if (result.length !== 0) {
-      response.status = 401;
+    if (response.error || response.result) {
       response.error = true;
-      response.message = 'A user with the provided email already exists. Please sign in.';
       return response;
     }
 
@@ -1351,6 +1396,7 @@ const removeNewsletterSubscriber = async (email) => {
 };
 
 module.exports = {
+  isProduction,
   useMailgun,
   handleResponseError,
   permit,
