@@ -7,19 +7,19 @@ router.get('/', (req, res, next) => {
   return next(createError(400));
 });
 
-router.get('/about-us', (req, res, next) => {
+router.get('/about-us', (req, res) => {
   return res.render('about-us');
 });
 
-router.get('/contact-us', (req, res, next) => {
+router.get('/contact-us', (req, res) => {
   return res.render('contact-us');
 });
 
-router.get('/terms-and-conditions', (req, res, next) => {
+router.get('/terms-and-conditions', (req, res) => {
   return res.render('terms-and-conditions');
 });
 
-router.get('/privacy-policy', (req, res, next) => {
+router.get('/privacy-policy', (req, res) => {
   return res.render('privacy-policy');
 });
 

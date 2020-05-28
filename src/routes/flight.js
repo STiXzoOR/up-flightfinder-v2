@@ -1,7 +1,7 @@
 const express = require('express');
 const createError = require('http-errors');
 const { validate } = require('../config/superstruct');
-const { getAirports, getFlights } = require('../config/requests');
+const { handleResponseError, getAirports, getFlights } = require('../config/requests');
 const { compileFile } = require('../config/templates');
 const { flightSearchLimiter } = require('../config/rate-limit');
 
@@ -140,15 +140,12 @@ router.get('/search-flights', flightSearchLimiter, validate('searchFlightsQuery'
 
   try {
     const conditions = generateConditions(query);
-    let flights = await getFlights({ isRoundtrip: query.isRoundtrip, ...conditions });
+    let response = await getFlights({ isRoundtrip: query.isRoundtrip, ...conditions });
 
-    if (flights.error && (flights.tryCatchError || flights.status === 500)) {
-      if (flights.tryCatchError) return next(flights.result);
-      return next(createError(flights.status, flights.message));
-    }
+    if (response.error && (response.tryCatchError || !response.status === 400))
+      return handleResponseError(response)(req, res, next);
 
-    flights = flights.result;
-
+    const flights = response.result;
     const flightsHTML = generateFlightsHTML(
       !flights.isEmpty
         ? {
@@ -169,16 +166,15 @@ router.get('/search-flights', flightSearchLimiter, validate('searchFlightsQuery'
       });
     }
 
-    const airports = await getAirports();
+    response = await getAirports();
 
-    if (airports.error) {
-      if (airports.tryCatchError) return next(airports.result);
-      return next(createError(airports.status, airports.message));
-    }
+    if (response.error) return handleResponseError(response)(req, res, next);
+
+    const airports = response.result;
 
     return res.render('search-flights', {
       query,
-      airports: airports.result,
+      airports,
       airlines: flights.airlines,
       flights: { isEmpty: flights.isEmpty, data: flights.counters, html: flightsHTML },
     });

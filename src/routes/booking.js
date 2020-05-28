@@ -2,6 +2,7 @@ const express = require('express');
 const createError = require('http-errors');
 const { validate } = require('../config/superstruct');
 const {
+  handleResponseError,
   permit,
   getCountries,
   getFlights,
@@ -47,6 +48,8 @@ router.get('/new-booking', validate('newBookingQuery'), async (req, res, next) =
   query.passengers = JSON.parse(query.passengers);
 
   try {
+    let response = null;
+
     if (req.user && req.user.role === 'USER') {
       let args = {
         customerID: req.user.id,
@@ -65,14 +68,11 @@ router.get('/new-booking', validate('newBookingQuery'), async (req, res, next) =
         args.canBook.departDate = query.returnDate;
       }
 
-      const canBook = await checkBookingAlreadyBooked(args);
+      response = await checkBookingAlreadyBooked(args);
 
-      if (canBook.error) {
-        if (canBook.tryCatchError) return next(canBook.result);
-        return next(createError(canBook.status, canBook.message));
-      }
+      if (response.error) return handleResponseError(response)(req, res, next);
 
-      if (!canBook.result) {
+      if (!response.result) {
         res.flash(
           'error',
           "You can't book this flight route right now as you have recently booked a similar flight route. You can only book a flight route which doesn't overlap with your last booking. Meanwhile you can manage your latest booking below."
@@ -90,7 +90,7 @@ router.get('/new-booking', validate('newBookingQuery'), async (req, res, next) =
         'f1.flight_id=:departFlightID and f1.dep_date=:departDate and f1.class=:class and f2.flight_id=:returnFlightID and f2.dep_date=:returnDate and f2.class=:class and al1.airline_code=f1.airline and ap1.airplane_model=f1.airplane and aprt1.airport_code=f1.from_airport and aprt2.airport_code=f1.to_airport and al2.airline_code=f2.airline and ap2.airplane_model=f2.airplane and aprt3.airport_code=f2.from_airport and aprt4.airport_code=f2.to_airport and f1.dep_date >= CURRENT_DATE and f2.dep_date >= CURRENT_DATE';
     }
 
-    const flight = await getFlights({
+    response = await getFlights({
       isRoundtrip: query.isRoundtrip,
       args: query,
       WHERE,
@@ -99,21 +99,17 @@ router.get('/new-booking', validate('newBookingQuery'), async (req, res, next) =
       FETCH_ALL: false,
     });
 
-    if (flight.error) {
-      if (flight.tryCatchError) return next(flight.result);
-      return next(createError(flight.status, flight.message));
-    }
+    if (response.error) return handleResponseError(response)(req, res, next);
 
-    const countries = await getCountries();
+    const [flight] = response.result.data;
+    response = await getCountries();
 
-    if (countries.error) {
-      if (countries.tryCatchError) return next(countries.result);
-      return next(createError(countries.status, countries.message));
-    }
+    if (response.error) return handleResponseError(response)(req, res, next);
 
+    const countries = response.result;
     req.session.flightData = query;
 
-    return res.render('new-booking', { query, flight: flight.result.data[0], countries: countries.result });
+    return res.render('new-booking', { query, flight, countries });
   } catch (err) {
     return next(err);
   }
@@ -132,22 +128,17 @@ router.post('/new-booking/thank-you', async (req, res, next) => {
 
   try {
     const passengerInfo = [];
-    let bookingDetails = {};
-
     let bookingID = '';
-    let found = true;
+    let response = true;
 
     do {
       bookingID = await Math.random().toString(36).toUpperCase().substr(2, 6);
-      found = await checkBookingExists({ args: { bookingID }, byLastName: false });
+      response = await checkBookingExists({ args: { bookingID }, byLastName: false });
 
-      if (found.error) {
-        if (found.tryCatchError) return next(found.result);
-        return next(createError(found.status, found.message));
-      }
+      if (response.error) return handleResponseError(response)(req, res, next);
 
-      found = found.result;
-    } while (found);
+      response = response.result;
+    } while (response);
 
     for (let i = 0; i < flightData.quantity; i++) {
       const baggage = JSON.parse(bookingData[`checkedBaggagePassenger-${i}`]);
@@ -178,7 +169,7 @@ router.post('/new-booking/thank-you', async (req, res, next) => {
       passengerInfo.push(passenger);
     }
 
-    bookingDetails = {
+    const bookingDetails = {
       bookingID,
       customerID: req.session.user.id,
       departFlightID: flightData.departFlightID,
@@ -210,12 +201,9 @@ router.post('/new-booking/thank-you', async (req, res, next) => {
       bookingDetails.returnDate = flightData.returnDate;
     }
 
-    const response = await insertBooking({ args: bookingDetails });
+    response = await insertBooking({ args: bookingDetails });
 
-    if (response.error) {
-      if (response.tryCatchError) return next(response.result);
-      return next(createError(response.status, response.message));
-    }
+    if (response.error) return handleResponseError(response)(req, res, next);
 
     await Promise.all(passengerInfo.map(async (passenger) => insertPassenger(passenger))).catch((err) => {
       return next(err);
@@ -227,11 +215,11 @@ router.post('/new-booking/thank-you', async (req, res, next) => {
   }
 });
 
-router.get('/manage-booking', (req, res, next) => {
+router.get('/manage-booking', (req, res) => {
   return res.render('manage-booking');
 });
 
-router.post('/manage-booking', async (req, res, next) => {
+router.post('/manage-booking', async (req, res) => {
   const { bookingID, lastName } = req.body;
 
   return res.redirect(`/booking/manage-booking/bookingID=${bookingID}&lastName=${lastName}`);
@@ -243,18 +231,15 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
   const byID = /(\/user\/profile)/.test(req.get('Referrer'));
 
   try {
-    const bookingExists = await checkBookingExists({
+    let response = await checkBookingExists({
       args: { bookingID, customerID, lastName },
       byID,
       byLastName: true,
     });
 
-    if (bookingExists.error) {
-      if (bookingExists.tryCatchError) return next(bookingExists.result);
-      return next(createError(bookingExists.status, bookingExists.message));
-    }
+    if (response.error) return handleResponseError(response)(req, res, next);
 
-    if (!bookingExists.result) {
+    if (!response.result) {
       res.flash(
         'error',
         'We are unable to find the booking reference you provided. Please validate that your information is correct and try again.'
@@ -262,14 +247,11 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
       return res.redirect('/booking/manage-booking');
     }
 
-    let booking = await getBooking({ args: { bookingID, customerID, lastName }, byID });
+    response = await getBooking({ args: { bookingID, customerID, lastName }, byID });
 
-    if (booking.error) {
-      if (booking.tryCatchError) return next(booking.result);
-      return next(createError(booking.status, booking.message));
-    }
+    if (response.error) return handleResponseError(response)(req, res, next);
 
-    [booking] = booking.result;
+    const [booking] = response.result;
 
     let WHERE =
       'f.flight_id=:departFlightID and f.dep_date=:departDate and f.class=:class and al.airline_code=f.airline and ap.airplane_model=f.airplane and aprt1.airport_code=f.from_airport and aprt2.airport_code=f.to_airport';
@@ -292,7 +274,7 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
       };
     }
 
-    let flight = await getFlights({
+    response = await getFlights({
       isRoundtrip: booking.isRoundtrip,
       args,
       WHERE,
@@ -301,22 +283,16 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
       FETCH_ALL: false,
     });
 
-    if (flight.error) {
-      if (flight.tryCatchError) return next(flight.result);
-      return next(createError(flight.status, flight.message));
-    }
+    if (response.error) return handleResponseError(response)(req, res, next);
 
-    [flight] = flight.result.data;
+    const [flight] = response.result.data;
     flight.isRoundtrip = booking.isRoundtrip;
 
-    let passengers = await getBookingPassengers(booking.id);
+    response = await getBookingPassengers(booking.id);
 
-    if (passengers.error) {
-      if (passengers.tryCatchError) return next(passengers.result);
-      return next(createError(passengers.status, passengers.message));
-    }
+    if (response.error) return handleResponseError(response)(req, res, next);
 
-    passengers = passengers.result;
+    const passengers = response.result;
 
     return res.render('manage-booking-post', { booking, flight, passengers });
   } catch (err) {

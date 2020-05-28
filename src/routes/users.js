@@ -8,6 +8,7 @@ const { validate } = require('../config/superstruct');
 const { createAccountLimiter } = require('../config/rate-limit');
 const {
   useMailgun,
+  handleResponseError,
   permit,
   verifyToken,
   sendVerificationLink,
@@ -31,15 +32,15 @@ router.get('/', (req, res, next) => {
   return next(createError(400));
 });
 
-router.get('/sign-in', (req, res, next) => {
+router.get('/sign-in', (req, res) => {
   return res.render('sign-in');
 });
 
-router.get('/sign-up', (req, res, next) => {
+router.get('/sign-up', (req, res) => {
   return res.render('sign-up');
 });
 
-router.get('/sign-out', permit({ roles: 'USER' }), (req, res) => {
+router.get('/sign-out', permit({ roles: 'USER', requireVerification: false }), (req, res, next) => {
   req.session.destroy((err) => {
     if (err) return next(err);
 
@@ -54,21 +55,18 @@ router.post('/sign-in', (req, res, next) => {
       return next(err);
     }
 
-    if (response.error) {
-      if (response.tryCatchError) return next(response.result);
-
-      res.flash('error', response.message);
-      return res.redirect('/user/sign-in');
-    }
+    if (response.error)
+      return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/sign-in' })(
+        req,
+        res,
+        next
+      );
 
     req.login(response.result[0], (err) => {
-      if (err) {
-        return next(err);
-      }
+      if (err) return next(err);
 
-      if (req.body.rememberMyPassword && req.body.rememberMyPassword === 'on') {
+      if (req.body.rememberMyPassword && req.body.rememberMyPassword === 'on')
         req.session.cookie.maxAge = 90 * 24 * 60 * 60 * 1000;
-      }
 
       req.session.user = { id: req.user.id };
       return res.redirect('/');
@@ -81,12 +79,12 @@ router.post('/sign-up', createAccountLimiter, async (req, res, next) => {
   try {
     let response = await insertUser(body);
 
-    if (response.error) {
-      if (response.tryCatchError) return next(response.result);
-
-      res.flash('error', response.message);
-      return res.redirect('/user/sign-up');
-    }
+    if (response.error)
+      return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/sign-up' })(
+        req,
+        res,
+        next
+      );
 
     if (useMailgun) {
       const args = {
@@ -98,12 +96,12 @@ router.post('/sign-up', createAccountLimiter, async (req, res, next) => {
 
       response = await sendVerificationLink({ args });
 
-      if (response.error) {
-        if (response.tryCatchError) return next(response.result);
-
-        res.flash('error', response.message);
-        return res.redirect('/user/sign-up');
-      }
+      if (response.error)
+        return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/sign-up' })(
+          req,
+          res,
+          next
+        );
     }
 
     res.flash('success', response.message);
@@ -116,31 +114,27 @@ router.post('/sign-up', createAccountLimiter, async (req, res, next) => {
 router.get('/profile', permit({ roles: 'USER', requireVerification: false }), async (req, res, next) => {
   const customerID = req.user.id;
   try {
-    const details = await getUserDetails({ args: { customerID } });
+    let response = await getUserDetails({ args: { customerID } });
 
-    if (details.error) {
-      if (details.tryCatchError) return next(details.result);
-      return next(createError(details.status, details.message));
-    }
+    if (response.error) return handleResponseError(response)(req, res, next);
 
-    const bookings = await getUserBookings(customerID);
+    const details = response.result[0];
+    response = await getUserBookings(customerID);
 
-    if (bookings.error && (bookings.tryCatchError || bookings.status === 500)) {
-      if (bookings.tryCatchError) return next(bookings.result);
-      return next(createError(bookings.status, bookings.message));
-    }
+    if (response.error && (response.tryCatchError || !response.status === 400))
+      return handleResponseError(response)(req, res, next);
 
-    const countries = await getCountries();
+    const bookings = response.result;
+    response = await getCountries();
 
-    if (countries.error) {
-      if (countries.tryCatchError) return next(countries.result);
-      return next(createError(countries.status, countries.message));
-    }
+    if (response.error) return handleResponseError(response)(req, res, next);
+
+    const countries = response.result;
 
     return res.render('profile', {
-      details: details.result[0],
-      bookings: bookings.result,
-      countries: countries.result,
+      details,
+      bookings,
+      countries,
     });
   } catch (err) {
     return next(err);
@@ -169,12 +163,12 @@ router.post('/edit/password', permit({ roles: 'USER' }), async (req, res, next) 
   try {
     const response = await updateUserPassword({ args: { customerID: req.user.id, ...body } });
 
-    if (response.error) {
-      if (response.tryCatchError) return next(response.result);
-
-      res.flash('error', response.message);
-      return res.redirect('/user/profile');
-    }
+    if (response.error)
+      return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/profile' })(
+        req,
+        res,
+        next
+      );
 
     return req.session.destroy((err) => {
       if (err) return next(err);
@@ -191,12 +185,12 @@ router.post('/delete', permit({ roles: 'USER' }), async (req, res, next) => {
   try {
     const response = await removeUser({ customerID: req.user.id, ...req.body });
 
-    if (response.error) {
-      if (response.tryCatchError) return next(response.result);
-
-      res.flash('error', response.message);
-      return res.redirect('/user/profile');
-    }
+    if (response.error)
+      return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/profile' })(
+        req,
+        res,
+        next
+      );
 
     return res.redirect('/user/sign-out');
   } catch (err) {
@@ -205,7 +199,7 @@ router.post('/delete', permit({ roles: 'USER' }), async (req, res, next) => {
 });
 
 if (useMailgun) {
-  router.get('/forgot-password', (req, res, next) => {
+  router.get('/forgot-password', (req, res) => {
     return res.render('forgot-password');
   });
 
@@ -215,19 +209,14 @@ if (useMailgun) {
     try {
       let response = await getUserDetails({ args: { email }, byID: false, byEmail: true, partial: true });
 
-      if (response.error) {
-        if (response.tryCatchError) return next(response.result);
-
-        if (response.status === 400) {
-          res.flash('error', response.message);
-          return res.redirect('/user/forgot-password');
-        }
-
-        return next(createError(response.status, response.message));
-      }
+      if (response.error)
+        return handleResponseError(response, {
+          redirectOnError: 400,
+          flashMessage: true,
+          redirect: '/user/format-password',
+        })(req, res, next);
 
       const data = response.result[0];
-
       const args = {
         email,
         firstName: data.firstName,
@@ -252,12 +241,12 @@ if (useMailgun) {
     try {
       const response = await verifyToken({ token, type: 'password' });
 
-      if (response.error) {
-        if (response.tryCatchError) return next(response.result);
-
-        res.flash('error', response.message);
-        return res.redirect('/user/sign-in');
-      }
+      if (response.error)
+        return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/sign-in' })(
+          req,
+          res,
+          next
+        );
 
       return res.render('reset-password', { customerID: response.result[0].id });
     } catch (err) {
@@ -273,27 +262,22 @@ if (useMailgun) {
     try {
       let response = await getUserDetails({ args: { customerID: body.customerID }, partial: true });
 
-      if (response.error) {
-        if (response.tryCatchError) return next(response.result);
-
-        if (response.status === 400) {
-          res.flash('error', response.message);
-          return res.redirect('/user/sign-in');
-        }
-
-        return next(createError(response.status, response.message));
-      }
+      if (response.error)
+        return handleResponseError(response, { redirectOnError: 400, flashMessage: true, redirect: '/user/sign-in' })(
+          req,
+          res,
+          next
+        );
 
       const data = response.result[0];
-
       response = await updateUserPassword({ args: body, matchPasswords: false, expireToken: true });
 
-      if (response.error) {
-        if (response.tryCatchError) return next(response.result);
-
-        res.flash('error', response.message);
-        return res.redirect(route);
-      }
+      if (response.error)
+        return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: route })(
+          req,
+          res,
+          next
+        );
 
       const args = {
         url: req.getUrl(),
@@ -316,41 +300,34 @@ if (useMailgun) {
     try {
       let response = await verifyToken({ token });
 
-      if (response.error) {
-        if (response.tryCatchError) return next(response.result);
-
-        res.flash('error', response.message);
-        return res.redirect(route);
-      }
+      if (response.error)
+        return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: route })(
+          req,
+          res,
+          next
+        );
 
       const customerID = response.result[0].id;
-
       response = await updateUserStatus(customerID);
 
-      if (response.error) {
-        if (response.tryCatchError) return next(response.result);
-
-        res.flash('error', response.message);
-        return res.redirect(route);
-      }
+      if (response.error)
+        return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: route })(
+          req,
+          res,
+          next
+        );
 
       const { message } = response;
-
       response = await getUserDetails({ args: { customerID }, partial: true });
 
-      if (response.error) {
-        if (response.tryCatchError) return next(response.result);
-
-        if (response.status === 400) {
-          res.flash('error', response.message);
-          return res.redirect(route);
-        }
-
-        return next(createError(response.status, response.message));
-      }
+      if (response.error)
+        return handleResponseError(response, { redirectOnError: 400, flashMessage: true, redirect: route })(
+          req,
+          res,
+          next
+        );
 
       const data = response.result[0];
-
       const args = {
         url: req.getUrl(),
         recipient: `${data.firstName} ${data.lastName} <${data.email}>`,
@@ -372,13 +349,9 @@ if (useMailgun) {
     try {
       let response = await getUserDetails({ args: { email }, byID: false, byEmail: true, partial: true });
 
-      if (response.error) {
-        if (response.tryCatchError) return next(response.result);
-        return next(createError(response.status, response.message));
-      }
+      if (response.error) return handleResponseError(response)(req, res, next);
 
       const data = response.result[0];
-
       const args = {
         email,
         firstName: data.firstName,

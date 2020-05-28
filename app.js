@@ -115,7 +115,7 @@ app.use((err, req, res, next) => {
   return res.status(statusCode).render(`${statusCode}`, { message });
 });
 
-process.on('unhandledRejection', (reason, promise) => {
+process.on('unhandledRejection', (reason) => {
   throw reason;
 });
 

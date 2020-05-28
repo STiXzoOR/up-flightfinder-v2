@@ -6,6 +6,7 @@ const logger = require('../config/winston');
 const { validate, validateVerbose } = require('../config/superstruct');
 const {
   useMailgun,
+  handleResponseError,
   verifyToken,
   sendVerificationLink,
   insertNewsletterSubscriber,
@@ -16,7 +17,7 @@ if (useMailgun) var mailgun = require('../config/mailgun');
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
+router.get('/', (req, res) => {
   return res.render('newsletter');
 });
 
@@ -55,6 +56,8 @@ router.all('/subscribe', async (req, res, next) => {
 
     const response = await sendVerificationLink({ args, type: 'newsletter' });
 
+    if (response.error && response.tryCatchError) return next(response.result);
+
     res.flash(response.error ? 'error' : 'success', response.message);
     return res.redirect('/newsletter');
   } catch (err) {
@@ -68,12 +71,16 @@ router.get('/verify', validate('validateToken'), async (req, res, next) => {
   try {
     let response = await verifyToken({ token, type: 'newsletter' });
 
-    if (response.error) {
-      res.flash('error', response.message);
-      return res.redirect('/newsletter');
-    }
+    if (response.error)
+      return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/newsletter' })(
+        req,
+        res,
+        next
+      );
 
     response = await insertNewsletterSubscriber(response.result[0]);
+
+    if (response.error && response.tryCatchError) return next(response.result);
 
     res.flash(response.error ? 'error' : 'success', response.message);
     return res.redirect('/newsletter');
@@ -82,7 +89,7 @@ router.get('/verify', validate('validateToken'), async (req, res, next) => {
   }
 });
 
-router.get('/unsubscribe', (req, res, next) => {
+router.get('/unsubscribe', (req, res) => {
   return res.render('newsletter-unsubscribe');
 });
 
@@ -110,10 +117,12 @@ router.post('/unsubscribe', async (req, res, next) => {
   try {
     const response = await removeNewsletterSubscriber(email);
 
-    if (response.error) {
-      res.flash('error', response.message);
-      return res.redirect('/unsubscribe');
-    }
+    if (response.error)
+      return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/unsubscribe' })(
+        req,
+        res,
+        next
+      );
 
     const name = member.name.split(' ');
     const args = {

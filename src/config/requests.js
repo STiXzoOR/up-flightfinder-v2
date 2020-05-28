@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable consistent-return */
 /* eslint-disable block-scoped-var */
 /* eslint-disable vars-on-top */
 /* eslint-disable no-var */
@@ -15,6 +17,17 @@ if (useMailgun) var mailgun = require('./mailgun');
 // TODO #1: Replace sendVerificationLink function with class
 // TODO #2: Write checkUserExists standalone function
 // TODO #3: Replace everything with Sequelize ORM
+
+const handleResponseError = (response = {}, options = {}) => {
+  return (req, res, next) => {
+    if (response.tryCatchError) return next(response.result);
+    if (options.flashMessage) res.flash('error', response.message);
+    if (typeof options.redirectOnError === 'boolean' || options.redirectOnError === response.status)
+      return res.redirect(options.redirect);
+
+    return next(createError(response.status, response.message));
+  };
+};
 
 const permit = ({ roles = [], requireVerification = true } = {}) => {
   if (typeof roles === 'string') {
@@ -100,7 +113,7 @@ const checkBookingExists = async ({ args = {}, byID = false, byLastName = true }
     } else {
       response.status = 200;
       response.error = false;
-      response.result = data.length === 0;
+      response.result = data.length !== 0;
     }
 
     return response;
@@ -719,7 +732,7 @@ const getUserBookings = async (userID = '') => {
   };
 
   const query =
-    'SELECT b.booking_id as id, b.last_name as lastName, DATE_FORMAT(b.booking_date, "%a, %d %b") as date, b.total_passengers as quantity, b.flight_type <> "Roundtrip" as isRoundtrip, b.status <> "CANCELED" as isCanceled, a1.city as fromCity, a2.city as toCity, DATE_FORMAT(b.depart_flight_date, "%a, %d %b") as departDate FROM booking as b, flight as f, airport as a1, airport as a2 WHERE b.customer_id=:userID and f.flight_id=b.depart_flight_id and f.dep_date=b.depart_flight_date and f.class=b.flight_class and a1.airport_code=f.from_airport and a2.airport_code=f.to_airport ORDER BY departDate DESC';
+    'SELECT b.booking_id as id, b.last_name as lastName, DATE_FORMAT(b.booking_date, "%a, %d %b") as date, b.total_passengers as quantity, b.flight_type <> "Roundtrip" as isRoundtrip, b.status <> "CANCELED" as isCanceled, a1.city as fromCity, a2.city as toCity, DATE_FORMAT(b.depart_flight_date, "%a, %d %b") as departDate FROM booking as b, flight as f, airport as a1, airport as a2 WHERE b.customer_id=:userID and f.flight_id=b.depart_flight_id and f.dep_date=b.depart_flight_date and f.class=b.flight_class and a1.airport_code=f.from_airport and a2.airport_code=f.to_airport ORDER BY b.depart_flight_date DESC';
 
   try {
     const data = await mysql.fetch(query, { userID });
@@ -1339,6 +1352,7 @@ const removeNewsletterSubscriber = async (email) => {
 
 module.exports = {
   useMailgun,
+  handleResponseError,
   permit,
   verifyToken,
   sendVerificationLink,

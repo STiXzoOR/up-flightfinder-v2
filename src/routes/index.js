@@ -1,6 +1,5 @@
 const express = require('express');
-const createError = require('http-errors');
-const { getPopularDestinations, getAirports } = require('../config/requests');
+const { handleResponseError, getPopularDestinations, getAirports } = require('../config/requests');
 
 const router = express.Router();
 
@@ -12,8 +11,7 @@ router.get('/', async (req, res, next) => {
     if (airports.error || destinations.error) {
       const response = (airports.error && airports) || destinations;
 
-      if (response.tryCatchError) return next(response.result);
-      return next(createError(response.status, response.message));
+      return handleResponseError(response)(req, res, next);
     }
 
     return res.render('index', { airports: airports.result, destinations: destinations.result });
