@@ -21,7 +21,7 @@ const flightsRouter = require('./src/routes/flight');
 const bookingRouter = require('./src/routes/booking');
 if (env.MAILGUN_ENABLED) var newsletterRouter = require('./src/routes/newsletter');
 
-const isProduction = env.NODE_ENV === 'prod';
+const isProduction = env.NODE_ENV === 'production';
 const app = express();
 const redisClient = redis.createClient();
 const morganFormat = isProduction ? 'combined' : 'dev';

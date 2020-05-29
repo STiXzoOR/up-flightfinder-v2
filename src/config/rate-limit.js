@@ -17,7 +17,7 @@ const config = {
         message: 'Too many requests for creating new account.',
         skip: {
           type: 'environment',
-          condition: 'dev',
+          condition: 'development',
         },
         handler: 'default',
       },
@@ -35,7 +35,7 @@ const config = {
         message: 'Too many requests for new flight search.',
         skip: {
           type: 'environment',
-          condition: 'dev',
+          condition: 'development',
         },
         handler: 'default',
       },

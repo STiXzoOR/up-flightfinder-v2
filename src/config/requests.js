@@ -5,7 +5,7 @@
 /* eslint-disable no-var */
 /* eslint-disable global-require */
 const useMailgun = process.env.MAILGUN_ENABLED;
-const isProduction = process.env.NODE_ENV === 'prod';
+const isProduction = process.env.NODE_ENV === 'production';
 
 const createError = require('http-errors');
 const crypto = require('crypto');

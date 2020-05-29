@@ -61,7 +61,7 @@ const config = {
     {
       type: 'Console',
       name: 'dev-logger',
-      env: 'dev',
+      env: 'development',
       options: {
         stderrLevels: ['fatal', 'error'],
         consoleWarnLevels: ['debug', 'warn'],
@@ -78,7 +78,7 @@ const config = {
     },
     {
       type: 'DailyRotateFile',
-      env: 'prod',
+      env: 'production',
       name: 'info-logger',
       options: {
         filename: `${infoDir}/%DATE%-info.log`,
@@ -98,7 +98,7 @@ const config = {
     },
     {
       type: 'DailyRotateFile',
-      env: 'prod',
+      env: 'production',
       name: 'warn-logger',
       options: {
         filename: `${errorDir}/%DATE%-warn.log`,
@@ -118,7 +118,7 @@ const config = {
     },
     {
       type: 'DailyRotateFile',
-      env: 'prod',
+      env: 'production',
       name: 'error-logger',
       options: {
         filename: `${errorDir}/%DATE%-error.log`,

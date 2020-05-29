@@ -11,9 +11,9 @@ parser.add_argument(
     "--node-env",
     metavar="env",
     type=str,
-    default="dev",
+    default="development",
     action="store",
-    help="node environment (default: dev)",
+    help="node environment (default: development)",
 )
 
 parser.add_argument(
