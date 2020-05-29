@@ -6550,6 +6550,10 @@ a.badge-soft-white.focus {
 	transform: scale(1);
 }
 
+.nav-scroll {
+	flex-direction: column;
+}
+
 .nav-scroll .nav-link {
 	color: #67747c;
 }
