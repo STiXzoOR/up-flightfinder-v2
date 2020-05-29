@@ -194,6 +194,8 @@ block content
 														ul.class-list
 															each klass in ['Economy', 'Business', 'First']
 																li.class-list-item(class=`${klass === query.class ? "selected" : ""}`) #{klass}
+													.dropdown-divider
+													a.d-block.btn.btn-link.font-size-15.text-right.p-0(href='javascript:void(0)', data-close='dropdown') Done
 										.form-group.col-lg-1.mt-lg-4.mb-3.mb-sm-0
 											button#flightSearch.btn.btn-primary.btn-block(type='submit')
 												i.fas.fa-search.fa-fw.mr-1.mr-lg-0
@@ -408,7 +410,7 @@ block content
 
 block append scripts
 	if !flights.isEmpty
-		script(src='/static/js/filter-flights-v2.js')
+		script(src='/static/js/filter-flights.js')
 
 		script.
 			$(() => {

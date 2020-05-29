@@ -338,9 +338,10 @@ block content
 								h4.text-center.font-size-22.font-weight-bold.mb-0 How would you pay?
 							.payment-card.card.shadow-soft
 								.card-body.p-4
-									ul.nav.nav-choose.nav-justified.nav-xl-unjustified
+									ul#navPaymentTabs.nav.nav-choose.nav-justified.nav-xl-unjustified
 										li.nav-item
 											a#navCreditCardTab.nav-link.mr-xl-3.mb-4.active(
+												data-type='credit',
 												data-toggle='tab',
 												href='#navCreditCard',
 												role='tab',
@@ -355,6 +356,7 @@ block content
 													i.fab.fa-cc-mastercard.fa-fw
 										li.nav-item
 											a#navPayPalTab.nav-link.mb-4(
+												data-type='paypal',
 												data-toggle='tab',
 												href='#navPayPal',
 												role='tab',
@@ -367,7 +369,7 @@ block content
 													i.fab.fa-paypal.fa-fw.font-size-28.mr-1
 													span.font-size-22.font-weight-bold
 														em PayPal
-									#navTabsContent.tab-content
+									#navPaymentTabsContent.tab-content
 										input(type='hidden', name='paymentType', value='credit', required='')
 										#navCreditCard.tab-pane.show.fade.active(role='tabpanel')
 											.row

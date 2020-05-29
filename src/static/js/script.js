@@ -394,7 +394,7 @@ const passwordStrength = {
 
     this.selector.each((i, el) => {
       if (!$(el).data('PasswordStrength')) {
-        $(el).data('BSScrollSpy', new PasswordStrength(el));
+        $(el).data('PasswordStrength', new PasswordStrength(el));
       }
     });
   },
@@ -894,6 +894,10 @@ $(document).on('click.bs.dropdown.data-api', '.dropdown .keep-open', (e) => {
   e.stopPropagation();
 });
 
+$('.dropdown .keep-open').on('click', 'a[data-close="dropdown"]', function close() {
+  $(this).closest('.dropdown').find('.dropdown-toggle').dropdown('toggle');
+});
+
 $('.uppercase-input').on('keyup paste', function uppercase() {
   $(this).val($(this).val().toUpperCase()).trigger('change');
 });
@@ -973,12 +977,8 @@ $('.btn-reverse-destinations').on('click', function reverse() {
   $to.val(fromVal).trigger('change');
 });
 
-$('#navCreditCardTab').on('click', () => {
-  $('#navTabsContent').find('input[name="paymentType"]').val('credit');
-});
-
-$('#navPayPalTab').on('click', () => {
-  $('#navTabsContent').find('input[name="paymentType"]').val('paypal');
+$('#navPaymentTabs').on('click', 'a[data-toggle="tab"]', (e) => {
+  $('#navPaymentTabsContent').find('input[name="paymentType"]').val(e.currentTarget.dataset.type);
 });
 
 $('a[href="#navContactDetails"]').on('click', function clicked(e) {
