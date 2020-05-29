@@ -4,8 +4,8 @@
 const express = require('express');
 const createError = require('http-errors');
 const passport = require('passport');
+const rateLimiter = require('../config/rate-limit');
 const { validate } = require('../config/superstruct');
-const { createAccountLimiter } = require('../config/rate-limit');
 const {
   useMailgun,
   handleResponseError,
@@ -74,7 +74,7 @@ router.post('/sign-in', (req, res, next) => {
   })(req, res, next);
 });
 
-router.post('/sign-up', createAccountLimiter, async (req, res, next) => {
+router.post('/sign-up', rateLimiter.createAccount, async (req, res, next) => {
   const { body } = req;
   try {
     let response = await insertUser(body);

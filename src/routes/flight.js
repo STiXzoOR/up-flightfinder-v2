@@ -1,9 +1,9 @@
 const express = require('express');
 const createError = require('http-errors');
+const rateLimiter = require('../config/rate-limit');
 const { validate } = require('../config/superstruct');
 const { handleResponseError, getAirports, getFlights } = require('../config/requests');
 const { compileFile } = require('../config/templates');
-const { flightSearchLimiter } = require('../config/rate-limit');
 
 const router = express.Router();
 const generateFlightsHTML = compileFile('flight-card');
@@ -135,7 +135,7 @@ router.get('/', (req, res, next) => {
   return next(createError(400));
 });
 
-router.get('/search-flights', flightSearchLimiter, validate('searchFlightsQuery'), async (req, res, next) => {
+router.get('/search-flights', rateLimiter.flightSearch, validate('searchFlightsQuery'), async (req, res, next) => {
   const query = parseQuery(req.query);
 
   try {
