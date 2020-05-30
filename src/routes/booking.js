@@ -26,7 +26,7 @@ router.get('/', (req, res, next) => {
 
 router.post(
   '/add',
-  permit({ roles: 'USER' }),
+  permit('USER'),
   routeAsync(async (req, res, next) => {
     const { body } = req;
     const response = await insertUserBooking({ customerID: req.user.id, ...body });
@@ -92,13 +92,12 @@ router.get(
         'f1.flight_id=:departFlightID and f1.dep_date=:departDate and f1.class=:class and f2.flight_id=:returnFlightID and f2.dep_date=:returnDate and f2.class=:class and al1.airline_code=f1.airline and ap1.airplane_model=f1.airplane and aprt1.airport_code=f1.from_airport and aprt2.airport_code=f1.to_airport and al2.airline_code=f2.airline and ap2.airplane_model=f2.airplane and aprt3.airport_code=f2.from_airport and aprt4.airport_code=f2.to_airport and f1.dep_date >= CURRENT_DATE and f2.dep_date >= CURRENT_DATE';
     }
 
-    response = await getFlights({
-      isRoundtrip: query.isRoundtrip,
-      args: query,
+    response = await getFlights(query, {
       WHERE,
+      FETCH_ALL: false,
+      isRoundtrip: query.isRoundtrip,
       getAirlines: false,
       getCounters: false,
-      FETCH_ALL: false,
     });
 
     if (response.error) return handleResponseError(response)(req, res, next);
@@ -134,7 +133,7 @@ router.post(
 
     do {
       bookingID = await Math.random().toString(36).toUpperCase().substr(2, 6);
-      response = await checkBookingExists({ args: { bookingID }, byLastName: false });
+      response = await checkBookingExists({ bookingID }, { byLastName: false });
 
       if (response.error) return handleResponseError(response)(req, res, next);
 
@@ -202,7 +201,7 @@ router.post(
       bookingDetails.returnDate = flightData.returnDate;
     }
 
-    response = await insertBooking({ args: bookingDetails });
+    response = await insertBooking(bookingDetails);
 
     if (response.error) return handleResponseError(response)(req, res, next);
 
@@ -233,11 +232,13 @@ router.get(
     const { bookingID, lastName } = req.params;
     const customerID = req.session.user.id;
     const byID = /(\/user\/profile)/.test(req.get('Referrer'));
-    let response = await checkBookingExists({
-      args: { bookingID, customerID, lastName },
-      byID,
-      byLastName: true,
-    });
+    let response = await checkBookingExists(
+      { bookingID, customerID, lastName },
+      {
+        byID,
+        byLastName: true,
+      }
+    );
 
     if (response.error) return handleResponseError(response)(req, res, next);
 
@@ -249,7 +250,7 @@ router.get(
       return res.redirect('/booking/manage-booking');
     }
 
-    response = await getBooking({ args: { bookingID, customerID, lastName }, byID });
+    response = await getBooking({ bookingID, customerID, lastName }, { byID });
 
     if (response.error) return handleResponseError(response)(req, res, next);
 
@@ -276,13 +277,12 @@ router.get(
       };
     }
 
-    response = await getFlights({
-      isRoundtrip: booking.isRoundtrip,
-      args,
+    response = await getFlights(args, {
       WHERE,
+      FETCH_ALL: false,
+      isRoundtrip: booking.isRoundtrip,
       getAirlines: false,
       getCounters: false,
-      FETCH_ALL: false,
     });
 
     if (response.error) return handleResponseError(response)(req, res, next);

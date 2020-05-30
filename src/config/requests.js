@@ -16,7 +16,7 @@ if (config.mailgun.enabled) var mailgun = require('./mailgun');
 
 const generateToken = () => crypto.randomBytes(40).toString('hex');
 
-const checkUserExists = async (customerID, { byID = true } = {}) => {
+const checkUserExists = async (customerID = '', { byID = true } = {}) => {
   const response = {
     status: 400,
     error: true,
@@ -99,7 +99,7 @@ const checkPasswordMatch = async (args = {}, { checkUserExistence = false } = {}
   }
 };
 
-const checkBookingExists = async ({ args = {}, byID = false, byLastName = true } = {}) => {
+const checkBookingExists = async (args = {}, { byID = false, byLastName = true } = {}) => {
   const response = {
     status: 400,
     error: true,
@@ -139,6 +139,7 @@ const checkBookingExists = async ({ args = {}, byID = false, byLastName = true }
   }
 };
 
+// TODO: Needs more testing
 const checkBookingAlreadyBooked = async (args = {}) => {
   const response = {
     status: 400,
@@ -192,7 +193,7 @@ const checkBookingAlreadyBooked = async (args = {}) => {
   }
 };
 
-const verifyToken = async ({ token = '', type = 'email' } = {}) => {
+const verifyToken = async (token = '', type = 'email') => {
   const response = {
     status: 400,
     error: true,
@@ -231,13 +232,14 @@ const verifyToken = async ({ token = '', type = 'email' } = {}) => {
   }
 };
 
-const sendVerificationLink = async ({ args = {}, type = 'email' } = {}) => {
+const sendVerificationLink = async (args = {}, type = 'email') => {
   const response = {
     status: 400,
     error: true,
     message: '',
   };
 
+  // eslint-disable-next-line no-shadow
   const config = {
     email: {
       messages: {
@@ -341,7 +343,7 @@ const sendVerificationLink = async ({ args = {}, type = 'email' } = {}) => {
   return response;
 };
 
-const getUserDetails = async ({ args = {}, byID = true, byEmail = false, partial = false } = {}) => {
+const getUserDetails = async (args = {}, { byID = true, byEmail = false, partial = false } = {}) => {
   let response = {
     status: 400,
     error: true,
@@ -395,7 +397,7 @@ const getSessionUser = async (args = {}) => {
   let response;
 
   try {
-    response = await getUserDetails({ args, byID: false, byEmail: true, partial: true });
+    response = await getUserDetails(args, { byID: false, byEmail: true, partial: true });
 
     if (response.error || !response.result) {
       response.error = true;
@@ -529,17 +531,19 @@ const getAirports = async () => {
   }
 };
 
-const getFlights = async ({
-  isRoundtrip = false,
+const getFlights = async (
   args = {},
-  WHERE = '',
-  HAVING = '',
-  ORDER = '',
-  LIMIT = '',
-  FETCH_ALL = true,
-  getAirlines = true,
-  getCounters = true,
-} = {}) => {
+  {
+    WHERE = '',
+    HAVING = '',
+    ORDER = '',
+    LIMIT = '',
+    FETCH_ALL = true,
+    isRoundtrip = false,
+    getAirlines = true,
+    getCounters = true,
+  } = {}
+) => {
   const response = {
     status: 400,
     error: true,
@@ -659,7 +663,7 @@ const getFlights = async ({
   }
 };
 
-const getBooking = async ({ args = {}, byID = false, byLastName = true } = {}) => {
+const getBooking = async (args = {}, { byID = false, byLastName = true } = {}) => {
   const response = {
     status: 400,
     error: true,
@@ -836,7 +840,7 @@ const insertUser = async (args = {}) => {
   }
 };
 
-const insertBooking = async ({ args = {}, updateFlight = true } = {}) => {
+const insertBooking = async (args = {}, { updateFlight = true } = {}) => {
   const response = {
     status: 400,
     error: true,
@@ -936,7 +940,7 @@ const insertUserBooking = async (args = {}) => {
 
     if (response.error) return response;
 
-    const exists = await checkBookingExists({ args, byID: true });
+    const exists = await checkBookingExists(args, { byID: true });
 
     if (exists.error) return exists;
     if (exists.result) {
@@ -946,7 +950,7 @@ const insertUserBooking = async (args = {}) => {
 
     data[0].customerID = args.customerID;
 
-    return await insertBooking({ args: data[0], updateFlight: false });
+    return await insertBooking(data[0], { updateFlight: false });
   } catch (err) {
     response.error = true;
     response.tryCatchError = true;
@@ -1126,7 +1130,7 @@ const updateUserDetails = async (args = {}) => {
   return response;
 };
 
-const updateUserPassword = async ({ args = {}, matchPasswords = true, expireToken = false }) => {
+const updateUserPassword = async (args = {}, { matchPasswords = true, expireToken = false }) => {
   const response = {
     status: 400,
     error: true,

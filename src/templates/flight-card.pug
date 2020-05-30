@@ -3,7 +3,7 @@ if isEmpty
 		h5.font-size-24.mb-0
 			.flex-center.flex-column
 				i.far.fa-sad-tear.fa-fw.font-size-55.mb-3
-				span Sorry, we couldn&apos;t find any flights for these dates.
+				span Sorry, we couldn&apos;t find any flights for these preferences.
 else
 	each flight, index in flights.data
 		div(id=`flight-${index + skip}`)

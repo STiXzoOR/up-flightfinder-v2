@@ -56,7 +56,7 @@ router.all(
       url: req.getUrl(),
     };
 
-    const response = await sendVerificationLink({ args, type: 'newsletter' });
+    const response = await sendVerificationLink(args, 'newsletter');
 
     if (response.error && response.tryCatchError) return next(response.result);
 
@@ -70,7 +70,7 @@ router.get(
   validate('validateToken'),
   routeAsync(async (req, res, next) => {
     const { token } = req.query;
-    let response = await verifyToken({ token, type: 'newsletter' });
+    let response = await verifyToken(token, 'newsletter');
 
     if (response.error)
       return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/newsletter' })(

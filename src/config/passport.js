@@ -7,7 +7,7 @@ module.exports = (passport) => {
   });
 
   passport.deserializeUser((customerID, done) => {
-    return getUserDetails({ args: { customerID }, partial: true })
+    return getUserDetails({ customerID }, { partial: true })
       .then((response) => {
         if (response.error) throw new Error(response.message);
         return done(null, response.result[0]);

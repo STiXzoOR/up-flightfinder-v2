@@ -1,7 +1,8 @@
 /* eslint-disable no-param-reassign */
 const createError = require('http-errors');
 
-module.exports = function permit({ roles = [], requireVerification = true } = {}) {
+// TODO: Add support for guest role
+module.exports = function permit(roles = [], { requireVerification = true } = {}) {
   if (typeof roles === 'string') roles = [roles];
 
   const isAllowed = (role) => roles.includes(role);
