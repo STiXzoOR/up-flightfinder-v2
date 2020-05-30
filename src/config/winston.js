@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable no-eval */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-expressions */

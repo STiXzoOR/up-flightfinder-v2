@@ -1,6 +1,7 @@
 const express = require('express');
-const routeAsync = require('../config/routeAsync');
-const { handleResponseError, getPopularDestinations, getAirports } = require('../config/requests');
+const routeAsync = require('../middleware/route-async');
+const handleResponseError = require('../middleware/handle-response-error');
+const { getPopularDestinations, getAirports } = require('../config/requests');
 
 const router = express.Router();
 

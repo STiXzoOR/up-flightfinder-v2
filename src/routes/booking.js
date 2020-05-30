@@ -1,10 +1,10 @@
 const express = require('express');
 const createError = require('http-errors');
-const routeAsync = require('../config/routeAsync');
-const { validate } = require('../config/superstruct');
+const routeAsync = require('../middleware/route-async');
+const handleResponseError = require('../middleware/handle-response-error');
+const permit = require('../middleware/permit');
+const { validate } = require('../middleware/superstruct');
 const {
-  handleResponseError,
-  permit,
   getCountries,
   getFlights,
   getBooking,

@@ -4,13 +4,13 @@
 const express = require('express');
 const createError = require('http-errors');
 const passport = require('passport');
-const routeAsync = require('../config/routeAsync');
-const rateLimiter = require('../config/rate-limit');
-const { validate } = require('../config/superstruct');
+const routeAsync = require('../middleware/route-async');
+const handleResponseError = require('../middleware/handle-response-error');
+const permit = require('../middleware/permit');
+const rateLimiter = require('../middleware/rate-limit');
+const { validate } = require('../middleware/superstruct');
 const {
   useMailgun,
-  handleResponseError,
-  permit,
   verifyToken,
   sendVerificationLink,
   getCountries,

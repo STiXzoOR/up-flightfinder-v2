@@ -2,12 +2,12 @@
 /* eslint-disable global-require */
 /* eslint-disable no-var */
 const express = require('express');
-const routeAsync = require('../config/routeAsync');
+const routeAsync = require('../middleware/route-async');
+const handleResponseError = require('../middleware/handle-response-error');
 const logger = require('../config/winston');
-const { validate, validateVerbose } = require('../config/superstruct');
+const { validate, validateVerbose } = require('../middleware/superstruct');
 const {
   useMailgun,
-  handleResponseError,
   verifyToken,
   sendVerificationLink,
   insertNewsletterSubscriber,

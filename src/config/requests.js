@@ -7,7 +7,6 @@
 const useMailgun = process.env.MAILGUN_ENABLED;
 const isProduction = process.env.NODE_ENV === 'production';
 
-const createError = require('http-errors');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const logger = require('./winston');
@@ -17,31 +16,6 @@ if (useMailgun) var mailgun = require('./mailgun');
 
 // TODO #1: Replace sendVerificationLink function with class
 // TODO #2: Replace everything with Sequelize ORM
-
-const handleResponseError = (response = {}, options = {}) => {
-  return (req, res, next) => {
-    if (response.tryCatchError) return next(response.result);
-    if (options.flashMessage) res.flash('error', response.message);
-    if (typeof options.redirectOnError === 'boolean' || options.redirectOnError === response.status)
-      return res.redirect(options.redirect);
-
-    return next(createError(response.status, response.message));
-  };
-};
-
-const permit = ({ roles = [], requireVerification = true } = {}) => {
-  if (typeof roles === 'string') {
-    roles = [roles];
-  }
-
-  const isAllowed = (role) => roles.includes(role);
-  const checkVerification = (verified) => (requireVerification ? verified === 1 : true);
-
-  return (req, res, next) => {
-    if (req.user && isAllowed(req.user.role) && checkVerification(req.user.isVerified)) return next();
-    return next(createError(403));
-  };
-};
 
 const generateToken = () => crypto.randomBytes(40).toString('hex');
 
@@ -1398,8 +1372,6 @@ const removeNewsletterSubscriber = async (email) => {
 module.exports = {
   isProduction,
   useMailgun,
-  handleResponseError,
-  permit,
   verifyToken,
   sendVerificationLink,
   checkPasswordMatch,
