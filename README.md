@@ -35,7 +35,6 @@ The goal is to build a web application which enables the user not only to search
 
   - Accepted arguments:
 
-    - `--debug`: whether to run flask app in debug mode. Defualt: disabled.
     - `--database-user`: database username. **Default: root**.
     - `--database-password`: database password. **Default: "" or root if it's MAMP**.
     - `--database-host`: database host location. **Default: localhost**.

@@ -2,19 +2,19 @@
 /* eslint-disable global-require */
 /* eslint-disable no-var */
 const express = require('express');
+const config = require('../config/dotenv');
 const routeAsync = require('../middleware/route-async');
 const handleResponseError = require('../middleware/handle-response-error');
 const logger = require('../config/winston');
 const { validate, validateVerbose } = require('../middleware/superstruct');
 const {
-  useMailgun,
   verifyToken,
   sendVerificationLink,
   insertNewsletterSubscriber,
   removeNewsletterSubscriber,
 } = require('../config/requests');
 
-if (useMailgun) var mailgun = require('../config/mailgun');
+if (config.mailgun.enabled) var mailgun = require('../config/mailgun');
 
 const router = express.Router();
 

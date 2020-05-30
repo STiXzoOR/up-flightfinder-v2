@@ -1,7 +1,9 @@
 /* eslint-disable vars-on-top */
 /* eslint-disable no-var */
 /* eslint-disable global-require */
-const env = require('dotenv').config().parsed;
+// eslint-disable-next-line import/order
+const config = require('./src/config/dotenv').load();
+const appRoot = require('app-root-path');
 const createError = require('http-errors');
 const express = require('express');
 const session = require('express-session');
@@ -20,14 +22,13 @@ const pagesRouter = require('./src/routes/pages');
 const usersRouter = require('./src/routes/users');
 const flightsRouter = require('./src/routes/flight');
 const bookingRouter = require('./src/routes/booking');
-if (env.MAILGUN_ENABLED) var newsletterRouter = require('./src/routes/newsletter');
+if (config.mailgun.enabled) var newsletterRouter = require('./src/routes/newsletter');
 
-const isProduction = env.NODE_ENV === 'production';
 const app = express();
 const redisClient = redis.createClient();
-const morganFormat = isProduction ? 'combined' : 'dev';
+const morganFormat = config.isProd() ? 'combined' : 'dev';
 
-app.set('views', path.join(__dirname, '/dist/views'));
+app.set('views', appRoot.resolve('/dist/views'));
 app.set('view engine', 'pug');
 
 app.use(
@@ -46,13 +47,13 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use('/static', express.static(path.join(__dirname, '/dist/static')));
-app.use(favicon(path.join(__dirname, '/dist/static/images', 'favicon.ico')));
+app.use('/static', express.static(appRoot.resolve('/dist/static')));
+app.use(favicon(appRoot.resolve('/dist/static/images/favicon.ico')));
 
 app.use(
   session({
     genid: (req) => uuid(),
-    secret: process.env.SECRET_KEY,
+    secret: config.sessionSecret,
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false, expires: false },
@@ -66,7 +67,7 @@ app.use(flash());
 app.use(Maintenance(app, { endpoint: true, view: '503' }).middleware);
 
 app.use((req, res, next) => {
-  req.getUrl = () => `${req.protocol}://${req.app.get('env') === 'development' ? req.get('host') : req.hostname}`;
+  req.getUrl = () => `${req.protocol}://${config.isDev() ? req.get('host') : req.hostname}`;
 
   return next();
 });
@@ -89,7 +90,7 @@ app.use('/pages', pagesRouter);
 app.use('/user', usersRouter);
 app.use('/flight', flightsRouter);
 app.use('/booking', bookingRouter);
-if (env.MAILGUN_ENABLED) app.use('/newsletter', newsletterRouter);
+if (config.mailgun.enabled) app.use('/newsletter', newsletterRouter);
 
 app.use((req, res, next) => {
   return next(createError(404));
@@ -101,14 +102,14 @@ app.use((err, req, res, next) => {
   const logMsg = [
     req.method,
     req.originalUrl,
-    `${isProduction ? statusCode : winston.colorize('error', statusCode)}`,
+    `${config.isProd() ? statusCode : winston.colorize('error', statusCode)}`,
     err.message,
-    `${isProduction ? `\n${err.stack}` : `\n\n${err.stack}\n`}`,
-  ].join(isProduction ? ' - ' : ' ');
+    `${config.isProd() ? `\n${err.stack}` : `\n\n${err.stack}\n`}`,
+  ].join(config.isProd() ? ' - ' : ' ');
 
   winston.error(logMsg);
 
-  if (!isProduction) {
+  if (config.isDev()) {
     res.locals.message = err.message;
     res.locals.error = err;
     return res.render('error');

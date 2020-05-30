@@ -6,6 +6,7 @@ const { createLogger, format, transports, addColors } = require('winston');
 const { existsSync, mkdirSync } = require('fs');
 const appRoot = require('app-root-path');
 require('winston-daily-rotate-file');
+const config = require('./dotenv');
 
 const logsDir = `${appRoot}/logs`;
 const infoDir = `${logsDir}/info`;
@@ -20,7 +21,7 @@ const parser = (param) => {
   return Object.keys(param).length ? JSON.stringify(param, undefined, 2) : '';
 };
 
-const config = {
+const options = {
   level: 'trace',
   silent: false,
   exitOnError: false,
@@ -154,9 +155,9 @@ const config = {
 };
 
 class Logger {
-  constructor(config) {
-    this.env = process.env.NODE_ENV;
-    this.config = config;
+  constructor(options) {
+    this.env = config.env;
+    this.config = options;
     this.formatter = format;
 
     this.init();
@@ -245,4 +246,4 @@ class Logger {
   }
 }
 
-module.exports = new Logger(config);
+module.exports = new Logger(options);

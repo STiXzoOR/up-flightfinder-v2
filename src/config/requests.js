@@ -4,15 +4,12 @@
 /* eslint-disable vars-on-top */
 /* eslint-disable no-var */
 /* eslint-disable global-require */
-const useMailgun = process.env.MAILGUN_ENABLED;
-const isProduction = process.env.NODE_ENV === 'production';
-
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
+const config = require('./dotenv');
 const logger = require('./winston');
 const mysql = require('./mysql');
-
-if (useMailgun) var mailgun = require('./mailgun');
+if (config.mailgun.enabled) var mailgun = require('./mailgun');
 
 // TODO #1: Replace sendVerificationLink function with class
 // TODO #2: Replace everything with Sequelize ORM
@@ -812,7 +809,7 @@ const insertUser = async (args = {}) => {
       password,
       mobile: args.mobile,
       gender: args.gender,
-      status: useMailgun ? 'UNVERIFIED' : 'VERIFIED',
+      status: config.mailgun.enabled ? 'UNVERIFIED' : 'VERIFIED',
     };
 
     await mysql
@@ -1370,8 +1367,6 @@ const removeNewsletterSubscriber = async (email) => {
 };
 
 module.exports = {
-  isProduction,
-  useMailgun,
   verifyToken,
   sendVerificationLink,
   checkPasswordMatch,

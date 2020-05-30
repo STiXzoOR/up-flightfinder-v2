@@ -4,13 +4,13 @@
 const express = require('express');
 const createError = require('http-errors');
 const passport = require('passport');
+const config = require('../config/dotenv');
 const routeAsync = require('../middleware/route-async');
 const handleResponseError = require('../middleware/handle-response-error');
 const permit = require('../middleware/permit');
 const rateLimiter = require('../middleware/rate-limit');
 const { validate } = require('../middleware/superstruct');
 const {
-  useMailgun,
   verifyToken,
   sendVerificationLink,
   getCountries,
@@ -23,7 +23,7 @@ const {
   removeUser,
 } = require('../config/requests');
 
-if (useMailgun) var mailgun = require('../config/mailgun');
+if (config.mailgun.enabled) var mailgun = require('../config/mailgun');
 
 require('../config/passport')(passport);
 
@@ -86,7 +86,7 @@ router.post(
         next
       );
 
-    if (useMailgun) {
+    if (config.mailgun.enabled) {
       const args = {
         email: body.email,
         firstName: body.firstName,
@@ -195,7 +195,7 @@ router.post(
   })
 );
 
-if (useMailgun) {
+if (config.mailgun.enabled) {
   router.get('/forgot-password', (req, res) => {
     return res.render('forgot-password');
   });

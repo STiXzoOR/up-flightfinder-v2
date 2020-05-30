@@ -8,13 +8,6 @@ WINDOWS = platform.system() == "Windows"
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
-    "--debug",
-    default="",
-    action="store_true",
-    help="enabled debugging mode (default: disabled)",
-)
-
-parser.add_argument(
     "--database-host",
     metavar="host",
     type=str,
@@ -117,8 +110,7 @@ if args.use_mailgun:
     args.mailgun_base = "api{base}.mailgun.net".format(base=base)
 
 VARS = {
-    "DEBUG_STATUS": args.debug,
-    "SECRET_KEY": secrets.token_urlsafe(24),
+    "SESSION_SECRET": secrets.token_urlsafe(24),
     "DB_NAME": "flightfinder",
     "DB_HOST": args.database_host,
     "DB_USER": args.database_user,

@@ -1,18 +1,18 @@
+/* eslint-disable no-shadow */
 /* eslint-disable no-underscore-dangle */
 const Mailgun = require('mailgun-js');
+const config = require('./dotenv');
 
 const options = {
-  apiKey: process.env.MAILGUN_API_KEY,
-  domain: process.env.MAILGUN_DOMAIN,
-  host: process.env.MAILGUN_HOST,
+  ...config.mailgun,
   testMode: false,
 };
 
 class MailgunWrapper {
   constructor(options) {
+    this.config = options;
+    this.config.from = `Flight Finder <${this.config.sender}>`;
     this.mailgun = new Mailgun(options);
-    this.domain = options.domain;
-    this.from = `Flight Finder <${process.env.MAILGUN_SENDER_EMAIL}>`;
     this.templates = {
       welcome: 'welcome',
       verifyAccount: 'confirm_account',
@@ -28,12 +28,12 @@ class MailgunWrapper {
   }
 
   _getList(list) {
-    return this.mailgun.lists(`${list}@${this.domain}`);
+    return this.mailgun.lists(`${list}@${this.config.domain}`);
   }
 
   send(data) {
     return this.mailgun.messages().send({
-      from: this.from,
+      from: this.config.from,
       to: data.to,
       subject: data.subject,
       template: data.template,

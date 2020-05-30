@@ -1,8 +1,10 @@
+/* eslint-disable no-shadow */
 const createError = require('http-errors');
 const RateLimit = require('express-rate-limit');
 const RedisStore = require('rate-limit-redis');
+const config = require('../config/dotenv');
 
-const config = {
+const options = {
   limiters: [
     {
       name: 'createAccount',
@@ -56,9 +58,9 @@ const config = {
 };
 
 class RateLimiter {
-  constructor(config) {
-    this.env = process.env.NODE_ENV;
-    this.config = config;
+  constructor(options) {
+    this.env = config.env;
+    this.config = options;
 
     this.init();
   }
@@ -94,4 +96,4 @@ class RateLimiter {
   }
 }
 
-module.exports = new RateLimiter(config);
+module.exports = new RateLimiter(options);

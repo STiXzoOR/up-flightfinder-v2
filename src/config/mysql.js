@@ -1,19 +1,15 @@
+/* eslint-disable no-shadow */
 const mysql = require('mysql2');
-const os = require('os');
-
-const OSX = os.platform() === 'darwin';
+const config = require('./dotenv');
 
 const options = {
+  ...config.database,
   connectionLimit: 100,
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
   namedPlaceholders: true,
   debug: false,
 };
 
-if (OSX) {
+if (config.isOSX()) {
   options.socketPath = '/Applications/MAMP/tmp/mysql/mysql.sock';
 }
 
@@ -27,12 +23,12 @@ class Database {
       this.pool.getConnection((err, connection) => {
         if (err) return reject(err);
 
-        connection.execute(sql, args, (err, rows) => {
+        return connection.execute(sql, args, (err, rows) => {
           connection.release();
 
           if (err) return reject(err);
 
-          resolve(rows);
+          return resolve(rows);
         });
       });
     });
@@ -48,10 +44,10 @@ class Database {
       this.pool.getConnection((err, connection) => {
         if (err) return reject(err);
 
-        connection.beginTransaction((err) => {
+        return connection.beginTransaction((err) => {
           if (err) return reject(err);
 
-          connection.execute(sql, args, (err, rows) => {
+          return connection.execute(sql, args, (err, rows) => {
             if (err) {
               connection.rollback(() => {
                 connection.release();
@@ -67,7 +63,7 @@ class Database {
                 });
               }
 
-              resolve(rows);
+              return resolve(rows);
             });
           });
         });
@@ -79,7 +75,7 @@ class Database {
     return new Promise((resolve, reject) => {
       this.pool.end((err) => {
         if (err) return reject(err);
-        resolve();
+        return resolve();
       });
     });
   }
