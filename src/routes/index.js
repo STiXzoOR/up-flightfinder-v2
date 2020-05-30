@@ -1,10 +1,12 @@
 const express = require('express');
+const routeAsync = require('../config/routeAsync');
 const { handleResponseError, getPopularDestinations, getAirports } = require('../config/requests');
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
-  try {
+router.get(
+  '/',
+  routeAsync(async (req, res, next) => {
     const airports = await getAirports();
     const destinations = await getPopularDestinations();
 
@@ -15,9 +17,7 @@ router.get('/', async (req, res, next) => {
     }
 
     return res.render('index', { airports: airports.result, destinations: destinations.result });
-  } catch (err) {
-    return next(err);
-  }
-});
+  })
+);
 
 module.exports = router;

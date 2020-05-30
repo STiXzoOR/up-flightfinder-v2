@@ -314,7 +314,7 @@ class FlightFilterHandler {
     const request = {
       method: 'get',
       headers: new Headers({
-        'X-Custom-Header': 'FetchMoreFlights',
+        'X-Search-Flights': 'FilterAndFetchFlights',
       }),
     };
 

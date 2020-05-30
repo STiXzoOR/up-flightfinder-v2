@@ -1,5 +1,6 @@
 const express = require('express');
 const createError = require('http-errors');
+const routeAsync = require('../config/routeAsync');
 const rateLimiter = require('../config/rate-limit');
 const { validate } = require('../config/superstruct');
 const { handleResponseError, getAirports, getFlights } = require('../config/requests');
@@ -135,10 +136,12 @@ router.get('/', (req, res, next) => {
   return next(createError(400));
 });
 
-router.get('/search-flights', rateLimiter.flightSearch, validate('searchFlightsQuery'), async (req, res, next) => {
-  const query = parseQuery(req.query);
-
-  try {
+router.get(
+  '/search-flights',
+  rateLimiter.flightSearch,
+  validate('searchFlightsQuery'),
+  routeAsync(async (req, res, next) => {
+    const query = parseQuery(req.query);
     const conditions = generateConditions(query);
     let response = await getFlights({ isRoundtrip: query.isRoundtrip, ...conditions });
 
@@ -156,8 +159,8 @@ router.get('/search-flights', rateLimiter.flightSearch, validate('searchFlightsQ
         : { isEmpty: flights.isEmpty }
     );
 
-    if (req.get('X-Custom-Header') === 'FetchMoreFlights') {
-      return res.json({
+    if (req.get('X-Search-Flights') === 'FilterAndFetchFlights') {
+      return res.status(200).json({
         flights: {
           isEmpty: flights.isEmpty,
           result: flightsHTML,
@@ -178,9 +181,7 @@ router.get('/search-flights', rateLimiter.flightSearch, validate('searchFlightsQ
       airlines: flights.airlines,
       flights: { isEmpty: flights.isEmpty, data: flights.counters, html: flightsHTML },
     });
-  } catch (err) {
-    return next(err);
-  }
-});
+  })
+);
 
 module.exports = router;

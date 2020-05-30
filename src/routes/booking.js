@@ -1,5 +1,6 @@
 const express = require('express');
 const createError = require('http-errors');
+const routeAsync = require('../config/routeAsync');
 const { validate } = require('../config/superstruct');
 const {
   handleResponseError,
@@ -23,10 +24,11 @@ router.get('/', (req, res, next) => {
   return next(createError(400));
 });
 
-router.post('/add', permit({ roles: 'USER' }), async (req, res, next) => {
-  const { body } = req;
-
-  try {
+router.post(
+  '/add',
+  permit({ roles: 'USER' }),
+  routeAsync(async (req, res, next) => {
+    const { body } = req;
     const response = await insertUserBooking({ customerID: req.user.id, ...body });
 
     if (response.error && response.tryCatchError) return next(response.result);
@@ -36,18 +38,18 @@ router.post('/add', permit({ roles: 'USER' }), async (req, res, next) => {
 
     res.flash(response.error ? 'error' : 'success', response.message);
     return res.redirect('/user/profile');
-  } catch (err) {
-    return next(err);
-  }
-});
+  })
+);
 
-router.get('/new-booking', validate('newBookingQuery'), async (req, res, next) => {
-  const { query } = req;
-  query.isRoundtrip = query.isRoundtrip === 'true';
-  query.quantity = parseInt(query.quantity, 10);
-  query.passengers = JSON.parse(query.passengers);
+router.get(
+  '/new-booking',
+  validate('newBookingQuery'),
+  routeAsync(async (req, res, next) => {
+    const { query } = req;
+    query.isRoundtrip = query.isRoundtrip === 'true';
+    query.quantity = parseInt(query.quantity, 10);
+    query.passengers = JSON.parse(query.passengers);
 
-  try {
     let response = null;
 
     if (req.user && req.user.role === 'USER') {
@@ -110,23 +112,22 @@ router.get('/new-booking', validate('newBookingQuery'), async (req, res, next) =
     req.session.flightData = query;
 
     return res.render('new-booking', { query, flight, countries });
-  } catch (err) {
-    return next(err);
-  }
-});
+  })
+);
 
-router.post('/new-booking/thank-you', async (req, res, next) => {
-  if (req.session.flightData === undefined) {
-    return next(createError(400));
-  }
+router.post(
+  '/new-booking/thank-you',
+  routeAsync(async (req, res, next) => {
+    if (req.session.flightData === undefined) {
+      return next(createError(400));
+    }
 
-  const { flightData } = req.session;
-  delete req.session.flightData;
+    const { flightData } = req.session;
+    delete req.session.flightData;
 
-  const bookingData = req.body;
-  bookingData.finalPrice = parseInt(bookingData.finalPrice, 10);
+    const bookingData = req.body;
+    bookingData.finalPrice = parseInt(bookingData.finalPrice, 10);
 
-  try {
     const passengerInfo = [];
     let bookingID = '';
     let response = true;
@@ -210,27 +211,28 @@ router.post('/new-booking/thank-you', async (req, res, next) => {
     });
 
     return res.render('new-booking-booked', { booking: { ...flightData, ...bookingDetails } });
-  } catch (err) {
-    return next(err);
-  }
-});
+  })
+);
 
 router.get('/manage-booking', (req, res) => {
   return res.render('manage-booking');
 });
 
-router.post('/manage-booking', async (req, res) => {
-  const { bookingID, lastName } = req.body;
+router.post(
+  '/manage-booking',
+  routeAsync(async (req, res) => {
+    const { bookingID, lastName } = req.body;
 
-  return res.redirect(`/booking/manage-booking/bookingID=${bookingID}&lastName=${lastName}`);
-});
+    return res.redirect(`/booking/manage-booking/bookingID=${bookingID}&lastName=${lastName}`);
+  })
+);
 
-router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req, res, next) => {
-  const { bookingID, lastName } = req.params;
-  const customerID = req.session.user.id;
-  const byID = /(\/user\/profile)/.test(req.get('Referrer'));
-
-  try {
+router.get(
+  '/manage-booking/bookingID=:bookingID&lastName=:lastName',
+  routeAsync(async (req, res, next) => {
+    const { bookingID, lastName } = req.params;
+    const customerID = req.session.user.id;
+    const byID = /(\/user\/profile)/.test(req.get('Referrer'));
     let response = await checkBookingExists({
       args: { bookingID, customerID, lastName },
       byID,
@@ -295,16 +297,14 @@ router.get('/manage-booking/bookingID=:bookingID&lastName=:lastName', async (req
     const passengers = response.result;
 
     return res.render('manage-booking-post', { booking, flight, passengers });
-  } catch (err) {
-    return next(err);
-  }
-});
+  })
+);
 
-router.post('/manage-booking/bookingID=:bookingID&lastName=:lastName/edit', async (req, res, next) => {
-  const { params } = req;
-  const { body } = req;
-
-  try {
+router.post(
+  '/manage-booking/bookingID=:bookingID&lastName=:lastName/edit',
+  routeAsync(async (req, res, next) => {
+    const { params } = req;
+    const { body } = req;
     const response = await updateBooking({ ...params, ...body });
 
     if (response.error && response.tryCatchError) return next(response.result);
@@ -315,16 +315,14 @@ router.post('/manage-booking/bookingID=:bookingID&lastName=:lastName/edit', asyn
         response.error ? params.lastName : body.contactLastName
       }`
     );
-  } catch (err) {
-    return next(err);
-  }
-});
+  })
+);
 
-router.post('/manage-booking/bookingID=:bookingID&lastName=:lastName/cancel', async (req, res, next) => {
-  const { params } = req;
-  const { body } = req;
-
-  try {
+router.post(
+  '/manage-booking/bookingID=:bookingID&lastName=:lastName/cancel',
+  routeAsync(async (req, res, next) => {
+    const { params } = req;
+    const { body } = req;
     const response = await cancelBooking({ ...params, ...body });
 
     if (response.error) {
@@ -333,9 +331,7 @@ router.post('/manage-booking/bookingID=:bookingID&lastName=:lastName/cancel', as
     }
 
     return res.redirect(`/booking/manage-booking/bookingID=${params.bookingID}&lastName=${params.lastName}`);
-  } catch (err) {
-    return next(err);
-  }
-});
+  })
+);
 
 module.exports = router;

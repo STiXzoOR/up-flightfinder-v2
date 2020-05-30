@@ -2,6 +2,7 @@
 /* eslint-disable global-require */
 /* eslint-disable no-var */
 const express = require('express');
+const routeAsync = require('../config/routeAsync');
 const logger = require('../config/winston');
 const { validate, validateVerbose } = require('../config/superstruct');
 const {
@@ -21,32 +22,33 @@ router.get('/', (req, res) => {
   return res.render('newsletter');
 });
 
-router.all('/subscribe', async (req, res, next) => {
-  const data = req.method === 'GET' ? req.query : req.body;
-  let subscriberExists = false;
+router.all(
+  '/subscribe',
+  routeAsync(async (req, res, next) => {
+    const data = req.method === 'GET' ? req.query : req.body;
+    let subscriberExists = false;
 
-  if (req.method === 'GET') {
-    const [error] = validateVerbose(
-      { email: 'email', firstName: 'string & !isEmpty', lastName: 'string & !isEmpty' },
-      data
-    );
-    if (error) return next(error);
-  }
+    if (req.method === 'GET') {
+      const [error] = validateVerbose(
+        { email: 'email', firstName: 'string & !isEmpty', lastName: 'string & !isEmpty' },
+        data
+      );
+      if (error) return next(error);
+    }
 
-  await mailgun
-    .getMember('newsletter', data.email)
-    .then((member) => {
-      logger.info(member);
-      subscriberExists = true;
-    })
-    .catch((err) => logger.error(err));
+    await mailgun
+      .getMember('newsletter', data.email)
+      .then((member) => {
+        logger.info(member);
+        subscriberExists = true;
+      })
+      .catch((err) => logger.error(err));
 
-  if (subscriberExists) {
-    res.flash('error', 'The provided email is already subscribed to our newsletter list.');
-    return res.redirect('/newsletter');
-  }
+    if (subscriberExists) {
+      res.flash('error', 'The provided email is already subscribed to our newsletter list.');
+      return res.redirect('/newsletter');
+    }
 
-  try {
     const args = {
       email: data.email,
       firstName: data.firstName || data.email.split('@')[0],
@@ -60,15 +62,14 @@ router.all('/subscribe', async (req, res, next) => {
 
     res.flash(response.error ? 'error' : 'success', response.message);
     return res.redirect('/newsletter');
-  } catch (err) {
-    return next(err);
-  }
-});
+  })
+);
 
-router.get('/verify', validate('validateToken'), async (req, res, next) => {
-  const { token } = req.query;
-
-  try {
+router.get(
+  '/verify',
+  validate('validateToken'),
+  routeAsync(async (req, res, next) => {
+    const { token } = req.query;
     let response = await verifyToken({ token, type: 'newsletter' });
 
     if (response.error)
@@ -84,37 +85,36 @@ router.get('/verify', validate('validateToken'), async (req, res, next) => {
 
     res.flash(response.error ? 'error' : 'success', response.message);
     return res.redirect('/newsletter');
-  } catch (err) {
-    return next(err);
-  }
-});
+  })
+);
 
 router.get('/unsubscribe', (req, res) => {
   return res.render('newsletter-unsubscribe');
 });
 
-router.post('/unsubscribe', async (req, res, next) => {
-  const { email } = req.body;
-  let notFound = false;
-  let member = {};
+router.post(
+  '/unsubscribe',
+  routeAsync(async (req, res, next) => {
+    const { email } = req.body;
+    let notFound = false;
+    let member = {};
 
-  await mailgun
-    .getMember('newsletter', email)
-    .then((data) => {
-      logger.info(data);
-      member = data.member;
-    })
-    .catch((err) => {
-      logger.error(err);
-      notFound = true;
-    });
+    await mailgun
+      .getMember('newsletter', email)
+      .then((data) => {
+        logger.info(data);
+        member = data.member;
+      })
+      .catch((err) => {
+        logger.error(err);
+        notFound = true;
+      });
 
-  if (notFound) {
-    res.flash('error', 'The provided email is not subscribed to our newsletter list.');
-    return res.redirect('/newsletter/unsubscribe');
-  }
+    if (notFound) {
+      res.flash('error', 'The provided email is not subscribed to our newsletter list.');
+      return res.redirect('/newsletter/unsubscribe');
+    }
 
-  try {
     const response = await removeNewsletterSubscriber(email);
 
     if (response.error)
@@ -137,9 +137,7 @@ router.post('/unsubscribe', async (req, res, next) => {
 
     res.flash('success', response.message);
     return res.redirect('/newsletter');
-  } catch (err) {
-    return next(err);
-  }
-});
+  })
+);
 
 module.exports = router;
