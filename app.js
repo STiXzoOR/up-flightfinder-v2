@@ -13,6 +13,7 @@ const morgan = require('morgan');
 const flash = require('express-flash-2');
 const redis = require('redis');
 const RedisStore = require('connect-redis')(session);
+const Maintenance = require('./config/modules/maintenance');
 const winston = require('./src/config/winston');
 const indexRouter = require('./src/routes/index');
 const pagesRouter = require('./src/routes/pages');
@@ -61,6 +62,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+
+app.use(Maintenance(app, { endpoint: true, view: '503' }).middleware);
 
 app.use((req, res, next) => {
   req.getUrl = () => `${req.protocol}://${req.app.get('env') === 'development' ? req.get('host') : req.hostname}`;

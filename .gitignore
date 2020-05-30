@@ -182,3 +182,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Maintenance mode
+config/maintenance_key.json
+./maintenance

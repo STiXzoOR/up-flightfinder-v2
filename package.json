@@ -3,8 +3,8 @@
 	"version": "2.0.0",
 	"private": true,
 	"scripts": {
-		"prod": "node ./bin/www",
-		"dev": "gulp",
+		"prod": "NODE_ENV=production node ./bin/www",
+		"dev": "NODE_ENV=development gulp",
 		"update-packages": "ncu -u && npm install"
 	},
 	"repository": {

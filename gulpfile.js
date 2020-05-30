@@ -7,18 +7,23 @@ const browserSync = require('browser-sync').create();
 const nodemon = require('gulp-nodemon');
 const config = require('./config/gulp.js');
 
+gulp.task('env', (cb) => {
+  process.env.NODE_ENV = 'development';
+  cb();
+});
+
 gulp.task('copy:fonts', () => gulp.src(config.paths.fonts.src).pipe(gulp.dest(config.paths.fonts.dist)));
 
 gulp.task('copy:images', () =>
   gulp.src(config.paths.images.src).pipe(cache(imagemin())).pipe(gulp.dest(config.paths.images.dist))
 );
 
-gulp.task('copy:vendors', (done) => {
+gulp.task('copy:vendors', (cb) => {
   Object.keys(config.paths.vendors).forEach((index) => {
     const vendor = config.paths.vendors[index];
     return gulp.src(vendor.src).pipe(gulp.dest(vendor.dist));
   });
-  done();
+  cb();
 });
 
 gulp.task('clean', () => del(config.paths.dist_dir).then((cb) => cache.clearAll(cb)));
@@ -91,4 +96,4 @@ gulp.task('browser-sync', browserSyncInit);
 gulp.task('init', gulp.parallel('copy:fonts', 'copy:images', 'copy:vendors'));
 gulp.task('dev', gulp.parallel('dev:views', 'dev:css', 'dev:js'));
 gulp.task('watch', gulp.parallel('watch:views', 'watch:css', 'watch:js'));
-gulp.task('default', gulp.series('clean:dist', 'dev', 'server', gulp.parallel('watch', 'browser-sync')));
+gulp.task('default', gulp.series('clean:dist', 'env', 'dev', 'server', gulp.parallel('watch', 'browser-sync')));

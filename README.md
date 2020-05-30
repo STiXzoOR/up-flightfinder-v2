@@ -68,28 +68,37 @@ From the root of the project follow the steps below:
 - Run `npm install` to install the npm dependencies.
 - Run `gulp init` to initialize the static resources.
 
+  - Accepted arguments:
+
+    - `copy:fonts`: copies the fonts from **src** to **dist** folder.
+    - `copy:images`: copies the images after they are optimized from **src** to **dist** folder.
+    - `copy:vendors`: copies the vendors from **src** to **dist** folder.
+    - `init`: initializes the static resources by running all three previous commands.
+    - `clean:images`: deletes the images from the **dist** folder.
+    - `clean:vendors`: deletes the vendors from the **dist** folder..
+    - `clean:dist`: clears the **dist** folder without deleting the static resources.
+    - `clean`: deletes the **dist** folder entirely.
+
+    - NOTE: you need to run `gulp init` to reinitialize the resources after running the clean commands.
+
 ## Running App
 
 - To run the app in development mode:
 
-  - Run `gulp` or `npm run dev`
-
-    - Accepted arguments:
-
-      - `copy:fonts`: copies the fonts from **src** to **dist** folder.
-      - `copy:images`: copies the images after they are optimized from **src** to **dist** folder.
-      - `copy:vendors`: copies the vendors from **src** to **dist** folder.
-      - `init`: initializes the static resources by running all three previous commands.
-      - `clean:images`: deletes the images from the **dist** folder.
-      - `clean:vendors`: deletes the vendors from the **dist** folder..
-      - `clean:dist`: clears the **dist** folder without deleting the static resources.
-      - `clean`: deletes the **dist** folder entirely.
-
-    - NOTE: you need to run `gulp init` to reinitialize the resources after running the clean commands.
+  - Run `npm run dev`
 
 - To run the app in production mode:
 
   - Run `npm run prod`
+
+- To run the app in maintenance mode:
+
+  - Navigate to `./config` folder and open the generated file `maintenance_key.json`
+  - Copy the key and then run:
+
+    - To enable it: `curl --location --request POST 'http://ENTER_APP_URL/maintenance/on' --header 'X-Maintenance-Key: ENTER_MAINTENANCE_KEY`
+
+    - To disable it: `curl --location --request POST 'http://ENTER_APP_URL/maintenance/off' --header 'X-Maintenance-Key: ENTER_MAINTENANCE_KEY`
 
 - To update the packages:
   - Run `npm run update-packages`
@@ -104,6 +113,7 @@ From the root of the project follow the steps below:
 | Authentication Middleware   | Passport.js                              |
 | In-memory caching/Datastore | Redis                                    |
 | Transactional Emails        | Mailgun                                  |
+| Logger                      | Morgan + Winston                         |
 | Database                    | MySQL (MAMP Bundle)                      |
 | Deployment                  | Local/Remote                             |
 

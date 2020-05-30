@@ -8,15 +8,6 @@ WINDOWS = platform.system() == "Windows"
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
-    "--node-env",
-    metavar="env",
-    type=str,
-    default="development",
-    action="store",
-    help="node environment (default: development)",
-)
-
-parser.add_argument(
     "--debug",
     default="",
     action="store_true",
@@ -126,7 +117,6 @@ if args.use_mailgun:
     args.mailgun_base = "api{base}.mailgun.net".format(base=base)
 
 VARS = {
-    "NODE_ENV": args.env,
     "DEBUG_STATUS": args.debug,
     "SECRET_KEY": secrets.token_urlsafe(24),
     "DB_NAME": "flightfinder",
