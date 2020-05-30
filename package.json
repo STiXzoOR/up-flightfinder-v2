@@ -3,8 +3,8 @@
 	"version": "2.0.0",
 	"private": true,
 	"scripts": {
-		"prod": "NODE_ENV=production node ./bin/www",
-		"dev": "NODE_ENV=development gulp",
+		"prod": "cross-env NODE_ENV=production node ./bin/www",
+		"dev": "cross-env NODE_ENV=development gulp",
 		"update-packages": "ncu -u && npm install"
 	},
 	"repository": {
@@ -12,7 +12,7 @@
 		"url": "git+https://github.com/stixzoor/up-flightfinder-v2.git"
 	},
 	"author": "STiXzoOR",
-	"license": "ISC",
+	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/stixzoor/up-flightfinder-v2/issues"
 	},
@@ -27,6 +27,7 @@
 		"bootstrap-datepicker": "1.9.0",
 		"connect-redis": "4.0.4",
 		"cookie-parser": "~1.4.5",
+		"cross-env": "7.0.2",
 		"debug": "~4.1.1",
 		"dotenv": "8.2.0",
 		"express": "~4.17.1",
@@ -53,6 +54,7 @@
 		"mysql2": "2.1.0",
 		"passport": "0.4.1",
 		"passport-local": "1.0.0",
+		"pm2": "4.4.0",
 		"popper.js": "1.16.1",
 		"pug": "3.0.0",
 		"rate-limit-redis": "2.0.0",
