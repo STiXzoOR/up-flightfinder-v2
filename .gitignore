@@ -186,3 +186,5 @@ venv.bak/
 # Maintenance mode
 config/maintenance_key.json
 ./maintenance
+
+dist.zip

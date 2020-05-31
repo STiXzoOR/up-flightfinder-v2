@@ -13,10 +13,11 @@ const options = {
           type: 'redis',
           options: {
             expiry: 3600,
+            prefix: 'account_rl:',
           },
         },
         max: 3,
-        message: 'Too many requests for creating new account.',
+        message: 'Too many requests for creating new account',
         skip: {
           type: 'environment',
           condition: 'development',
@@ -31,10 +32,11 @@ const options = {
           type: 'redis',
           options: {
             expiry: 3600,
+            prefix: 'flight_rl:',
           },
         },
         max: 15,
-        message: 'Too many requests for new flight search.',
+        message: 'Too many requests for new flight search',
         skip: {
           type: 'environment',
           condition: 'development',
