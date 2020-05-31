@@ -79,12 +79,30 @@ const options = {
       },
     },
     {
+      type: 'Console',
+      name: 'pm2-logger',
+      env: 'production',
+      options: {
+        stderrLevels: ['fatal', 'error'],
+        consoleWarnLevels: ['debug', 'warn'],
+        handleExceptions: true,
+        format: [
+          {
+            type: 'printf',
+            options: {
+              template: 'simple',
+            },
+          },
+        ],
+      },
+    },
+    {
       type: 'DailyRotateFile',
       env: 'production',
       name: 'info-logger',
       options: {
         filename: `${infoDir}/%DATE%-info.log`,
-        datePattern: 'YYYY-MM-DD-HH',
+        datePattern: 'YYYY-MM-DD',
         zippedArchive: true,
         handleExceptions: true,
         maxSize: '100m',
@@ -104,7 +122,7 @@ const options = {
       name: 'warn-logger',
       options: {
         filename: `${errorDir}/%DATE%-warn.log`,
-        datePattern: 'YYYY-MM-DD-HH',
+        datePattern: 'YYYY-MM-DD',
         zippedArchive: true,
         handleExceptions: true,
         maxSize: '20m',
@@ -124,7 +142,7 @@ const options = {
       name: 'error-logger',
       options: {
         filename: `${errorDir}/%DATE%-error.log`,
-        datePattern: 'YYYY-MM-DD-HH',
+        datePattern: 'YYYY-MM-DD',
         zippedArchive: true,
         handleExceptions: true,
         maxSize: '20m',
@@ -142,14 +160,14 @@ const options = {
   templates: {
     simple: ({ level, message, timestamp, meta }) => {
       const metaMsg = meta ? `: ${parser(meta)}` : '';
-      return `[${timestamp}] [${level.toUpperCase()}] - ${message} ${metaMsg}`;
+      return `[${timestamp}] [${level.toUpperCase()}] - ${parser(message)} ${metaMsg}`;
     },
     'simple-colored': ({ level, message, timestamp, meta }) => {
       const metaMsg = meta ? `: ${parser(meta)}` : '';
 
-      return `${format
-        .colorize({ all: true })
-        .colorize(level, `[${timestamp}] [${level.toUpperCase()}]`)} - ${message} ${metaMsg}`;
+      return `${format.colorize({ all: true }).colorize(level, `[${timestamp}] [${level.toUpperCase()}]`)} - ${parser(
+        message
+      )} ${metaMsg}`;
     },
   },
 };
@@ -181,7 +199,8 @@ class Logger {
   }
 
   parseTransports() {
-    this.config.transports.forEach((transport) => {
+    // eslint-disable-next-line consistent-return, array-callback-return
+    this.config.transports.some((transport) => {
       if (transport.env === this.env) {
         if (transport.options.format || transport.options.levels) {
           transport.options.format = this.parseFormats(transport.options.format, transport.options.levels);
@@ -189,6 +208,7 @@ class Logger {
         }
 
         this.options.transports.push(new transports[transport.type](transport.options));
+        if (config.pm2.enabled && transport.name === 'pm2-logger') return true;
       }
     });
   }

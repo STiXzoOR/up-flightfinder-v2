@@ -40,6 +40,12 @@ class Config {
     };
   }
 
+  get pm2() {
+    return {
+      enabled: process.env.PM2_ENABLED === 'True',
+    };
+  }
+
   isProd() {
     return this.env === 'production';
   }

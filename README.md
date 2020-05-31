@@ -65,30 +65,35 @@ From the root of the project follow the steps below:
 
 - Run `npm install --global gulp-cli`
 - Run `npm install` to install the npm dependencies.
-- Run `gulp init` to initialize the static resources.
+- Run `gulp build:dlean-dev` to build the static resources.
 
   - Accepted arguments:
 
+    - `init`: initializes the static resources (fonts, images, vendors).
+    - `build`: builds source files from **src** to **dist** folder for production mode.
+    - `build:dev`: builds source files from **src** to **dist** folder for development mode without initializing static resources.
+    - `build:clean-dev`: initializes static resources and builds source files from **src** to **dist** folder for development mode.
     - `copy:fonts`: copies the fonts from **src** to **dist** folder.
     - `copy:images`: copies the images after they are optimized from **src** to **dist** folder.
     - `copy:vendors`: copies the vendors from **src** to **dist** folder.
-    - `init`: initializes the static resources by running all three previous commands.
+    - `copy:src`: copies everything from **src** to **dist** folder.
+    - `clean:fonts`: deletes the fonts from the **dist** folder.
     - `clean:images`: deletes the images from the **dist** folder.
-    - `clean:vendors`: deletes the vendors from the **dist** folder..
+    - `clean:vendors`: deletes the vendors from the **dist** folder.
     - `clean:dist`: clears the **dist** folder without deleting the static resources.
     - `clean`: deletes the **dist** folder entirely.
 
-    - NOTE: you need to run `gulp init` to reinitialize the resources after running the clean commands.
+    - NOTE: you need to run `gulp init` to reinitialize the resources after running the clean command.
 
 ## Running App
 
 - To run the app in development mode:
 
-  - Run `npm run dev`
+  - Run `npm run development`
 
 - To run the app in production mode:
 
-  - Run `npm run prod`
+  - Run `npm run production`
 
 - To run the app in maintenance mode:
 
@@ -100,8 +105,13 @@ From the root of the project follow the steps below:
     - To disable it: `curl --location --request POST 'http://ENTER_APP_URL/maintenance/off' --header 'X-Maintenance-Key: ENTER_MAINTENANCE_KEY`
 
 - To update the packages:
+
   - Run `npm run update-packages`
   - Run `gulp clean && gulp init`
+
+## Deploying App
+
+- Coming soon
 
 ## Technologies Used
 

@@ -1,8 +1,10 @@
-const os = require('os');
+const { platform } = require('os');
 
-const OSX = os.platform() === 'darwin';
-const LINUX = os.platform() === 'linux';
-const WINDOWS = os.platform() === 'win32';
+const browser = {
+  darwin: 'google chrome',
+  linux: 'google-chrome',
+  win32: 'chrome',
+};
 
 const paths = {
   cleanup_dirs: [
@@ -17,7 +19,10 @@ const paths = {
     '!dist/static/vendors/**/*',
   ],
   vendors_dir: 'dist/static/vendors',
+  fonts_dir: 'dist/static/fonts',
   images_dir: 'dist/static/images',
+  src_dir: 'src',
+  src_files: 'src/**/*.*',
   dist_dir: 'dist',
   dist_files: 'dist/**/*.*',
   views: {
@@ -40,23 +45,23 @@ const paths = {
     src: 'src/static/images/**/*.+(png|jpg|jpeg|gif|svg|ico)',
     dist: 'dist/static/images',
   },
-  vendors: {
-    fontawesome: {
+  vendors: [
+    {
       src: [
         'node_modules/@fortawesome/fontawesome-free/*css*/all.min.css',
         'node_modules/@fortawesome/fontawesome-free/*webfonts*/*',
       ],
       dist: 'dist/static/vendors/font-awesome',
     },
-    jquery: {
+    {
       src: 'node_modules/jquery/dist/jquery.min.js',
       dist: 'dist/static/vendors/jquery',
     },
-    popper: {
+    {
       src: 'node_modules/popper.js/dist/umd/popper.min.js',
       dist: 'dist/static/vendors/popper.js',
     },
-    bootstrap: {
+    {
       src: [
         'node_modules/bootstrap/dist/*css*/bootstrap.min.css',
         'node_modules/bootstrap/dist/*css*/bootstrap-reboot.min.css',
@@ -64,30 +69,30 @@ const paths = {
       ],
       dist: 'dist/static/vendors/bootstrap',
     },
-    datepicker: {
+    {
       src: ['node_modules/flatpickr/dist/flatpickr.min.css', 'node_modules/flatpickr/dist/flatpickr.min.js'],
       dist: 'dist/static/vendors/flatpickr',
     },
-    select2: {
+    {
       src: ['node_modules/select2/dist/*css*/select2.min.css', 'node_modules/select2/dist/*js*/select2.full.min.js'],
       dist: 'dist/static/vendors/select2',
     },
-    select2Bootstrap: {
+    {
       src: 'node_modules/select2-theme-bootstrap4/dist/select2-bootstrap.min.css',
       dist: 'dist/static/vendors/select2/css',
     },
-    ionRange: {
+    {
       src: [
         'node_modules/ion-rangeslider/*js*/ion.rangeSlider.min.js',
         'node_modules/ion-rangeslider/*css*/ion.rangeSlider.min.css',
       ],
       dist: 'dist/static/vendors/ion.rangeSlider',
     },
-    zxcvbn: {
+    {
       src: 'node_modules/zxcvbn/dist/zxcvbn.js',
       dist: 'dist/static/vendors/zxcvbn',
     },
-  },
+  ],
 };
 
 module.exports = {
@@ -97,11 +102,11 @@ module.exports = {
       proxy: 'localhost:3000',
       port: 5000,
       files: [paths.dist_files],
-      browser: OSX ? 'google chrome' : LINUX ? 'google-chrome' : 'chrome',
+      browser: browser[platform()],
       notify: true,
     },
     nodemon: {
-      script: './bin/www',
+      script: './src/server.js',
       ignore: ['gulpfile.js', 'config/', 'node_modules'],
     },
   },

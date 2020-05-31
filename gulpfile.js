@@ -19,29 +19,32 @@ gulp.task('copy:images', () =>
 );
 
 gulp.task('copy:vendors', (cb) => {
-  Object.keys(config.paths.vendors).forEach((index) => {
-    const vendor = config.paths.vendors[index];
+  config.paths.vendors.forEach((vendor) => {
     return gulp.src(vendor.src).pipe(gulp.dest(vendor.dist));
   });
   cb();
 });
 
+gulp.task('copy:src', () => gulp.src(config.paths.src_files).pipe(gulp.dest(config.paths.dist_dir)));
+
 gulp.task('clean', () => del(config.paths.dist_dir).then((cb) => cache.clearAll(cb)));
 
 gulp.task('clean:vendors', () => del(config.paths.vendors_dir));
+
+gulp.task('clean:fonts', () => del(config.paths.fonts_dir));
 
 gulp.task('clean:images', () => del(config.paths.images_dir).then((cb) => cache.clearAll(cb)));
 
 gulp.task('clean:dist', () => del(config.paths.cleanup_dirs));
 
-gulp.task('dev:views', () => gulp.src(config.paths.views.src).pipe(gulp.dest(config.paths.views.dist)));
+gulp.task('copy:views', () => gulp.src(config.paths.views.src).pipe(gulp.dest(config.paths.views.dist)));
 
 gulp.task('watch:views', (done) => {
-  gulp.watch(config.paths.views.src, gulp.series('dev:views'));
+  gulp.watch(config.paths.views.src, gulp.series('copy:views'));
   done();
 });
 
-gulp.task('dev:css', () =>
+gulp.task('copy:css', () =>
   gulp
     .src(config.paths.css.src)
     .pipe(
@@ -66,18 +69,18 @@ gulp.task('dev:css', () =>
 );
 
 gulp.task('watch:css', (done) => {
-  gulp.watch(config.paths.css.src, gulp.series('dev:css'));
+  gulp.watch(config.paths.css.src, gulp.series('copy:css'));
   done();
 });
 
-gulp.task('dev:js', () => gulp.src(config.paths.js.src).pipe(gulp.dest(config.paths.js.dist)));
+gulp.task('copy:js', () => gulp.src(config.paths.js.src).pipe(gulp.dest(config.paths.js.dist)));
 
 gulp.task('watch:js', (done) => {
-  gulp.watch(config.paths.js.src, gulp.series('dev:js'));
+  gulp.watch(config.paths.js.src, gulp.series('copy:js'));
   done();
 });
 
-gulp.task('server', (cb) => {
+gulp.task('run:server', (cb) => {
   let called = false;
   return nodemon(config.plugins.nodemon).on('start', () => {
     if (!called) {
@@ -94,6 +97,8 @@ const browserSyncInit = (done) => {
 
 gulp.task('browser-sync', browserSyncInit);
 gulp.task('init', gulp.parallel('copy:fonts', 'copy:images', 'copy:vendors'));
-gulp.task('dev', gulp.parallel('dev:views', 'dev:css', 'dev:js'));
+gulp.task('build', gulp.series('clean', gulp.parallel('init', 'copy:src')));
+gulp.task('build:dev', gulp.series('clean:dist', gulp.parallel('copy:views', 'copy:css', 'copy:js')));
+gulp.task('build:clean-dev', gulp.series('clean', gulp.parallel('init', 'copy:views', 'copy:css', 'copy:js')));
 gulp.task('watch', gulp.parallel('watch:views', 'watch:css', 'watch:js'));
-gulp.task('default', gulp.series('clean:dist', 'env', 'dev', 'server', gulp.parallel('watch', 'browser-sync')));
+gulp.task('default', gulp.series('env', 'build:dev', 'run:server', gulp.parallel('watch', 'browser-sync')));
