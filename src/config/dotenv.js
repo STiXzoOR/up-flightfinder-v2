@@ -13,7 +13,7 @@ class Config {
   }
 
   get port() {
-    return Number(process.env.PORT || 8080);
+    return Number(process.env.PORT || 3000);
   }
 
   get sessionSecret() {

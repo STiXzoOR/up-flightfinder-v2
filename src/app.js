@@ -1,8 +1,6 @@
 /* eslint-disable vars-on-top */
 /* eslint-disable no-var */
 /* eslint-disable global-require */
-// eslint-disable-next-line import/order
-const config = require('./src/config/dotenv').load();
 const appRoot = require('app-root-path');
 const createError = require('http-errors');
 const express = require('express');
@@ -10,19 +8,19 @@ const session = require('express-session');
 const passport = require('passport');
 const { v4: uuid } = require('uuid');
 const favicon = require('serve-favicon');
-const path = require('path');
 const morgan = require('morgan');
 const flash = require('express-flash-2');
 const redis = require('redis');
 const RedisStore = require('connect-redis')(session);
-const Maintenance = require('./config/modules/maintenance');
-const winston = require('./src/config/winston');
-const indexRouter = require('./src/routes/index');
-const pagesRouter = require('./src/routes/pages');
-const usersRouter = require('./src/routes/users');
-const flightsRouter = require('./src/routes/flight');
-const bookingRouter = require('./src/routes/booking');
-if (config.mailgun.enabled) var newsletterRouter = require('./src/routes/newsletter');
+const config = require('./config/dotenv');
+const Maintenance = require('./modules/maintenance-mode');
+const winston = require('./config/winston');
+const indexRouter = require('./routes/index');
+const pagesRouter = require('./routes/pages');
+const usersRouter = require('./routes/users');
+const flightsRouter = require('./routes/flight');
+const bookingRouter = require('./routes/booking');
+if (config.mailgun.enabled) var newsletterRouter = require('./routes/newsletter');
 
 const app = express();
 const redisClient = redis.createClient();
@@ -104,10 +102,12 @@ app.use((err, req, res, next) => {
     req.originalUrl,
     `${config.isProd() ? statusCode : winston.colorize('error', statusCode)}`,
     err.message,
-    `${config.isProd() ? `\n${err.stack}` : `\n\n${err.stack}\n`}`,
-  ].join(config.isProd() ? ' - ' : ' ');
+    `\n\n${err.stack}\n`,
+  ];
 
-  winston.error(logMsg);
+  if (config.isProd()) logMsg.pop();
+
+  winston.error(logMsg.join(config.isProd() ? ' - ' : ' '));
 
   if (config.isDev()) {
     res.locals.message = err.message;
@@ -124,11 +124,11 @@ process.on('unhandledRejection', (reason) => {
 });
 
 process.on('uncaughtException', (err) => {
-  winston.error(`Uncaught Exception: 500 - ${err.message} \n${err.stack}`);
+  winston.error(`Uncaught Exception: 500 - ${err.message} \n\n${err.stack}`);
 });
 
 process.on('SIGINT', () => {
-  winston.info(' Alright! Bye bye!');
+  winston.info('Alright! Bye bye!');
   process.exit();
 });
 
