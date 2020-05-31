@@ -6,7 +6,7 @@
 		"production": "cross-env NODE_ENV=production node ./dist/server.js",
 		"development": "cross-env NODE_ENV=development gulp",
 		"build": "gulp build",
-		"deploy": "npm install && npm run build && npm run zip-dist && npm run upload-zip && npm run delete-old-dist && npm run unzip && npm run install-pm2 && npm run npm run production-pm2",
+		"deploy": "npm install && npm run build && npm run zip-dist && npm run upload-zip && npm run delete-old-dist && npm run unzip && npm run install-pm2 && npm run production-pm2",
 		"update-remote": "npm install && npm run build && npm run zip-dist && npm run upload-zip && npm run delete-old-dist && npm run unzip",
 		"zip-dist": "zip -r dist.zip dist",
 		"upload-zip": "scp dist.zip stix@167.172.173.13:~/flight-finder-server",
