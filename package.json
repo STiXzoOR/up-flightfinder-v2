@@ -13,7 +13,7 @@
 		"delete-old-dist": "ssh stix@167.172.173.13 'rm -rf ~/flight-finder-server/dist'",
 		"unzip": "ssh stix@167.172.173.13 'cd ~/flight-finder-server/ && unzip dist.zip'",
 		"install-pm2": "ssh stix@167.172.173.13 '(type -p pm2 &>/dev/null || npm i -g pm2 &>/dev/null) && pm2 install pm2-logrotate &>/dev/null'",
-		"production-pm2": "ssh stix@167.172.173.13 'cd ~/flight-finder-server/ && pm2 startOrRestart start.json --env production'",
+		"production-pm2": "ssh stix@167.172.173.13 'cd ~/flight-finder-server/ && pm2 startOrRestart pm2-start.json --env production'",
 		"update-packages": "ncu -u && npm install"
 	},
 	"repository": {
