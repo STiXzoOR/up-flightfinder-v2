@@ -11,7 +11,8 @@
 			},
 			"env_production": {
 				"NODE_ENV": "production",
-				"PM2_ENABLED": "True"
+				"PM2_ENABLED": "True",
+				"BEHIND_PROXY": "True"
 			},
 			"instances": "1",
 			"exec_mode": "cluster",

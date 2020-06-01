@@ -7,12 +7,12 @@
 		"development": "cross-env NODE_ENV=development gulp",
 		"build": "gulp build",
 		"deploy": "npm install && npm run build && npm run zip-dist && npm run upload-zip && npm run delete-old-dist && npm run unzip && npm run production-pm2",
-		"update-remote": "npm install && npm run build && npm run zip-dist && npm run upload-zip && npm run delete-old-dist && npm run unzip",
 		"zip-dist": "zip -r dist.zip dist",
 		"upload-zip": "scp dist.zip stix@167.172.173.13:~/flight-finder-server",
 		"delete-old-dist": "ssh stix@167.172.173.13 'rm -rf ~/flight-finder-server/dist'",
 		"unzip": "ssh stix@167.172.173.13 'cd ~/flight-finder-server/ && unzip dist.zip'",
 		"production-pm2": "ssh stix@167.172.173.13 'cd ~/flight-finder-server/ && pm2 startOrRestart pm2-start.json --env production'",
+		"stop-pm2": "ssh stix@167.172.173.13 'pm2 stop flight-finder'",
 		"update-packages": "ncu -u && npm install"
 	},
 	"repository": {

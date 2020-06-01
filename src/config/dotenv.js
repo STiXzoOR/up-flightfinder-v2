@@ -40,10 +40,12 @@ class Config {
     };
   }
 
-  get pm2() {
-    return {
-      enabled: process.env.PM2_ENABLED === 'True',
-    };
+  behindProxy() {
+    return process.env.BEHIND_PROXY === 'True';
+  }
+
+  isProdPM2() {
+    return process.env.PM2_ENABLED === 'True';
   }
 
   isProd() {

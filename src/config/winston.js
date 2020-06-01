@@ -208,7 +208,7 @@ class Logger {
         }
 
         this.options.transports.push(new transports[transport.type](transport.options));
-        if (config.pm2.enabled && transport.name === 'pm2-logger') return true;
+        if (config.isProdPM2() && transport.name === 'pm2-logger') return true;
       }
     });
   }

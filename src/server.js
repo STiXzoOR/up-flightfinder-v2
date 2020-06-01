@@ -4,6 +4,8 @@ const logger = require('./config/winston');
 const app = require('./app');
 
 app.set('port', config.port);
+if (config.behindProxy()) app.set('trust proxy', true);
+
 const server = http.createServer(app);
 
 server.listen(config.port);
