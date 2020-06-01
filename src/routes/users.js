@@ -41,7 +41,7 @@ router.get('/sign-up', (req, res) => {
   return res.render('sign-up');
 });
 
-router.get('/sign-out', permit({ roles: 'USER', requireVerification: false }), (req, res, next) => {
+router.get('/sign-out', permit('USER', { requireVerification: false }), (req, res, next) => {
   req.session.destroy((err) => {
     if (err) return next(err);
 
