@@ -88,6 +88,12 @@ const options = {
         handleExceptions: true,
         format: [
           {
+            type: 'timestamp',
+            options: {
+              format: 'YYYY-MM-DD HH:mm:ss',
+            },
+          },
+          {
             type: 'printf',
             options: {
               template: 'simple',

@@ -11,8 +11,8 @@
 			},
 			"env_production": {
 				"NODE_ENV": "production",
-				"PM2_ENABLED": "True",
-				"BEHIND_PROXY": "True"
+				"PM2_ENABLED": "true",
+				"BEHIND_PROXY": "true"
 			},
 			"instances": "1",
 			"exec_mode": "cluster",
@@ -20,9 +20,8 @@
 			"source_map_support": true,
 			"max_restarts": 1,
 			"min_uptime": "3s",
-			"time": true,
+			"time": false,
 			"merge_logs": true,
-			"log_date_format": "YYYY-MM-DD HH:mm:ss",
 			"error_file": "./logs/pm2/error.log",
 			"out_file": "./logs/pm2/out.log",
 			"log_file": "./logs/pm2/combined.log"

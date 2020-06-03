@@ -107,6 +107,7 @@ if args.use_mailgun:
         if args.mailgun_base and args.mailgun_base.lower() == "eu"
         else ""
     )
+    args.use_mailgun = args.use_mailgun if args.use_mailgun == "" else "true"
     args.mailgun_base = "api{base}.mailgun.net".format(base=base)
 
 VARS = {

@@ -32,7 +32,7 @@ class Config {
 
   get mailgun() {
     return {
-      enabled: process.env.MAILGUN_ENABLED === 'True',
+      enabled: process.env.MAILGUN_ENABLED === 'true',
       apiKey: process.env.MAILGUN_API_KEY,
       host: process.env.MAILGUN_HOST,
       domain: process.env.MAILGUN_DOMAIN,
@@ -41,11 +41,11 @@ class Config {
   }
 
   behindProxy() {
-    return process.env.BEHIND_PROXY === 'True';
+    return process.env.BEHIND_PROXY === 'true';
   }
 
   isProdPM2() {
-    return process.env.PM2_ENABLED === 'True';
+    return process.env.PM2_ENABLED === 'true';
   }
 
   isProd() {
