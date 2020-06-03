@@ -123,6 +123,9 @@ router.post(
 
     const { flightData } = req.session;
     delete req.session.flightData;
+    req.session.save((err) => {
+      if (err) next(err);
+    });
 
     const bookingData = req.body;
     bookingData.finalPrice = parseInt(bookingData.finalPrice, 10);

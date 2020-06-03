@@ -22,7 +22,7 @@ const paths = {
   fonts_dir: 'dist/static/fonts',
   images_dir: 'dist/static/images',
   src_dir: 'src',
-  src_files: 'src/**/*.*',
+  src_files: ['src/**/*.*', '!src/static', '!src/static/**/*'],
   dist_dir: 'dist',
   dist_files: 'dist/**/*.*',
   views: {
@@ -74,7 +74,10 @@ const paths = {
       dist: 'dist/static/vendors/flatpickr',
     },
     {
-      src: ['node_modules/select2/dist/*css*/select2.min.css', 'node_modules/select2/dist/*js*/select2.full.min.js'],
+      src: [
+        'node_modules/select2/dist/*css*/select2.min.css',
+        'src/static/vendors/select2-custom/*js*/select2.full.min.js',
+      ],
       dist: 'dist/static/vendors/select2',
     },
     {
@@ -91,6 +94,10 @@ const paths = {
     {
       src: 'node_modules/zxcvbn/dist/zxcvbn.js',
       dist: 'dist/static/vendors/zxcvbn',
+    },
+    {
+      src: 'src/static/vendors/*navdrawer*/*.js',
+      dist: 'dist/static/vendors',
     },
   ],
 };

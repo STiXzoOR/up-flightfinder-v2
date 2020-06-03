@@ -1,10 +1,15 @@
 const gulp = require('gulp');
 const cache = require('gulp-cache');
 const imagemin = require('gulp-imagemin');
-const del = require('del');
+const babel = require('gulp-babel');
+const minify = require('gulp-minify');
+const concat = require('gulp-concat');
+const postcss = require('gulp-postcss');
 const autoprefixer = require('gulp-autoprefixer');
-const browserSync = require('browser-sync').create();
 const nodemon = require('gulp-nodemon');
+const del = require('del');
+const cssnano = require('cssnano');
+const browserSync = require('browser-sync').create();
 const config = require('./config/gulp.js');
 
 gulp.task('env', (cb) => {
@@ -64,6 +69,7 @@ gulp.task('copy:css', () =>
         { cascade: true }
       )
     )
+    .pipe(postcss([cssnano()]))
     .pipe(gulp.dest(config.paths.css.dist))
     .pipe(browserSync.stream())
 );
@@ -74,6 +80,29 @@ gulp.task('watch:css', (done) => {
 });
 
 gulp.task('copy:js', () => gulp.src(config.paths.js.src).pipe(gulp.dest(config.paths.js.dist)));
+
+gulp.task('minify:js', async () => {
+  await del(config.paths.js.dist);
+
+  gulp
+    .src(config.paths.js.src)
+    .pipe(
+      babel({
+        presets: ['@babel/env'],
+        plugins: ['@babel/plugin-proposal-class-properties'],
+      })
+    )
+    .pipe(concat('main.js'))
+    .pipe(
+      minify({
+        ext: {
+          min: '.min.js',
+        },
+        noSource: true,
+      })
+    )
+    .pipe(gulp.dest(config.paths.js.dist));
+});
 
 gulp.task('watch:js', (done) => {
   gulp.watch(config.paths.js.src, gulp.series('copy:js'));
@@ -97,7 +126,7 @@ const browserSyncInit = (done) => {
 
 gulp.task('browser-sync', browserSyncInit);
 gulp.task('init', gulp.parallel('copy:fonts', 'copy:images', 'copy:vendors'));
-gulp.task('build', gulp.series('clean', gulp.parallel('init', 'copy:src')));
+gulp.task('build', gulp.series('clean', gulp.parallel('init', 'copy:src', 'copy:css', 'copy:js')));
 gulp.task('build:dev', gulp.series('clean:dist', gulp.parallel('copy:views', 'copy:css', 'copy:js')));
 gulp.task('build:clean-dev', gulp.series('clean', gulp.parallel('init', 'copy:views', 'copy:css', 'copy:js')));
 gulp.task('watch', gulp.parallel('watch:views', 'watch:css', 'watch:js'));
