@@ -32,3 +32,8 @@ server.on('error', (error) => {
 server.on('listening', () => {
   logger.info(`app server is running on port [${config.port}] in [${config.env}] environment`);
 });
+
+process.on('SIGINT', () => {
+  logger.info('Alright! Bye bye!');
+  server.close(() => process.exit());
+});

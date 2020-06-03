@@ -5,6 +5,9 @@ const appRoot = require('app-root-path');
 const createError = require('http-errors');
 const express = require('express');
 const session = require('express-session');
+const helmet = require('helmet');
+const xss = require('xss-clean');
+const hpp = require('hpp');
 const passport = require('passport');
 const { v4: uuid } = require('uuid');
 const favicon = require('serve-favicon');
@@ -44,6 +47,14 @@ app.use(
   })
 );
 
+app.use(
+  helmet({
+    hsts: config.isProd(),
+  })
+);
+app.use(xss());
+app.use(hpp());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use('/static', express.static(appRoot.resolve('/dist/static')));
@@ -55,7 +66,7 @@ app.use(
     secret: config.sessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, expires: false },
+    cookie: { secure: config.isProd(), expires: false },
     store: new RedisStore({ host: 'localhost', port: 6379, client: redisClient, ttl: 260 }),
   })
 );
@@ -76,6 +87,7 @@ app.use((req, res, next) => {
   return next(createError(404));
 });
 
+// TODO: Refactor error handling
 app.use((err, req, res, next) => {
   const statusCode = err.status || 500;
 
@@ -107,11 +119,6 @@ process.on('unhandledRejection', (reason) => {
 
 process.on('uncaughtException', (err) => {
   winston.error(`Uncaught Exception: 500 - ${err.message} \n\n${err.stack}`);
-});
-
-process.on('SIGINT', () => {
-  winston.info('Alright! Bye bye!');
-  process.exit();
 });
 
 module.exports = app;
