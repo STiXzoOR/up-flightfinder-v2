@@ -15,6 +15,7 @@ const RedisStore = require('connect-redis')(session);
 const config = require('./config/dotenv');
 const Maintenance = require('./modules/maintenance-mode');
 const winston = require('./config/winston');
+const beforeRequest = require('./middleware/before-request');
 const indexRouter = require('./routes/index');
 const pagesRouter = require('./routes/pages');
 const usersRouter = require('./routes/users');
@@ -63,26 +64,7 @@ app.use(passport.session());
 app.use(flash());
 
 app.use(Maintenance(app, { endpoint: true, view: '503' }).middleware);
-
-app.use((req, res, next) => {
-  req.getUrl = () => `${req.protocol}://${config.isDev() ? req.get('host') : req.hostname}`;
-
-  return next();
-});
-
-app.use((req, res, next) => {
-  if (req.session.user === undefined || !req.isAuthenticated()) {
-    req.session.user = { id: 1 };
-  }
-
-  res.locals.user = {
-    ...(req.user ? req.user : req.session.user),
-    isAuthenticated: req.isAuthenticated() || false,
-  };
-
-  return next();
-});
-
+app.use(beforeRequest);
 app.use('/', indexRouter);
 app.use('/pages', pagesRouter);
 app.use('/user', usersRouter);
