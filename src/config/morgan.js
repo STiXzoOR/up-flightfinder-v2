@@ -2,20 +2,97 @@
 const morgan = require('morgan');
 const config = require('./dotenv');
 
+function headersSent(res) {
+  return typeof res.headersSent !== 'boolean' ? Boolean(res._header) : res.headersSent;
+}
+
+function getStatusColor(status) {
+  let color = 'none';
+
+  if (status >= 500) color = 'red';
+  else if (status >= 400) color = 'yellow';
+  else if (status >= 300) color = 'cyan';
+  else if (status >= 200) color = 'green';
+
+  return color;
+}
+
+function colorize(color, str) {
+  const colors = {
+    none: 0,
+    red: 31,
+    green: 32,
+    yellow: 33,
+    cyan: 36,
+    white: 37,
+  };
+
+  return `\x1b[${colors[color]}m${str}\x1b[0m`;
+}
+
+const timestamp = {
+  now: () => new Date(),
+  get() {
+    return this.now().toISOString().slice(0, 19).replace(/T/, ' ');
+  },
+  date() {
+    return this.now().toISOString().slice(0, 10);
+  },
+  time() {
+    return this.now().toISOString().slice(11, 19);
+  },
+  toString() {
+    return this.get();
+  },
+};
+
 const options = {
   format: {
     type: 'environment',
     names: {
-      development: 'dev',
+      development: 'dev-v2',
       production: 'combined-v2',
     },
   },
   formats: {
+    'dev-v2': ':morgan-prefix-colored - :method :url :status-colored :response-time ms - :res[content-length]',
     'combined-v2': '[:timestamp] [:remote-addr] - HTTP/:http-version :method :url :status ":user-agent"',
   },
   tokens: [
-    { name: 'timestamp', value: (req, res) => new Date().toISOString().slice(0, 19).replace(/T/, ' ') },
+    { name: 'timestamp', value: (req, res) => timestamp.get() },
     { name: 'id', value: (req, res) => req.session.user.id },
+    {
+      name: 'status-colored',
+      value: (req, res) => {
+        const status = headersSent(res) ? res.statusCode : undefined;
+        const color = getStatusColor(status);
+
+        return colorize(color, status);
+      },
+    },
+    { name: 'timestamp-colored', value: (req, res, color) => colorize(color, timestamp) },
+    {
+      name: 'timestamp-auto-colored',
+      value: (req, res) => {
+        const status = headersSent(res) ? res.statusCode : undefined;
+        const color = getStatusColor(status);
+
+        return colorize(color, timestamp);
+      },
+    },
+    {
+      name: 'morgan-prefix',
+      value: (req, res) => `[${timestamp.time()}] [morgan]`,
+    },
+    {
+      name: 'morgan-prefix-colored',
+      value: (req, res) => {
+        const status = headersSent(res) ? res.statusCode : undefined;
+        const color = getStatusColor(status);
+
+        return colorize(color, `[${timestamp.time()}] [morgan]`);
+      },
+    },
   ],
   loggers: [
     {
