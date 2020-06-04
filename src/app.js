@@ -11,13 +11,13 @@ const hpp = require('hpp');
 const passport = require('passport');
 const { v4: uuid } = require('uuid');
 const favicon = require('serve-favicon');
-const morgan = require('morgan');
 const flash = require('express-flash-2');
 const redis = require('redis');
 const RedisStore = require('connect-redis')(session);
 const config = require('./config/dotenv');
 const Maintenance = require('./modules/maintenance-mode');
 const winston = require('./config/winston');
+const morgan = require('./config/morgan')();
 const beforeRequest = require('./middleware/before-request');
 const indexRouter = require('./routes/index');
 const pagesRouter = require('./routes/pages');
@@ -28,24 +28,12 @@ if (config.mailgun.enabled) var newsletterRouter = require('./routes/newsletter'
 
 const app = express();
 const redisClient = redis.createClient();
-const morganFormat = config.isProd() ? 'combined' : 'dev';
 
 app.set('views', appRoot.resolve('/dist/views'));
 app.set('view engine', 'pug');
 
-app.use(
-  morgan(morganFormat, {
-    skip: (req, res) => res.statusCode < 400,
-    stream: process.stderr,
-  })
-);
-
-app.use(
-  morgan(morganFormat, {
-    skip: (req, res) => res.statusCode >= 400,
-    stream: process.stdout,
-  })
-);
+app.use(morgan.infoLogger());
+app.use(morgan.errorLogger());
 
 app.use(
   helmet({
