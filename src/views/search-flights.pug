@@ -346,10 +346,8 @@ block content
 									#airlinesFilterSection.collapse.show(aria-labelledby='Airlines filter section', data-parent='#airlinesFilter')
 										.card-body.pt-0.mt-2.px-5.px-xl-4.pb-4
 											ul.text-gray-1
-												- var lastIndex = 0
 												each airline, index in airlines
 													if index > 4
-														- lastIndex = index
 														- break
 													- var airlineID = `${airline.name.split(" ")[0].toLowerCase()}Air`
 													li.mb-3
@@ -363,6 +361,7 @@ block content
 															label.custom-control-label(for=airlineID) #{airline.name}
 
 												if airlines.length > 5
+													- var lastIndex = 5
 													#moreAirlines.collapse
 														ul.text-gray-1
 															while lastIndex < airlines.length
@@ -372,7 +371,7 @@ block content
 																		input.filter-airlines-item.custom-control-input(
 																			id=airlineID,
 																			type='checkbox',
-																			value=`${airline.name}`,
+																			value=`${airlines[lastIndex].name}`,
 																			checked=''
 																		)
 																		label.custom-control-label(for=airlineID) #{airlines[lastIndex].name}
