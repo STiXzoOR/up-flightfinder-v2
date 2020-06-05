@@ -19,6 +19,7 @@ const Maintenance = require('./modules/maintenance-mode');
 const winston = require('./config/winston');
 const morgan = require('./config/morgan')();
 const beforeRequest = require('./middleware/before-request');
+const error = require('./middleware/error-handler');
 const indexRouter = require('./routes/index');
 const pagesRouter = require('./routes/pages');
 const usersRouter = require('./routes/users');
@@ -70,36 +71,8 @@ app.use('/user', usersRouter);
 app.use('/flight', flightsRouter);
 app.use('/booking', bookingRouter);
 if (config.mailgun.enabled) app.use('/newsletter', newsletterRouter);
-
-app.use((req, res, next) => {
-  return next(createError(404));
-});
-
-// TODO: Refactor error handling
-app.use((err, req, res, next) => {
-  const statusCode = err.status || 500;
-
-  const logMsg = [
-    req.method,
-    req.originalUrl,
-    `${config.isProd() ? statusCode : winston.colorize('error', statusCode)}`,
-    err.message,
-    `\n\n${err.stack}\n`,
-  ];
-
-  if (config.isProd()) logMsg.pop();
-
-  winston.error(logMsg.join(config.isProd() ? ' - ' : ' '));
-
-  if (config.isDev()) {
-    res.locals.message = err.message;
-    res.locals.error = err;
-    return res.render('error');
-  }
-
-  const message = statusCode === 429 ? err.message : undefined;
-  return res.status(statusCode).render(`${statusCode}`, { message });
-});
+app.use(error.notFound);
+app.use(error.handler);
 
 process.on('unhandledRejection', (reason) => {
   throw reason;

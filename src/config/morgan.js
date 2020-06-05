@@ -56,7 +56,7 @@ const options = {
   },
   formats: {
     'dev-v2': ':morgan-prefix-colored - :method :url :status-colored :response-time ms - :res[content-length]',
-    'combined-v2': '[:timestamp] [:remote-addr] - HTTP/:http-version :method :url :status ":user-agent"',
+    'combined-v2': '[:timestamp] [:remote-addr] - :method :url HTTP/:http-version :status ":user-agent"',
   },
   tokens: [
     { name: 'timestamp', value: (req, res) => timestamp.get() },
