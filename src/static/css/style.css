@@ -652,6 +652,7 @@ textarea.form-control.is-invalid {
 
 .btn {
 	color: #3b444f;
+	font-weight: 500;
 	padding: 0.9rem 1rem;
 	border-radius: 0.3125rem;
 	transition: all 0.2s ease-in-out;

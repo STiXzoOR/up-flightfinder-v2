@@ -179,7 +179,7 @@ block content
 												)
 												.invalid-feedback Last name is required.
 									.d-flex.justify-content-end
-										button.btn.btn-sm.btn-primary.w-100.w-md-20.w-xl-15(type='submit') Add
+										button.btn.btn-sm.btn-primary.w-100.w-md-20.w-xl-15(type='submit', data-toggle='loader') Add
 					#settings.card.shadow-soft.mb-5
 						.accordion
 							.card-collapse
@@ -300,7 +300,7 @@ block content
 														each country in countries
 															option(value=`${country.code}`) #{country.name}
 										.d-flex.justify-content-end
-											button.btn.btn-sm.btn-primary.w-100.w-md-20.w-xl-15(type='submit') Save
+											button.btn.btn-sm.btn-primary.w-100.w-md-20.w-xl-15(type='submit', data-toggle='loader') Save
 								hr.mt-4.mb-5
 								#changePassword
 									h5.section-subtitle.section-subtitle-tab.font-weight-medium.mb-5 Change password
@@ -329,7 +329,7 @@ block content
 												)
 												+passwordStrength
 										.d-flex.justify-content-end
-											button.btn.btn-sm.btn-primary.w-100.w-md-20.w-xl-15(type='submit') Save
+											button.btn.btn-sm.btn-primary.w-100.w-md-20.w-xl-15(type='submit', data-toggle='loader') Save
 					#delete.card.shadow-soft
 						.accordion
 							.card-collapse
@@ -362,5 +362,5 @@ block content
 												required=''
 											)
 									.d-flex.justify-content-end
-										button.btn.btn-sm.btn-danger.w-100.w-md-15(type='submit') Delete
+										button.btn.btn-sm.btn-danger.w-100.w-md-15(type='submit', data-toggle='loader') Delete
 		+goUpButton('#body')
