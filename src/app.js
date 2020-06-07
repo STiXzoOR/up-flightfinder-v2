@@ -2,7 +2,6 @@
 /* eslint-disable no-var */
 /* eslint-disable global-require */
 const appRoot = require('app-root-path');
-const createError = require('http-errors');
 const express = require('express');
 const session = require('express-session');
 const helmet = require('helmet');

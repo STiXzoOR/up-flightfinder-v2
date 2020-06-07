@@ -3,6 +3,16 @@
 let roundTripSelectedDates;
 let oneWaySelectedDate;
 
+function addBtnLoader(btn) {
+  const spinner = $('<span/>')
+    .attr({ id: 'loader', role: 'status', 'aria-hidden': 'true' })
+    .addClass('spinner-border spinner-border-sm mr-2');
+  const wrapper = $('<span/>').attr('id', 'text').addClass('align-middle');
+
+  btn.wrapInner(wrapper);
+  btn.prepend(spinner);
+}
+
 function formatAirports(airport) {
   if (!airport.id) {
     return airport.text;
@@ -883,6 +893,10 @@ $('.needs-validation').on('submit', function validateForm(e) {
     $(this).addClass('was-validated');
     return false;
   }
+
+  const submitter = $(this).find(':submit');
+  if (submitter.is('[data-toggle="loader"]')) addBtnLoader(submitter);
+
   return true;
 });
 
@@ -987,17 +1001,6 @@ $('a[href="#navEditContactDetails"]').on('click', function clicked(e) {
   e.preventDefault();
   $('a[href="#navContactDetails"]').removeClass('active').attr('aria-selected', false);
   $(this).tab('show');
-});
-
-$('button[data-toggle="loader"]').on('click', function loader() {
-  const html = $(this).html();
-  const spinner = $('<span/>')
-    .attr({ id: 'loader', role: 'status', 'aria-hidden': 'true' })
-    .addClass('spinner-border spinner-border-sm mr-2');
-  const htmlWrapper = $('<span/>').attr('id', 'text').addClass('align-middle');
-  htmlWrapper.append(html);
-
-  $(this).html('').append(spinner).append(htmlWrapper);
 });
 
 $(() => {
