@@ -67,7 +67,7 @@ const options = {
       options: {
         stderrLevels: ['fatal', 'error'],
         consoleWarnLevels: ['debug', 'warn'],
-        handleExceptions: true,
+        handleExceptions: false,
         format: [
           {
             type: 'printf',
@@ -85,7 +85,7 @@ const options = {
       options: {
         stderrLevels: ['fatal', 'error'],
         consoleWarnLevels: ['debug', 'warn'],
-        handleExceptions: true,
+        handleExceptions: false,
         format: [
           {
             type: 'timestamp',
@@ -110,7 +110,7 @@ const options = {
         filename: `${infoDir}/%DATE%-info.log`,
         datePattern: 'YYYY-MM-DD',
         zippedArchive: true,
-        handleExceptions: true,
+        handleExceptions: false,
         maxSize: '100m',
         maxFiles: '14d',
         format: [
@@ -130,7 +130,7 @@ const options = {
         filename: `${errorDir}/%DATE%-warn.log`,
         datePattern: 'YYYY-MM-DD',
         zippedArchive: true,
-        handleExceptions: true,
+        handleExceptions: false,
         maxSize: '20m',
         maxFiles: '30d',
         format: [
