@@ -4,7 +4,8 @@ const routeAsync = require('../middleware/route-async');
 const handleResponseError = require('../middleware/handle-response-error');
 const rateLimiter = require('../middleware/rate-limit');
 const { validate } = require('../middleware/superstruct');
-const { getAirports, getFlights } = require('../config/requests');
+const Flight = require('../controllers/flight');
+const { getAirports } = require('../config/requests');
 const { compileFile } = require('../config/templates');
 
 const router = express.Router();
@@ -145,7 +146,7 @@ router.get(
   routeAsync(async (req, res, next) => {
     const query = parseQuery(req.query);
     const data = generateConditions(query);
-    let response = await getFlights(data.args, { isRoundtrip: query.isRoundtrip, ...data.conditions });
+    let response = await Flight.get(data.args, { isRoundtrip: query.isRoundtrip, ...data.conditions });
 
     if (response.error && (response.tryCatchError || !response.status === 400))
       return handleResponseError(response)(req, res, next);
