@@ -5,7 +5,6 @@
 /* eslint-disable no-var */
 /* eslint-disable global-require */
 const crypto = require('crypto');
-const bcrypt = require('bcrypt');
 const config = require('./dotenv');
 const logger = require('./winston');
 const mysql = require('./mysql');
@@ -15,89 +14,6 @@ if (config.mailgun.enabled) var mailgun = require('./mailgun');
 // TODO #2: Replace everything with Sequelize ORM
 
 const generateToken = () => crypto.randomBytes(40).toString('hex');
-
-const checkUserExists = async (customerID = '', { byID = true } = {}) => {
-  const response = {
-    status: 400,
-    error: true,
-    message: '',
-  };
-
-  const query = `SELECT customer_id as id, email FROM customer WHERE ${byID ? 'customer_id' : 'email'}=:customerID`;
-
-  try {
-    const data = await mysql.fetchOne(query, { customerID });
-
-    if (data === null) {
-      response.status = 500;
-      response.error = true;
-      response.message = 'Database internal error.';
-    } else {
-      const found = data.length !== 0;
-
-      response.status = found ? 200 : 400;
-      response.error = false;
-      response.message = `A user with the provided ${byID ? 'id' : 'email'} ${
-        found ? 'already' : 'does not'
-      } exists. Please sign ${found ? 'in' : 'up'}.`;
-      response.result = found;
-    }
-
-    return response;
-  } catch (err) {
-    response.error = true;
-    response.tryCatchError = true;
-    response.status = err.status;
-    response.result = err;
-    return response;
-  }
-};
-
-const checkPasswordMatch = async (args = {}, { checkUserExistence = false } = {}) => {
-  let response = {
-    status: 400,
-    error: true,
-    message: '',
-  };
-
-  const query = 'SELECT password From customer WHERE customer_id=:customerID';
-
-  try {
-    if (checkUserExistence) {
-      response = await checkUserExists(args.customerID);
-
-      if (response.error || !response.result) {
-        response.error = true;
-        return response;
-      }
-    }
-
-    const data = await mysql.fetch(query, { customerID: args.customerID });
-
-    if (data === null) {
-      response.status = 500;
-      response.error = true;
-      response.message = 'Database internal error.';
-    } else if (bcrypt.compareSync(args.currentPassword, data[0].password)) {
-      response.status = 200;
-      response.error = false;
-      response.message = 'Passwords match.';
-    } else {
-      response.status = 401;
-      response.error = true;
-      response.message =
-        "The provided password doesn't match the one stored in our database. Please validate that your current password is correct.";
-    }
-
-    return response;
-  } catch (err) {
-    response.error = true;
-    response.tryCatchError = true;
-    response.status = err.status;
-    response.result = err;
-    return response;
-  }
-};
 
 const checkBookingExists = async (args = {}, { byID = false, byLastName = true } = {}) => {
   const response = {
@@ -343,82 +259,6 @@ const sendVerificationLink = async (args = {}, type = 'email') => {
   return response;
 };
 
-const getUserDetails = async (args = {}, { byID = true, byEmail = false, partial = false } = {}) => {
-  let response = {
-    status: 400,
-    error: true,
-    message: '',
-  };
-
-  let query = !partial
-    ? 'SELECT DISTINCT c.first_name as firstName, c.last_name as lastName, c.email as email, c.gender as gender, c.mobile as mobile, DATE_FORMAT(c.joined_date, "%a, %d %b") as date, c.address_line_1 as addressLine1, c.address_line_2 as addressLine2, c.city as city, c.region as region, IF(c.country IS NOT NULL, cs.name, c.country) as country, c.postal_code as postalCode, c.status = "VERIFIED" as isVerified FROM customer as c, countries as cs WHERE IF(c.country IS NOT NULL, cs.country_code=c.country, 1)'
-    : 'SELECT c.customer_id as id, c.first_name as firstName, c.last_name as lastName, c.email as email, c.customer_type as role, c.status = "VERIFIED" as isVerified FROM customer as c WHERE 1';
-
-  if (byID && byEmail) {
-    query += ' and c.customer_id=:customerID and c.email=:email';
-  } else if (byID) {
-    query += ' and c.customer_id=:customerID';
-  } else if (byEmail) {
-    query += ' and c.email=:email';
-  }
-
-  try {
-    response = await checkUserExists(byID ? args.customerID : args.email, { byID });
-
-    if (response.error || !response.result) {
-      response.error = true;
-      return response;
-    }
-
-    const data = await mysql.fetch(query, args);
-
-    if (data === null) {
-      response.status = 500;
-      response.error = true;
-      response.message = 'Database internal error.';
-    } else {
-      response.status = 200;
-      response.error = false;
-      response.message = 'User details retrieved.';
-      response.result = data;
-    }
-
-    return response;
-  } catch (err) {
-    response.error = true;
-    response.tryCatchError = true;
-    response.status = err.status;
-    response.result = err;
-    return response;
-  }
-};
-
-const getSessionUser = async (args = {}) => {
-  let response;
-
-  try {
-    response = await getUserDetails(args, { byID: false, byEmail: true, partial: true });
-
-    if (response.error || !response.result) {
-      response.error = true;
-      return response;
-    }
-
-    const responsePassword = await checkPasswordMatch({
-      customerID: response.result[0].id,
-      currentPassword: args.password,
-    });
-
-    return !responsePassword.error ? response : responsePassword;
-  } catch (err) {
-    response.error = true;
-    response.tryCatchError = true;
-    response.status = err.status;
-    response.result = err;
-    return response;
-  }
-};
-
 const getCountries = async () => {
   const response = {
     status: 400,
@@ -604,99 +444,6 @@ const getBookingPassengers = async (bookingID = '') => {
       response.message = 'Passengers retrieved.';
       response.result = data;
     }
-
-    return response;
-  } catch (err) {
-    response.error = true;
-    response.tryCatchError = true;
-    response.status = err.status;
-    response.result = err;
-    return response;
-  }
-};
-
-const getUserBookings = async (userID = '') => {
-  const response = {
-    status: 400,
-    error: true,
-    message: '',
-  };
-
-  const query =
-    'SELECT b.booking_id as id, b.last_name as lastName, DATE_FORMAT(b.booking_date, "%a, %d %b") as date, b.total_passengers as quantity, b.flight_type <> "Roundtrip" as isRoundtrip, b.status <> "CANCELED" as isCanceled, a1.city as fromCity, a2.city as toCity, DATE_FORMAT(b.depart_flight_date, "%a, %d %b") as departDate FROM booking as b, flight as f, airport as a1, airport as a2 WHERE b.customer_id=:userID and f.flight_id=b.depart_flight_id and f.dep_date=b.depart_flight_date and f.class=b.flight_class and a1.airport_code=f.from_airport and a2.airport_code=f.to_airport ORDER BY b.depart_flight_date DESC';
-
-  try {
-    const data = await mysql.fetch(query, { userID });
-
-    if (data === null) {
-      response.status = 500;
-      response.error = true;
-      response.message = 'Database internal error.';
-    } else if (data.length === 0) {
-      response.status = 400;
-      response.error = true;
-      response.message = 'No results found for the requested query.';
-    } else {
-      response.status = 200;
-      response.error = false;
-      response.message = 'Bookings retrieved.';
-      response.result = data;
-    }
-
-    return response;
-  } catch (err) {
-    response.error = true;
-    response.tryCatchError = true;
-    response.status = err.status;
-    response.result = err;
-    return response;
-  }
-};
-
-const insertUser = async (args = {}) => {
-  let response = {
-    status: 400,
-    error: true,
-    message: '',
-  };
-
-  const salt = bcrypt.genSaltSync(10);
-  const password = bcrypt.hashSync(args.password, salt);
-
-  const userInsertQuery =
-    'INSERT INTO customer (first_name, last_name, email, password, mobile, gender, joined_date, status, customer_type) VALUES (:firstName, :lastName, :email, :password, :mobile, :gender, NOW(), :status, "USER")';
-
-  try {
-    response = await checkUserExists(args.email, { byID: false });
-
-    if (response.error || response.result) {
-      response.error = true;
-      return response;
-    }
-
-    const fields = {
-      firstName: args.firstName,
-      lastName: args.lastName,
-      email: args.email,
-      password,
-      mobile: args.mobile,
-      gender: args.gender,
-      status: config.mailgun.enabled ? 'UNVERIFIED' : 'VERIFIED',
-    };
-
-    await mysql
-      .commit(userInsertQuery, fields)
-      .then(() => {
-        response.status = 200;
-        response.error = false;
-        response.message = 'Sign up was successfull. Please sign in.';
-      })
-      .catch((err) => {
-        logger.error(err);
-        response.status = 500;
-        response.error = true;
-        response.message = 'Something went wrong while signing you up. Please contact our support team.';
-      });
 
     return response;
   } catch (err) {
@@ -943,102 +690,6 @@ const insertNewsletterSubscriber = async (args = {}) => {
   return response;
 };
 
-const updateUserStatus = async (customerID) => {
-  const response = {
-    status: 400,
-    error: true,
-    message: '',
-  };
-
-  const query =
-    'UPDATE customer SET status="VERIFIED", email_token=NULL, email_token_expire=NULL WHERE customer_id=:customerID';
-
-  await mysql
-    .commit(query, { customerID })
-    .then(() => {
-      response.status = 200;
-      response.error = false;
-      response.message = 'Your account has been successfully verified.';
-    })
-    .catch((err) => {
-      logger.error(err);
-      response.status = 500;
-      response.error = true;
-      response.message = 'Something went wrong while updating your status. Please contact our support team.';
-    });
-
-  return response;
-};
-
-const updateUserDetails = async (args = {}) => {
-  const response = {
-    status: 400,
-    error: true,
-    message: '',
-  };
-
-  const query =
-    'UPDATE customer SET first_name=:firstName, last_name=:lastName, mobile=:mobile, gender=:gender, address_line_1=:addressLine1, address_line_2=:addressLine2, city=:city, region=:region, postal_code=:postal, country=:country WHERE customer_id=:customerID';
-
-  await mysql
-    .commit(query, args)
-    .then(() => {
-      response.status = 200;
-      response.error = false;
-      response.message = 'Your personal information has been successfully updated.';
-    })
-    .catch((err) => {
-      logger.error(err);
-      response.status = 500;
-      response.error = true;
-      response.message =
-        'Something went wrong while updating your personal information. Please contact our support team.';
-    });
-
-  return response;
-};
-
-const updateUserPassword = async (args = {}, { matchPasswords = true, expireToken = false }) => {
-  const response = {
-    status: 400,
-    error: true,
-    message: '',
-  };
-
-  if (matchPasswords) {
-    const responsePassword = await checkPasswordMatch(args);
-
-    if (responsePassword.error) return responsePassword;
-  }
-
-  let query = 'UPDATE customer SET password=:password';
-
-  if (expireToken) {
-    query += ', password_token=NULL, password_token_expire=NULL';
-  }
-
-  query += ' WHERE customer_id=:customerID';
-
-  const salt = bcrypt.genSaltSync(10);
-  const password = bcrypt.hashSync(args.password, salt);
-
-  await mysql
-    .commit(query, { ...args, password })
-    .then(() => {
-      response.status = 200;
-      response.error = false;
-      response.message = 'Your password has been successfully changed. You can now get back into your account.';
-    })
-    .catch((err) => {
-      logger.error(err);
-      response.status = 500;
-      response.error = true;
-      response.message = 'Something went wrong while updating your password. Please contact our support team.';
-    });
-
-  return response;
-};
-
 const updateNewsletterSubscriber = async (args = {}) => {
   const response = {
     status: 400,
@@ -1179,36 +830,6 @@ const cancelBooking = async (args = {}) => {
   return response;
 };
 
-const removeUser = async (args = {}) => {
-  const response = {
-    status: 400,
-    error: true,
-    message: '',
-  };
-
-  const responsePassword = await checkPasswordMatch(args);
-
-  if (responsePassword.error) return responsePassword;
-
-  const query = 'DELETE FROM customer WHERE customer_id=:customerID';
-
-  await mysql
-    .commit(query, { customerID: args.customerID })
-    .then(() => {
-      response.status = 200;
-      response.error = false;
-      response.message = 'Your account has been successfully deleted.';
-    })
-    .catch((err) => {
-      logger.error(err);
-      response.status = 500;
-      response.error = true;
-      response.message = 'Something went wrong while deleting your account. Please contact our support team.';
-    });
-
-  return response;
-};
-
 const removeNewsletterSubscriber = async (email) => {
   const response = {
     status: 400,
@@ -1241,28 +862,19 @@ const removeNewsletterSubscriber = async (email) => {
 module.exports = {
   verifyToken,
   sendVerificationLink,
-  checkPasswordMatch,
   checkBookingExists,
   checkBookingAlreadyBooked,
-  getUserDetails,
-  getSessionUser,
   getCountries,
   getPopularDestinations,
   getAirports,
   getBooking,
   getBookingPassengers,
-  getUserBookings,
-  insertUser,
   insertBooking,
   insertUserBooking,
   insertPassenger,
   insertNewsletterSubscriber,
-  updateUserStatus,
-  updateUserDetails,
-  updateUserPassword,
   updateNewsletterSubscriber,
   updateBooking,
   cancelBooking,
-  removeUser,
   removeNewsletterSubscriber,
 };

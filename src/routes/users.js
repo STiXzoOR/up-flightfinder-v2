@@ -5,23 +5,13 @@ const express = require('express');
 const createError = require('http-errors');
 const passport = require('passport');
 const config = require('../config/dotenv');
+const User = require('../controllers/user');
 const routeAsync = require('../middleware/route-async');
 const handleResponseError = require('../middleware/handle-response-error');
 const permit = require('../middleware/permit');
 const rateLimiter = require('../middleware/rate-limit');
 const { validate } = require('../middleware/superstruct');
-const {
-  verifyToken,
-  sendVerificationLink,
-  getCountries,
-  getUserDetails,
-  getUserBookings,
-  insertUser,
-  updateUserStatus,
-  updateUserDetails,
-  updateUserPassword,
-  removeUser,
-} = require('../config/requests');
+const { verifyToken, sendVerificationLink, getCountries } = require('../config/requests');
 
 if (config.mailgun.enabled) var mailgun = require('../config/mailgun');
 
@@ -77,7 +67,7 @@ router.post(
   rateLimiter.createAccount,
   routeAsync(async (req, res, next) => {
     const { body } = req;
-    let response = await insertUser(body);
+    let response = await User.insert(body);
 
     if (response.error)
       return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/sign-up' })(
@@ -114,12 +104,12 @@ router.get(
   permit('USER', { requireVerification: false }),
   routeAsync(async (req, res, next) => {
     const customerID = req.user.id;
-    let response = await getUserDetails({ customerID });
+    let response = await User.get({ customerID });
 
     if (response.error) return handleResponseError(response)(req, res, next);
 
     const details = response.result[0];
-    response = await getUserBookings(customerID);
+    response = await User.bookings(customerID);
 
     if (response.error && (response.tryCatchError || !response.status === 400))
       return handleResponseError(response)(req, res, next);
@@ -128,7 +118,6 @@ router.get(
     response = await getCountries();
 
     if (response.error) return handleResponseError(response)(req, res, next);
-
     const countries = response.result;
 
     return res.render('profile', {
@@ -146,8 +135,7 @@ router.post(
     const { body } = req;
     body.country = body.country || null;
 
-    const response = await updateUserDetails({ customerID: req.user.id, ...body });
-
+    const response = await User.updateDetails({ customerID: req.user.id, ...body });
     if (response.error && response.tryCatchError) return next(response.result);
 
     res.flash(response.error ? 'error' : 'success', response.message);
@@ -160,7 +148,7 @@ router.post(
   permit('USER'),
   routeAsync(async (req, res, next) => {
     const { body } = req;
-    const response = await updateUserPassword({ customerID: req.user.id, ...body });
+    const response = await User.updatePassword({ customerID: req.user.id, ...body });
 
     if (response.error)
       return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/profile' })(
@@ -182,7 +170,7 @@ router.post(
   '/delete',
   permit('USER'),
   routeAsync(async (req, res, next) => {
-    const response = await removeUser({ customerID: req.user.id, ...req.body });
+    const response = await User.remove({ customerID: req.user.id, ...req.body });
 
     if (response.error)
       return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/profile' })(
@@ -209,7 +197,7 @@ if (config.mailgun.enabled) {
     '/forgot-password',
     routeAsync(async (req, res, next) => {
       const { email } = req.body;
-      let response = await getUserDetails({ email }, { byID: false, byEmail: true, partial: true });
+      let response = await User.get({ email }, { byID: false, byEmail: true, partial: true });
 
       if (response.error)
         return handleResponseError(response, {
@@ -240,7 +228,7 @@ if (config.mailgun.enabled) {
     validate('validateToken'),
     routeAsync(async (req, res, next) => {
       const { token } = req.query;
-      const response = await verifyToken({ token, type: 'password' });
+      const response = await verifyToken(token, 'password');
 
       if (response.error)
         return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/sign-in' })(
@@ -259,7 +247,16 @@ if (config.mailgun.enabled) {
       const { body } = req;
       const { token } = req.query;
       const route = `/user/reset-password?token=${token}`;
-      let response = await getUserDetails({ customerID: body.customerID }, { partial: true });
+      let response = await verifyToken(token, 'password');
+
+      if (response.error)
+        return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/sign-in' })(
+          req,
+          res,
+          next
+        );
+
+      response = await User.get({ customerID: body.customerID }, { partial: true });
 
       if (response.error)
         return handleResponseError(response, { redirectOnError: 400, flashMessage: true, redirect: '/user/sign-in' })(
@@ -269,7 +266,7 @@ if (config.mailgun.enabled) {
         );
 
       const data = response.result[0];
-      response = await updateUserPassword(body, { matchPasswords: false, expireToken: true });
+      response = await User.updatePassword(body, { matchPasswords: false, expireToken: true });
 
       if (response.error)
         return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: route })(
@@ -306,7 +303,7 @@ if (config.mailgun.enabled) {
         );
 
       const customerID = response.result[0].id;
-      response = await updateUserStatus(customerID);
+      response = await User.verify(customerID);
 
       if (response.error)
         return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: route })(
@@ -316,7 +313,7 @@ if (config.mailgun.enabled) {
         );
 
       const { message } = response;
-      response = await getUserDetails({ customerID }, { partial: true });
+      response = await User.get({ customerID }, { partial: true });
 
       if (response.error)
         return handleResponseError(response, { redirectOnError: 400, flashMessage: true, redirect: route })(
@@ -344,7 +341,7 @@ if (config.mailgun.enabled) {
     routeAsync(async (req, res, next) => {
       const { email } = req.query;
       const route = `/user/${req.isAuthenticated() ? 'profile' : 'sign-in'}`;
-      let response = await getUserDetails({ email }, { byID: false, byEmail: true, partial: true });
+      let response = await User.get({ email }, { byID: false, byEmail: true, partial: true });
 
       if (response.error) return handleResponseError(response)(req, res, next);
 

@@ -1,5 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy;
-const { getUserDetails, getSessionUser } = require('./requests');
+const User = require('../controllers/user');
 
 module.exports = (passport) => {
   passport.serializeUser((user, done) => {
@@ -7,7 +7,7 @@ module.exports = (passport) => {
   });
 
   passport.deserializeUser((customerID, done) => {
-    return getUserDetails({ customerID }, { partial: true })
+    return User.get({ customerID }, { partial: true })
       .then((response) => {
         if (response.error) throw new Error(response.message);
         return done(null, response.result[0]);
@@ -19,7 +19,7 @@ module.exports = (passport) => {
     'login',
     new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
       try {
-        const response = await getSessionUser({ email, password });
+        const response = await User.session({ email, password });
         done(null, response);
       } catch (err) {
         done(err, {});

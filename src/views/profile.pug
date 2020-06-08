@@ -94,13 +94,13 @@ block content
 						#historySection.collapse.show(aria-labelledby='Bookings history section', data-parent='#history')
 							.card-body.pt-0.px-4.px-sm-5.pb-4
 								h5.section-subtitle.section-subtitle-tab.font-weight-medium.mb-5 Upcoming
-								if !bookings
+								if bookings.isEmpty
 									.alert.alert-primary.py-3.mb-0(role='alert')
 										.flex-vertical-center
 											i.fas.fa-exclamation-circle.fa-lg.mr-3
 											span No bookings were found. If you have a booking but it is not displayed in your bookings history, you can add it below.
 								else
-									each booking, i in bookings
+									each booking, i in bookings.data
 										if i > 0
 											hr.my-4
 										.booking-card
