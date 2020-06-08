@@ -4,19 +4,9 @@ const routeAsync = require('../middleware/route-async');
 const handleResponseError = require('../middleware/handle-response-error');
 const permit = require('../middleware/permit');
 const { validate } = require('../middleware/superstruct');
-const {
-  getCountries,
-  getFlights,
-  getBooking,
-  getBookingPassengers,
-  insertBooking,
-  insertUserBooking,
-  insertPassenger,
-  updateBooking,
-  cancelBooking,
-  checkBookingExists,
-  checkBookingAlreadyBooked,
-} = require('../config/requests');
+const Flight = require('../controllers/flight');
+const Booking = require('../controllers/booking');
+const { getCountries } = require('../config/requests');
 
 const router = express.Router();
 
@@ -29,7 +19,7 @@ router.post(
   permit('USER'),
   routeAsync(async (req, res, next) => {
     const { body } = req;
-    const response = await insertUserBooking({ customerID: req.user.id, ...body });
+    const response = await Booking.addUserBooking({ customerID: req.user.id, ...body });
 
     if (response.error && response.tryCatchError) return next(response.result);
     if (!response.error) {
@@ -50,36 +40,26 @@ router.get(
     query.quantity = parseInt(query.quantity, 10);
     query.passengers = JSON.parse(query.passengers);
 
-    let response = null;
+    let response;
 
     if (req.user && req.user.role === 'USER') {
-      let args = {
+      const args = {
         customerID: req.user.id,
-        flightID: query.departFlightID,
+        departFlightID: query.departFlightID,
         departDate: query.departDate,
         class: query.class,
       };
 
       if (query.isRoundtrip) {
-        args = {
-          alreadyBooked: { ...args },
-          canBook: { ...args },
-        };
-
-        args.canBook.flightID = query.returnFlightID;
-        args.canBook.departDate = query.returnDate;
+        args.returnFlightID = query.returnFlightID;
+        args.returnDate = query.returnDate;
       }
 
-      response = await checkBookingAlreadyBooked(args);
-
+      response = await Booking.canBook(args);
       if (response.error) return handleResponseError(response)(req, res, next);
 
       if (!response.result) {
-        res.flash(
-          'error',
-          "You can't book this flight route right now as you have recently booked a similar flight route. You can only book a flight route which doesn't overlap with your last booking. Meanwhile you can manage your latest booking below."
-        );
-
+        res.flash('error', response.message);
         return res.redirect('/user/profile');
       }
     }
@@ -92,7 +72,7 @@ router.get(
         'f1.flight_id=:departFlightID and f1.dep_date=:departDate and f1.class=:class and f2.flight_id=:returnFlightID and f2.dep_date=:returnDate and f2.class=:class and al1.airline_code=f1.airline and ap1.airplane_model=f1.airplane and aprt1.airport_code=f1.from_airport and aprt2.airport_code=f1.to_airport and al2.airline_code=f2.airline and ap2.airplane_model=f2.airplane and aprt3.airport_code=f2.from_airport and aprt4.airport_code=f2.to_airport and f1.dep_date >= CURRENT_DATE and f2.dep_date >= CURRENT_DATE';
     }
 
-    response = await getFlights(query, {
+    response = await Flight.get(query, {
       WHERE,
       FETCH_ALL: false,
       isRoundtrip: query.isRoundtrip,
@@ -136,7 +116,7 @@ router.post(
 
     do {
       bookingID = await Math.random().toString(36).toUpperCase().substr(2, 6);
-      response = await checkBookingExists({ bookingID }, { byLastName: false });
+      response = await Booking.exists({ bookingID }, { byLastName: false });
 
       if (response.error) return handleResponseError(response)(req, res, next);
 
@@ -204,11 +184,10 @@ router.post(
       bookingDetails.returnDate = flightData.returnDate;
     }
 
-    response = await insertBooking(bookingDetails);
-
+    response = await Booking.insert(bookingDetails);
     if (response.error) return handleResponseError(response)(req, res, next);
 
-    await Promise.all(passengerInfo.map(async (passenger) => insertPassenger(passenger))).catch((err) => {
+    await Promise.all(passengerInfo.map(async (passenger) => Booking.insertPassenger(passenger))).catch((err) => {
       return next(err);
     });
 
@@ -235,7 +214,8 @@ router.get(
     const { bookingID, lastName } = req.params;
     const customerID = req.session.user.id;
     const byID = /(\/user\/profile)/.test(req.get('Referrer'));
-    let response = await checkBookingExists(
+
+    let response = await Booking.exists(
       { bookingID, customerID, lastName },
       {
         byID,
@@ -244,17 +224,12 @@ router.get(
     );
 
     if (response.error) return handleResponseError(response)(req, res, next);
-
     if (!response.result) {
-      res.flash(
-        'error',
-        'We are unable to find the booking reference you provided. Please validate that your information is correct and try again.'
-      );
+      res.flash('error', response.message);
       return res.redirect('/booking/manage-booking');
     }
 
-    response = await getBooking({ bookingID, customerID, lastName }, { byID });
-
+    response = await Booking.get({ bookingID, customerID, lastName }, { byID, byLastName: true });
     if (response.error) return handleResponseError(response)(req, res, next);
 
     const [booking] = response.result;
@@ -280,7 +255,7 @@ router.get(
       };
     }
 
-    response = await getFlights(args, {
+    response = await Flight.get(args, {
       WHERE,
       FETCH_ALL: false,
       isRoundtrip: booking.isRoundtrip,
@@ -293,8 +268,7 @@ router.get(
     const [flight] = response.result.data;
     flight.isRoundtrip = booking.isRoundtrip;
 
-    response = await getBookingPassengers(booking.id);
-
+    response = await Booking.getPassengers(booking.id);
     if (response.error) return handleResponseError(response)(req, res, next);
 
     const passengers = response.result;
@@ -308,7 +282,7 @@ router.post(
   routeAsync(async (req, res, next) => {
     const { params } = req;
     const { body } = req;
-    const response = await updateBooking({ ...params, ...body });
+    const response = await Booking.update({ ...params, ...body });
 
     if (response.error && response.tryCatchError) return next(response.result);
 
@@ -326,7 +300,7 @@ router.post(
   routeAsync(async (req, res, next) => {
     const { params } = req;
     const { body } = req;
-    const response = await cancelBooking({ ...params, ...body });
+    const response = await Booking.cancel({ ...params, ...body });
 
     if (response.error) {
       if (response.tryCatchError) return next(response.result);
