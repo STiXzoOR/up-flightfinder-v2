@@ -1,15 +1,15 @@
 const express = require('express');
 const routeAsync = require('../middleware/route-async');
 const handleResponseError = require('../middleware/handle-response-error');
-const { getPopularDestinations, getAirports } = require('../config/requests');
+const Common = require('../controllers/common');
 
 const router = express.Router();
 
 router.get(
   '/',
   routeAsync(async (req, res, next) => {
-    const airports = await getAirports();
-    const destinations = await getPopularDestinations();
+    const airports = await Common.getAirports();
+    const destinations = await Common.getPopularDestinations();
 
     if (airports.error || destinations.error) {
       const response = (airports.error && airports) || destinations;

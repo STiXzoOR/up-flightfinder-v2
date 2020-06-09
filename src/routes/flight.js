@@ -1,11 +1,11 @@
 const express = require('express');
 const createError = require('http-errors');
+const Common = require('../controllers/common');
+const Flight = require('../controllers/flight');
 const routeAsync = require('../middleware/route-async');
 const handleResponseError = require('../middleware/handle-response-error');
 const rateLimiter = require('../middleware/rate-limit');
 const { validate } = require('../middleware/superstruct');
-const Flight = require('../controllers/flight');
-const { getAirports } = require('../config/requests');
 const { compileFile } = require('../config/templates');
 
 const router = express.Router();
@@ -172,7 +172,7 @@ router.get(
       });
     }
 
-    response = await getAirports();
+    response = await Common.getAirports();
 
     if (response.error) return handleResponseError(response)(req, res, next);
 

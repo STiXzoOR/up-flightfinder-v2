@@ -5,13 +5,13 @@ const express = require('express');
 const createError = require('http-errors');
 const passport = require('passport');
 const config = require('../config/dotenv');
+const Common = require('../controllers/common');
 const User = require('../controllers/user');
 const routeAsync = require('../middleware/route-async');
 const handleResponseError = require('../middleware/handle-response-error');
 const permit = require('../middleware/permit');
 const rateLimiter = require('../middleware/rate-limit');
 const { validate } = require('../middleware/superstruct');
-const { getCountries } = require('../config/requests');
 if (config.mailgun.enabled) var mailgun = require('../config/mailgun');
 require('../config/passport')(passport);
 
@@ -112,7 +112,7 @@ router.get(
       return handleResponseError(response)(req, res, next);
 
     const bookings = response.result;
-    response = await getCountries();
+    response = await Common.getCountries();
 
     if (response.error) return handleResponseError(response)(req, res, next);
     const countries = response.result;

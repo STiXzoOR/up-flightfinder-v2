@@ -1,12 +1,12 @@
 const express = require('express');
 const createError = require('http-errors');
+const Common = require('../controllers/common');
+const Flight = require('../controllers/flight');
+const Booking = require('../controllers/booking');
 const routeAsync = require('../middleware/route-async');
 const handleResponseError = require('../middleware/handle-response-error');
 const permit = require('../middleware/permit');
 const { validate } = require('../middleware/superstruct');
-const Flight = require('../controllers/flight');
-const Booking = require('../controllers/booking');
-const { getCountries } = require('../config/requests');
 
 const router = express.Router();
 
@@ -83,7 +83,7 @@ router.get(
     if (response.error) return handleResponseError(response)(req, res, next);
 
     const [flight] = response.result.data;
-    response = await getCountries();
+    response = await Common.getCountries();
 
     if (response.error) return handleResponseError(response)(req, res, next);
 
