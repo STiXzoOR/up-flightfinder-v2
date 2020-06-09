@@ -11,10 +11,8 @@ const handleResponseError = require('../middleware/handle-response-error');
 const permit = require('../middleware/permit');
 const rateLimiter = require('../middleware/rate-limit');
 const { validate } = require('../middleware/superstruct');
-const { verifyToken, sendVerificationLink, getCountries } = require('../config/requests');
-
+const { getCountries } = require('../config/requests');
 if (config.mailgun.enabled) var mailgun = require('../config/mailgun');
-
 require('../config/passport')(passport);
 
 const router = express.Router();
@@ -84,8 +82,7 @@ router.post(
         url: req.getUrl(),
       };
 
-      response = await sendVerificationLink(args);
-
+      response = await User.sendVerification(args);
       if (response.error)
         return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/sign-up' })(
           req,
@@ -111,7 +108,7 @@ router.get(
     const details = response.result[0];
     response = await User.bookings(customerID);
 
-    if (response.error && (response.tryCatchError || !response.status === 400))
+    if (response.error && (response.tryCatchError || !response.status === 404))
       return handleResponseError(response)(req, res, next);
 
     const bookings = response.result;
@@ -201,7 +198,7 @@ if (config.mailgun.enabled) {
 
       if (response.error)
         return handleResponseError(response, {
-          redirectOnError: 400,
+          redirectOnError: 404,
           flashMessage: true,
           redirect: '/user/format-password',
         })(req, res, next);
@@ -214,8 +211,7 @@ if (config.mailgun.enabled) {
         url: req.getUrl(),
       };
 
-      response = await sendVerificationLink(args, 'password');
-
+      response = await User.sendVerification(args, 'password');
       if (response.error && response.tryCatchError) return next(response.result);
 
       res.flash(response.error ? 'error' : 'success', response.message);
@@ -228,7 +224,7 @@ if (config.mailgun.enabled) {
     validate('validateToken'),
     routeAsync(async (req, res, next) => {
       const { token } = req.query;
-      const response = await verifyToken(token, 'password');
+      const response = await User.verifyToken(token, 'password');
 
       if (response.error)
         return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/sign-in' })(
@@ -247,7 +243,7 @@ if (config.mailgun.enabled) {
       const { body } = req;
       const { token } = req.query;
       const route = `/user/reset-password?token=${token}`;
-      let response = await verifyToken(token, 'password');
+      let response = await User.verifyToken(token, 'password');
 
       if (response.error)
         return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/sign-in' })(
@@ -259,7 +255,7 @@ if (config.mailgun.enabled) {
       response = await User.get({ customerID: body.customerID }, { partial: true });
 
       if (response.error)
-        return handleResponseError(response, { redirectOnError: 400, flashMessage: true, redirect: '/user/sign-in' })(
+        return handleResponseError(response, { redirectOnError: 404, flashMessage: true, redirect: '/user/sign-in' })(
           req,
           res,
           next
@@ -293,7 +289,7 @@ if (config.mailgun.enabled) {
     routeAsync(async (req, res, next) => {
       const { token } = req.query;
       const route = `/user/${req.isAuthenticated() ? 'profile' : 'sign-in'}`;
-      let response = await verifyToken(token);
+      let response = await User.verifyToken(token);
 
       if (response.error)
         return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: route })(
@@ -316,7 +312,7 @@ if (config.mailgun.enabled) {
       response = await User.get({ customerID }, { partial: true });
 
       if (response.error)
-        return handleResponseError(response, { redirectOnError: 400, flashMessage: true, redirect: route })(
+        return handleResponseError(response, { redirectOnError: 404, flashMessage: true, redirect: route })(
           req,
           res,
           next
@@ -353,8 +349,7 @@ if (config.mailgun.enabled) {
         url: req.getUrl(),
       };
 
-      response = await sendVerificationLink(args);
-
+      response = await User.sendVerification(args);
       if (response.error && response.tryCatchError) return next(response.result);
 
       res.flash(response.error ? 'error' : 'success', response.message);

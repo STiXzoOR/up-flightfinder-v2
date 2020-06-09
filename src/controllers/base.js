@@ -8,7 +8,7 @@ class Base {
 
   async execute(query = '', args = {}, type = 'fetch') {
     const response = {
-      status: 400,
+      status: 404,
       error: true,
       message: 'No results found.',
       result: [],
@@ -30,7 +30,7 @@ class Base {
       .catch((error) => {
         response.error = true;
         response.tryCatchError = true;
-        response.status = error.status;
+        response.status = error.statusCode || error.status || 500;
         response.result = error;
       });
 

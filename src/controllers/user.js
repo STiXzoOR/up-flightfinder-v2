@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const config = require('../config/dotenv');
+const mailgun = require('../config/mailgun');
 const Base = require('./base');
 
 class User extends Base {
@@ -21,14 +23,25 @@ class User extends Base {
       insert:
         'INSERT INTO customer (first_name, last_name, email, password, mobile, gender, joined_date, status, customer_type) VALUES (:firstName, :lastName, :email, :password, :mobile, :gender, NOW(), :status, "USER")',
       remove: 'DELETE FROM customer WHERE customer_id=:customerID',
-      verify:
-        'UPDATE customer SET status="VERIFIED", email_token=NULL, email_token_expire=NULL WHERE customer_id=:customerID',
+      verify: {
+        status:
+          'UPDATE customer SET status="VERIFIED", email_token=NULL, email_token_expire=NULL WHERE customer_id=:customerID',
+        token: {
+          email: 'SELECT customer_id as id FROM customer WHERE email_token=:token and email_token_expire > NOW()',
+          password:
+            'SELECT customer_id as id FROM customer WHERE password_token=:token and password_token_expire > NOW()',
+        },
+      },
       update: {
         details:
           'UPDATE customer SET first_name=:firstName, last_name=:lastName, mobile=:mobile, gender=:gender, address_line_1=:addressLine1, address_line_2=:addressLine2, city=:city, region=:region, postal_code=:postal, country=:country WHERE customer_id=:customerID',
         password: {
           token: 'UPDATE customer SET password=:password, password_token=NULL, password_token_expire=NULL',
           noToken: 'UPDATE customer SET password=:password',
+        },
+        verification: {
+          email: 'UPDATE customer SET email_token=:token, email_token_expire=:tokenExpire WHERE email=:email',
+          password: 'UPDATE customer SET password_token=:token, password_token_expire=:tokenExpire WHERE email=:email',
         },
       },
       bookings:
@@ -53,7 +66,12 @@ class User extends Base {
         success: 'Your account has been successfully deleted.',
       },
       verify: {
-        success: 'Your account has been successfully verified.',
+        status: {
+          success: 'Your account has been successfully verified.',
+        },
+        token: {
+          error: 'The requested link is invalid or has expired.',
+        },
       },
       update: {
         details: {
@@ -61,6 +79,16 @@ class User extends Base {
         },
         password: {
           success: 'Your password has been successfully changed. You can now get back into your account.',
+        },
+      },
+      verification: {
+        email: {
+          success:
+            'A mail to verify your account was sent to the provided email. The link will expire after 1 day. Follow the instructions to complete the sign up process.',
+        },
+        password: {
+          success:
+            'A mail to reset your password was sent to the provided email. The link will expire after 10 minutes. Follow the instructions to enter a new password.',
         },
       },
     };
@@ -194,9 +222,9 @@ class User extends Base {
   }
 
   async verify(customerID = '') {
-    const query = this.queries.verify;
+    const query = this.queries.verify.status;
     const response = await this.execute(query, { customerID });
-    response.message = response.error ? this.messages.generic : this.messages.verify.success;
+    response.message = response.error ? this.messages.generic : this.messages.verify.status.success;
 
     return response;
   }
@@ -240,6 +268,66 @@ class User extends Base {
     }
 
     response.result = bookingsData;
+    return response;
+  }
+
+  async verifyToken(token = '', type = 'email') {
+    const query = this.queries.verify.token[type];
+    const response = await this.execute(query, { token }, 'fetchOne');
+
+    if (response.tryCatchError || response.status === 500) return response;
+
+    response.error = response.result.length === 0;
+    response.message = response.result.length !== 0 ? response.message : this.messages.verify.token.error;
+
+    return response;
+  }
+
+  async sendVerification(args = {}, type = 'email') {
+    const options = {
+      email: {
+        tokenDuration: 86400000,
+        send: (data) => mailgun.sendVerifyAccount(data),
+      },
+      password: {
+        tokenDuration: 600000,
+        send: (data) => mailgun.sendResetPassword(data),
+      },
+    };
+
+    const fields = {
+      email: args.email,
+      token: crypto.randomBytes(40).toString('hex'),
+      tokenExpire: new Date(Date.now() + options[type].tokenDuration),
+    };
+
+    const query = this.queries.update.verification[type];
+    const response = await this.execute(query, fields, 'commit');
+
+    if (response.error) {
+      if (!response.tryCatchError) response.message = this.messages.generic;
+      return response;
+    }
+
+    const data = {
+      url: args.url,
+      token: fields.token,
+      recipient: `${args.firstName} ${args.lastName} <${args.email}>`,
+    };
+
+    await options[type]
+      .send(data)
+      .then((result) => {
+        response.message = this.messages.verification[type].success;
+        response.result = result;
+      })
+      .catch((error) => {
+        response.error = true;
+        response.tryCatchError = true;
+        response.status = error.statusCode || error.status || 500;
+        response.result = error;
+      });
+
     return response;
   }
 }

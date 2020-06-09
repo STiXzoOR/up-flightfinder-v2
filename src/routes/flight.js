@@ -148,7 +148,7 @@ router.get(
     const data = generateConditions(query);
     let response = await Flight.get(data.args, { isRoundtrip: query.isRoundtrip, ...data.conditions });
 
-    if (response.error && (response.tryCatchError || !response.status === 400))
+    if (response.error && (response.tryCatchError || !response.status === 404))
       return handleResponseError(response)(req, res, next);
 
     const flights = response.result;
