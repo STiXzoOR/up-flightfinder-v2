@@ -1,19 +1,9 @@
-/* eslint-disable vars-on-top */
-/* eslint-disable global-require */
-/* eslint-disable no-var */
 const express = require('express');
-const config = require('../config/dotenv');
 const routeAsync = require('../middleware/route-async');
 const handleResponseError = require('../middleware/handle-response-error');
-const logger = require('../config/winston');
 const { validate, validateVerbose } = require('../middleware/superstruct');
 const mailgun = require('../config/mailgun');
-const {
-  verifyToken,
-  sendVerificationLink,
-  insertNewsletterSubscriber,
-  removeNewsletterSubscriber,
-} = require('../config/requests');
+const Newsletter = require('../controllers/newsletter');
 
 const router = express.Router();
 
@@ -25,7 +15,6 @@ router.all(
   '/subscribe',
   routeAsync(async (req, res, next) => {
     const data = req.method === 'GET' ? req.query : req.body;
-    let subscriberExists = false;
 
     if (req.method === 'GET') {
       const [error] = validateVerbose(
@@ -35,18 +24,13 @@ router.all(
       if (error) return next(error);
     }
 
-    await mailgun
-      .getMember('newsletter', data.email)
-      .then((member) => {
-        logger.info(member);
-        subscriberExists = true;
-      })
-      .catch((err) => logger.error(err));
-
-    if (subscriberExists) {
-      res.flash('error', 'The provided email is already subscribed to our newsletter list.');
-      return res.redirect('/newsletter');
-    }
+    let response = await Newsletter.exists(data.email);
+    if (response.error || response.result)
+      return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/newsletter' })(
+        req,
+        res,
+        next
+      );
 
     const args = {
       email: data.email,
@@ -55,8 +39,7 @@ router.all(
       url: req.getUrl(),
     };
 
-    const response = await sendVerificationLink(args, 'newsletter');
-
+    response = await Newsletter.sendVerification(args);
     if (response.error && response.tryCatchError) return next(response.result);
 
     res.flash(response.error ? 'error' : 'success', response.message);
@@ -69,7 +52,7 @@ router.get(
   validate('validateToken'),
   routeAsync(async (req, res, next) => {
     const { token } = req.query;
-    let response = await verifyToken(token, 'newsletter');
+    let response = await Newsletter.verifyToken(token);
 
     if (response.error)
       return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/newsletter' })(
@@ -78,8 +61,7 @@ router.get(
         next
       );
 
-    response = await insertNewsletterSubscriber(response.result[0]);
-
+    response = await Newsletter.verify(response.result[0]);
     if (response.error && response.tryCatchError) return next(response.result);
 
     res.flash(response.error ? 'error' : 'success', response.message);
@@ -95,33 +77,23 @@ router.post(
   '/unsubscribe',
   routeAsync(async (req, res, next) => {
     const { email } = req.body;
-    let notFound = false;
-    let member = {};
+    let response = await Newsletter.get(email);
+    if (response.error)
+      return handleResponseError(response, {
+        redirectOnError: true,
+        flashMessage: true,
+        redirect: '/newsletter/unsubscribe',
+      })(req, res, next);
 
-    await mailgun
-      .getMember('newsletter', email)
-      .then((data) => {
-        logger.info(data);
-        member = data.member;
-      })
-      .catch((err) => {
-        logger.error(err);
-        notFound = true;
-      });
-
-    if (notFound) {
-      res.flash('error', 'The provided email is not subscribed to our newsletter list.');
-      return res.redirect('/newsletter/unsubscribe');
-    }
-
-    const response = await removeNewsletterSubscriber(email);
+    const member = response.result;
+    response = await Newsletter.remove(email);
 
     if (response.error)
-      return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/unsubscribe' })(
-        req,
-        res,
-        next
-      );
+      return handleResponseError(response, {
+        redirectOnError: true,
+        flashMessage: true,
+        redirect: '/newsletter/unsubscribe',
+      })(req, res, next);
 
     const name = member.name.split(' ');
     const args = {
