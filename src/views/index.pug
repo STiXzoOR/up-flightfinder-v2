@@ -2,6 +2,9 @@ extends layout
 include mixins/_header
 include mixins/_preloader
 
+block append vendorCss
+	link(rel='stylesheet', href='/static/vendors/flatpickr/flatpickr.min.css')
+
 block preloader
 	+preLoaderImage#preloader
 
@@ -230,3 +233,8 @@ block content
 												span
 													| from&nbsp;
 													span.price &euro;#{destination.price}
+
+block append vendorScripts
+	script(src='/static/vendors/flatpickr/flatpickr.min.js')
+block append customScripts
+	script(src='/static/js/quantity-counter.js')

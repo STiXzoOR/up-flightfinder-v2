@@ -89,3 +89,8 @@ block content
 								p.font-size-14.text-center.mt-1.mb-0
 									| Already a memeber?
 									a(href='/user/sign-in') &nbsp;Sign in
+
+block append vendorScripts
+	script(src='/static/vendors/zxcvbn/zxcvbn.js')
+block append customScripts
+	script(src='/static/js/password-strength.js')

@@ -2,6 +2,10 @@ extends layout
 include mixins/_preloader
 include mixins/_go-up
 
+block append vendorCss
+	link(rel='stylesheet', href='/static/vendors/flatpickr/flatpickr.min.css')
+	link(rel='stylesheet', href='/static/vendors/ion.rangeSlider/css/ion.rangeSlider.min.css')
+
 block title
 	title Search flights - Flight Finder
 
@@ -407,10 +411,19 @@ block content
 							!= flights.html
 		+goUpButton
 
-block append scripts
+block append vendorScripts
+	script(src='/static/vendors/flatpickr/flatpickr.min.js')
+	if !flights.isEmpty
+		script(src='/static/vendors/ion.rangeSlider/js/ion.rangeSlider.min.js')
+		script(src='/static/vendors/navdrawer/navdrawer.min.js')
+
+block append customScripts
+	script(src='/static/js/quantity-counter.js')
 	if !flights.isEmpty
 		script(src='/static/js/filter-flights.js')
 
+block append scripts
+	if !flights.isEmpty
 		script.
 			$(() => {
 				const flightFilterHandler = new FlightFilterHandler({
@@ -428,7 +441,6 @@ block append scripts
 					}
 				});
 			})
-			
 	script.
 		$(() => {
 			setTimeout(() => {

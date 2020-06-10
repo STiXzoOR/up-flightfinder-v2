@@ -485,6 +485,8 @@ function displayInfantCount(adults, children, infants) {
 }
 
 function initCounters() {
+  if (!$('.counter-controls').length) return;
+
   const adultCounter = new QuantityCounter('#adultCounter');
   const childrenCounter = new QuantityCounter('#childrenCounter');
   const infantCounter = new QuantityCounter('#infantCounter');
@@ -1001,6 +1003,22 @@ $('a[href="#navEditContactDetails"]').on('click', function clicked(e) {
   e.preventDefault();
   $('a[href="#navContactDetails"]').removeClass('active').attr('aria-selected', false);
   $(this).tab('show');
+});
+
+$('#cardYear').on('change', function fixMonth() {
+  const value = parseInt($(this).val(), 10);
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+  const disableMonth = value === currentYear;
+
+  if (disableMonth && parseInt($('#cardMonth').val(), 10) < currentMonth) {
+    $('#cardMonth').find('option:selected').prop('selected', false);
+    $('#cardMonth').find(`option[value="${currentMonth}"]`).prop('selected', true).trigger('change');
+  }
+
+  $('#cardMonth option').each((i, el) =>
+    $(el).prop('disabled', parseInt($(el).val(), 10) < currentMonth && disableMonth)
+  );
 });
 
 $(() => {

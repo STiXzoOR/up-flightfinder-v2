@@ -2,6 +2,9 @@ extends layout
 include mixins/_preloader
 include mixins/_go-up
 
+block append vendorCss
+	link(rel='stylesheet', href='/static/vendors/flatpickr/flatpickr.min.css')
+
 block title
 	title New booking - Flight Finder
 
@@ -588,20 +591,5 @@ block content
 												span.item-price &euro;#{flight.totalTaxes.toLocaleString()}
 		+goUpButton
 
-block append scripts
-	script.
-		$(() => {
-			$('#cardYear').on('change', function fixMonth() {
-				const value = parseInt($(this).val(), 10);
-				const currentYear = new Date().getFullYear();
-				const currentMonth = new Date().getMonth() + 1;
-				const disableMonth = value === currentYear ? true : false;
-		
-				if (disableMonth && parseInt($('#cardMonth').val(), 10) < currentMonth) {
-					$('#cardMonth').find('option:selected').prop('selected', false);
-					$('#cardMonth').find(`option[value="${currentMonth}"]`).prop('selected', true).trigger('change');
-				}
-		
-				$('#cardMonth option').each((i,el) => $(el).prop('disabled', parseInt($(el).val(), 10) < currentMonth && disableMonth));
-			})
-		})
+block append vendorScripts
+	script(src='/static/vendors/flatpickr/flatpickr.min.js')

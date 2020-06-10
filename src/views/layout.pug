@@ -5,15 +5,15 @@ html.smooth-scroll
 	head
 		meta(charset='utf-8')
 		meta(name='viewport', content='width=device-width, initial-scale=1')
-		link(rel='stylesheet', href='/static/vendors/font-awesome/css/all.min.css')
-		link(rel='stylesheet', href='/static/css/rubik-font-family.css')
-		link(rel='stylesheet', href='/static/css/flightfinder-logo.css')
-		link(rel='stylesheet', href='/static/vendors/bootstrap/css/bootstrap.min.css')
-		link(rel='stylesheet', href='/static/vendors/bootstrap/css/bootstrap-reboot.min.css')
-		link(rel='stylesheet', href='/static/vendors/flatpickr/flatpickr.min.css')
-		link(rel='stylesheet', href='/static/vendors/select2/css/select2.min.css')
-		link(rel='stylesheet', href='/static/vendors/select2/css/select2-bootstrap.min.css')
-		link(rel='stylesheet', href='/static/vendors/ion.rangeSlider/css/ion.rangeSlider.min.css')
+		block fonts
+			link(rel='stylesheet', href='/static/vendors/font-awesome/css/all.min.css')
+			link(rel='stylesheet', href='/static/css/rubik-font-family.css')
+			link(rel='stylesheet', href='/static/css/flightfinder-logo.css')
+		block vendorCss
+			link(rel='stylesheet', href='/static/vendors/bootstrap/css/bootstrap.min.css')
+			link(rel='stylesheet', href='/static/vendors/bootstrap/css/bootstrap-reboot.min.css')
+			link(rel='stylesheet', href='/static/vendors/select2/css/select2.min.css')
+			link(rel='stylesheet', href='/static/vendors/select2/css/select2-bootstrap.min.css')
 		link(rel='stylesheet', href='/static/css/style.css')
 		link(rel='shortcut icon', href='/static/images/favicon.ico')
 		block title
@@ -91,15 +91,10 @@ html.smooth-scroll
 								a(href='/pages/privacy-policy') Privacy Policy
 
 		block scripts
-			script(src='/static/vendors/jquery/jquery.min.js')
-			script(src='/static/vendors/popper.js/popper.min.js')
-			script(src='/static/vendors/zxcvbn/zxcvbn.js')
-			script(src='/static/vendors/bootstrap/js/bootstrap.min.js')
-			script(src='/static/vendors/flatpickr/flatpickr.min.js')
-			script(src='/static/vendors/ion.rangeSlider/js/ion.rangeSlider.min.js')
-			script(src='/static/vendors/select2/js/select2.full.min.js')
-			script(src='/static/vendors/navdrawer/navdrawer.min.js')
-			script(src='/static/js/scrollspy.js')
-			script(src='/static/js/password-strength.js')
-			script(src='/static/js/quantity-counter.js')
+			block vendorScripts
+				script(src='/static/vendors/jquery/jquery.min.js')
+				script(src='/static/vendors/popper.js/popper.min.js')
+				script(src='/static/vendors/bootstrap/js/bootstrap.min.js')
+				script(src='/static/vendors/select2/js/select2.full.min.js')
+			block customScripts
 			script(src='/static/js/main.js')
