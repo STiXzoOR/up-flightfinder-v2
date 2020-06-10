@@ -1,0 +1,33 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:debug:20170905':
+    - express-flash-2 > mocha > debug:
+        patched: '2020-06-10T12:28:45.659Z'
+  SNYK-JS-LODASH-567746:
+    - hpp > lodash:
+        patched: '2020-06-10T12:28:45.659Z'
+    - sql-formatter > lodash:
+        patched: '2020-06-10T12:28:45.659Z'
+    - mailgun-js > async > lodash:
+        patched: '2020-06-10T12:28:45.659Z'
+    - winston > async > lodash:
+        patched: '2020-06-10T12:28:45.659Z'
+    - pm2 > @pm2/io > async > lodash:
+        patched: '2020-06-10T12:28:45.659Z'
+    - pm2 > @pm2/js-api > async > lodash:
+        patched: '2020-06-10T12:28:45.659Z'
+    - pm2 > cli-tableau > mocha > yargs-unparser > lodash:
+        patched: '2020-06-10T12:28:45.659Z'
+    - pug > pug-code-gen > constantinople > @babel/types > lodash:
+        patched: '2020-06-10T12:28:45.659Z'
+    - pug > pug-filters > constantinople > @babel/types > lodash:
+        patched: '2020-06-10T12:28:45.659Z'
+    - pug > pug-code-gen > with > @babel/types > lodash:
+        patched: '2020-06-10T12:28:45.659Z'
+    - pug > pug-code-gen > pug-attrs > constantinople > @babel/types > lodash:
+        patched: '2020-06-10T12:28:45.659Z'
+    - pug > pug-code-gen > with > babel-walk > @babel/types > lodash:
+        patched: '2020-06-10T12:28:45.659Z'
