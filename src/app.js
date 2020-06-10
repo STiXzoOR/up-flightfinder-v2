@@ -4,6 +4,7 @@
 const appRoot = require('app-root-path');
 const express = require('express');
 const session = require('express-session');
+const compression = require('compression');
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const hpp = require('hpp');
@@ -32,6 +33,7 @@ const redisClient = redis.createClient();
 app.set('views', appRoot.resolve('/dist/views'));
 app.set('view engine', 'pug');
 
+app.use(compression());
 app.use(morgan.infoLogger());
 app.use(morgan.errorLogger());
 
