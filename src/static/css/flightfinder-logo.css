@@ -1,200 +1,200 @@
 @font-face {
-  font-family: 'Flight Finder Logo';
-  src: url('../fonts/flight-finder/flightfinder-logo.eot?28209201');
-  src: url('../fonts/flight-finder/flightfinder-logo.eot?28209201#iefix') format('embedded-opentype'),
-    url('../fonts/flight-finder/flightfinder-logo.woff2?28209201') format('woff2'),
-    url('../fonts/flight-finder/flightfinder-logo.woff?28209201') format('woff'),
-    url('../fonts/flight-finder/flightfinder-logo.ttf?28209201') format('truetype'),
-    url('../fonts/flight-finder/flightfinder-logo.svg?28209201#flightfinder-logo') format('svg');
-  font-weight: 900;
-  font-style: normal;
-  font-display: auto;
+	font-family: 'Flight Finder Logo';
+	src: url('../fonts/flight-finder/flightfinder-logo.eot?28209201');
+	src: url('../fonts/flight-finder/flightfinder-logo.eot?28209201#iefix') format('embedded-opentype'),
+		url('../fonts/flight-finder/flightfinder-logo.woff2?28209201') format('woff2'),
+		url('../fonts/flight-finder/flightfinder-logo.woff?28209201') format('woff'),
+		url('../fonts/flight-finder/flightfinder-logo.ttf?28209201') format('truetype'),
+		url('../fonts/flight-finder/flightfinder-logo.svg?28209201#flightfinder-logo') format('svg');
+	font-weight: 900;
+	font-style: normal;
+	font-display: swap;
 }
 
 .ff {
-  font-family: 'Flight Finder Logo';
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  display: inline-block;
-  font-weight: 900;
-  font-style: normal;
-  font-variant: normal;
-  text-rendering: auto;
-  line-height: 1;
+	font-family: 'Flight Finder Logo';
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	display: inline-block;
+	font-weight: 900;
+	font-style: normal;
+	font-variant: normal;
+	text-rendering: auto;
+	line-height: 1;
 }
 
 .ff-lg {
-  font-size: 1.33333em;
-  line-height: 0.75em;
-  vertical-align: -0.0667em;
+	font-size: 1.33333em;
+	line-height: 0.75em;
+	vertical-align: -0.0667em;
 }
 
 .ff-xl {
-  font-size: 1.75em;
+	font-size: 1.75em;
 }
 
 .ff-xs {
-  font-size: 0.75em;
+	font-size: 0.75em;
 }
 
 .ff-sm {
-  font-size: 0.875em;
+	font-size: 0.875em;
 }
 
 .ff-1x {
-  font-size: 1em;
+	font-size: 1em;
 }
 
 .ff-2x {
-  font-size: 2em;
+	font-size: 2em;
 }
 
 .ff-3x {
-  font-size: 3em;
+	font-size: 3em;
 }
 
 .ff-4x {
-  font-size: 4em;
+	font-size: 4em;
 }
 
 .ff-5x {
-  font-size: 5em;
+	font-size: 5em;
 }
 
 .ff-6x {
-  font-size: 6em;
+	font-size: 6em;
 }
 
 .ff-7x {
-  font-size: 7em;
+	font-size: 7em;
 }
 
 .ff-8x {
-  font-size: 8em;
+	font-size: 8em;
 }
 
 .ff-9x {
-  font-size: 9em;
+	font-size: 9em;
 }
 
 .ff-10x {
-  font-size: 10em;
+	font-size: 10em;
 }
 
 .ff-fw {
-  text-align: center;
-  width: 1.25em;
+	text-align: center;
+	width: 1.25em;
 }
 
 .ff-ul {
-  list-style-type: none;
-  margin-left: 2.5em;
-  padding-left: 0;
+	list-style-type: none;
+	margin-left: 2.5em;
+	padding-left: 0;
 }
 
-.ff-ul>li {
-  position: relative;
+.ff-ul > li {
+	position: relative;
 }
 
 .ff-li {
-  left: -2em;
-  position: absolute;
-  text-align: center;
-  width: 2em;
-  line-height: inherit;
+	left: -2em;
+	position: absolute;
+	text-align: center;
+	width: 2em;
+	line-height: inherit;
 }
 
 .ff-border {
-  border: solid 0.08em #eee;
-  border-radius: 0.1em;
-  padding: 0.2em 0.25em 0.15em;
+	border: solid 0.08em #eee;
+	border-radius: 0.1em;
+	padding: 0.2em 0.25em 0.15em;
 }
 
 .ff-pull-left {
-  float: left;
+	float: left;
 }
 
 .ff-pull-right {
-  float: right;
+	float: right;
 }
 
 .ff.ff-pull-left {
-  margin-right: 0.3em;
+	margin-right: 0.3em;
 }
 
 .ff.ff-pull-right {
-  margin-left: 0.3em;
+	margin-left: 0.3em;
 }
 
 .ff-spin {
-  -webkit-animation: fa-spin 2s infinite linear;
-  animation: fa-spin 2s infinite linear;
+	-webkit-animation: fa-spin 2s infinite linear;
+	animation: fa-spin 2s infinite linear;
 }
 
 .ff-pulse {
-  -webkit-animation: fa-spin 1s infinite steps(8);
-  animation: fa-spin 1s infinite steps(8);
+	-webkit-animation: fa-spin 1s infinite steps(8);
+	animation: fa-spin 1s infinite steps(8);
 }
 
 @-webkit-keyframes fa-spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
 
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
 }
 
 @keyframes fa-spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
 
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
 }
 
 .ff-rotate-90 {
-  -ms-filter: 'progid:DXImageTransform.Microsoft.BasicImage(rotation=1)';
-  -webkit-transform: rotate(90deg);
-  transform: rotate(90deg);
+	-ms-filter: 'progid:DXImageTransform.Microsoft.BasicImage(rotation=1)';
+	-webkit-transform: rotate(90deg);
+	transform: rotate(90deg);
 }
 
 .ff-rotate-180 {
-  -ms-filter: 'progid:DXImageTransform.Microsoft.BasicImage(rotation=2)';
-  -webkit-transform: rotate(180deg);
-  transform: rotate(180deg);
+	-ms-filter: 'progid:DXImageTransform.Microsoft.BasicImage(rotation=2)';
+	-webkit-transform: rotate(180deg);
+	transform: rotate(180deg);
 }
 
 .ff-rotate-270 {
-  -ms-filter: 'progid:DXImageTransform.Microsoft.BasicImage(rotation=3)';
-  -webkit-transform: rotate(270deg);
-  transform: rotate(270deg);
+	-ms-filter: 'progid:DXImageTransform.Microsoft.BasicImage(rotation=3)';
+	-webkit-transform: rotate(270deg);
+	transform: rotate(270deg);
 }
 
 .ff-flip-horizontal {
-  -ms-filter: 'progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)';
-  -webkit-transform: scale(-1, 1);
-  transform: scale(-1, 1);
+	-ms-filter: 'progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)';
+	-webkit-transform: scale(-1, 1);
+	transform: scale(-1, 1);
 }
 
 .ff-flip-vertical {
-  -ms-filter: 'progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)';
-  -webkit-transform: scale(1, -1);
-  transform: scale(1, -1);
+	-ms-filter: 'progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)';
+	-webkit-transform: scale(1, -1);
+	transform: scale(1, -1);
 }
 
 .ff-flip-both,
 .ff-flip-horizontal.ff-flip-vertical {
-  -ms-filter: 'progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)';
-  -webkit-transform: scale(-1, -1);
-  transform: scale(-1, -1);
+	-ms-filter: 'progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)';
+	-webkit-transform: scale(-1, -1);
+	transform: scale(-1, -1);
 }
 
 :root .ff-rotate-90,
@@ -203,39 +203,39 @@
 :root .ff-flip-horizontal,
 :root .ff-flip-vertical,
 :root .ff-flip-both {
-  -webkit-filter: none;
-  filter: none;
+	-webkit-filter: none;
+	filter: none;
 }
 
 .ff-stack {
-  display: inline-block;
-  height: 2em;
-  line-height: 2em;
-  position: relative;
-  vertical-align: middle;
-  width: 2.5em;
+	display: inline-block;
+	height: 2em;
+	line-height: 2em;
+	position: relative;
+	vertical-align: middle;
+	width: 2.5em;
 }
 
 .ff-stack-1x,
 .ff-stack-2x {
-  left: 0;
-  position: absolute;
-  text-align: center;
-  width: 100%;
+	left: 0;
+	position: absolute;
+	text-align: center;
+	width: 100%;
 }
 
 .ff-stack-1x {
-  line-height: inherit;
+	line-height: inherit;
 }
 
 .ff-stack-2x {
-  font-size: 2em;
+	font-size: 2em;
 }
 
 .ff-inverse {
-  color: #fff;
+	color: #fff;
 }
 
 .ff-logo:before {
-  content: '\e800';
+	content: '\e800';
 }
