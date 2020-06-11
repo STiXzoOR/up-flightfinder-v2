@@ -1,6 +1,9 @@
 const gulp = require('gulp');
 const cache = require('gulp-cache');
 const imagemin = require('gulp-imagemin');
+const imageminMozjpeg = require('imagemin-mozjpeg');
+const imageminOptipng = require('imagemin-optipng');
+const imageminZopfli = require('imagemin-zopfli');
 const babel = require('gulp-babel');
 const minify = require('gulp-minify');
 const concat = require('gulp-concat');
@@ -20,7 +23,25 @@ gulp.task('env', (cb) => {
 gulp.task('copy:fonts', () => gulp.src(config.paths.fonts.src).pipe(gulp.dest(config.paths.fonts.dist)));
 
 gulp.task('copy:images', () =>
-  gulp.src(config.paths.images.src).pipe(cache(imagemin())).pipe(gulp.dest(config.paths.images.dist))
+  gulp
+    .src(config.paths.images.src)
+    .pipe(
+      cache(
+        imagemin([
+          imagemin.gifsicle({ interlaced: true }),
+          imageminMozjpeg({
+            quality: 85,
+            progressive: true,
+          }),
+          imageminOptipng({ optimizationLevel: 5 }),
+          imageminZopfli({
+            more: true,
+          }),
+          imagemin.svgo({ plugins: [{ removeViewBox: false }] }),
+        ])
+      )
+    )
+    .pipe(gulp.dest(config.paths.images.dist))
 );
 
 gulp.task('copy:vendors', (cb) => {
