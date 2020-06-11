@@ -29,6 +29,12 @@ if (config.mailgun.enabled) var newsletterRouter = require('./routes/newsletter'
 
 const app = express();
 const redisClient = redis.createClient();
+const setStaticCacheHeaders = (res, duration) => {
+  const date = new Date();
+  date.setHours(date.getHours() + duration);
+
+  res.set({ Expires: date.toUTCString(), 'Cache-Control': `public, max-age=${duration * 3600}, immutable` });
+};
 
 app.set('views', appRoot.resolve('/dist/views'));
 app.set('view engine', 'pug');
@@ -47,7 +53,25 @@ app.use(hpp());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use('/static', express.static(appRoot.resolve('/dist/static')));
+app.use(
+  '/static',
+  express.static(
+    appRoot.resolve('/dist/static'),
+    config.isDev
+      ? {}
+      : {
+          setHeaders(res, path) {
+            if (path.match(/\.(cur|gif|gz|htc|ico|jpeg|jpg|mp4|ogg|ogv|png|svg|svgz|ttf|webm|woff|woff2)$/)) {
+              setStaticCacheHeaders(res, 336);
+            }
+
+            if (path.match(/\.(js|css)$/)) {
+              setStaticCacheHeaders(res, 168);
+            }
+          },
+        }
+  )
+);
 app.use(favicon(appRoot.resolve('/dist/static/images/favicon.ico')));
 
 app.use(
@@ -64,7 +88,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-app.use(Maintenance(app, { endpoint: true, view: '503' }).middleware);
+// app.use(Maintenance(app, { endpoint: true, view: '503' }).middleware);
 app.use(beforeRequest);
 app.use('/', indexRouter);
 app.use('/pages', pagesRouter);
