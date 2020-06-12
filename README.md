@@ -117,14 +117,15 @@ From the root of the project follow the steps below:
 
 | Area                        | Technology                               |
 | --------------------------- | ---------------------------------------- |
-| Front-End                   | Bootstrap, HTML5, CSS3, Javascript (ES6) |
-| Back-End                    | Node.js, Express.js                      |
-| Authentication Middleware   | Passport.js                              |
-| In-memory caching/Datastore | Redis                                    |
-| Transactional Emails        | Mailgun                                  |
+| Frontend                    | Bootstrap, HTML5, CSS3, Javascript (ES6) |
+| Backend                     | Node.js, Express.js                      |
+| In-memory caching/datastore | Redis                                    |
+| Authentication middleware   | Passport.js                              |
+| Data validation middlware   | Express superstruct                      |
+| Transactional emails        | Mailgun                                  |
 | Logger                      | Morgan + Winston                         |
-| Database                    | MySQL (MAMP Bundle)                      |
-| Deployment                  | Local/Remote                             |
+| Database                    | MySQL                                    |
+| Deployment                  | Local/Remote (Custom server)             |
 
 ## Authors
 
