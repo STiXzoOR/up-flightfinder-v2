@@ -70,6 +70,13 @@ gulp.task('watch:views', (done) => {
   done();
 });
 
+gulp.task('copy:templates', () => gulp.src(config.paths.templates.src).pipe(gulp.dest(config.paths.templates.dist)));
+
+gulp.task('watch:templates', (done) => {
+  gulp.watch(config.paths.templates.src, gulp.series('copy:templates'));
+  done();
+});
+
 gulp.task('copy:css', () =>
   gulp
     .src(config.paths.css.src)
@@ -148,7 +155,10 @@ const browserSyncInit = (done) => {
 gulp.task('browser-sync', browserSyncInit);
 gulp.task('init', gulp.parallel('copy:fonts', 'copy:images', 'copy:vendors'));
 gulp.task('build', gulp.series('clean', gulp.parallel('init', 'copy:src', 'copy:css', 'copy:js')));
-gulp.task('build:dev', gulp.series('clean:dist', gulp.parallel('copy:views', 'copy:css', 'copy:js')));
-gulp.task('build:clean-dev', gulp.series('clean', gulp.parallel('init', 'copy:views', 'copy:css', 'copy:js')));
-gulp.task('watch', gulp.parallel('watch:views', 'watch:css', 'watch:js'));
+gulp.task('build:dev', gulp.series('clean:dist', gulp.parallel('copy:views', 'copy:templates', 'copy:css', 'copy:js')));
+gulp.task(
+  'build:clean-dev',
+  gulp.series('clean', gulp.parallel('init', 'copy:views', 'copy:templates', 'copy:css', 'copy:js'))
+);
+gulp.task('watch', gulp.parallel('watch:views', 'watch:templates', 'watch:css', 'watch:js'));
 gulp.task('default', gulp.series('env', 'build:dev', 'run:server', gulp.parallel('watch', 'browser-sync')));

@@ -43,6 +43,12 @@ The goal is to build a web application which enables the user not only to search
       - `--mailgun-base`: mailgun base url server. **Default: US**.
       - `--mailgun-domain`: mailgun api assigned domain.
       - `--mailgun-sender-email`: mailgun sender email.
+    - `--use-nodemailer`: use nodemailer to send emails. **Default: disabled**.
+      - `--nodemailer-host`: nodemailer smtp server.
+      - `--nodemailer-user`: nodemailer smtp email.
+      - `--nodemailer-password`: nodemailer smtp password.
+
+    **NOTE:** Mailgun and nodemailer can't be used together. Use only one of them.
 
     Example: `python generate_dotenv.py --database-user flightfinder --database-password test-flight`
 
@@ -107,7 +113,6 @@ From the root of the project follow the steps below:
 - To update the packages:
 
   - Run `npm run update-packages`
-  - Run `gulp clean && gulp init`
 
 ## Deploying App
 

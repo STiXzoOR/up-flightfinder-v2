@@ -30,6 +30,17 @@ class Config {
     };
   }
 
+  get nodemailer() {
+    return {
+      enabled: process.env.NODEMAILER_ENABLED === 'true',
+      host: process.env.NODEMAILER_HOST,
+      auth: {
+        user: process.env.NODEMAILER_USER,
+        pass: process.env.NODEMAILER_PASSWORD,
+      },
+    };
+  }
+
   get mailgun() {
     return {
       enabled: process.env.MAILGUN_ENABLED === 'true',

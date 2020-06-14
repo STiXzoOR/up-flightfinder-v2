@@ -75,7 +75,43 @@ parser.add_argument(
     help="mailgun sender email",
 )
 
+parser.add_argument(
+    "--use-nodemailer",
+    default="",
+    action="store_true",
+    help="use nodemailer (default: false)",
+)
+
+parser.add_argument(
+    "--nodemailer-host",
+    metavar="host",
+    type=str,
+    action="store",
+    help="nodemailer smtp outgoing server",
+)
+
+parser.add_argument(
+    "--nodemailer-user",
+    metavar="email",
+    type=str,
+    action="store",
+    help="nodemailer smtp email",
+)
+
+parser.add_argument(
+    "--nodemailer-password",
+    metavar="password",
+    type=str,
+    action="store",
+    help="nodemailer smtp password",
+)
+
 args = parser.parse_args()
+
+if args.use_mailgun and args.use_nodemailer:
+    parser.error(
+        "You can either use mailgun or nodemailer but not both at the same time!"
+    )
 
 if (
     args.use_mailgun
@@ -107,8 +143,23 @@ if args.use_mailgun:
         if args.mailgun_base and args.mailgun_base.lower() == "eu"
         else ""
     )
-    args.use_mailgun = args.use_mailgun if args.use_mailgun == "" else "true"
     args.mailgun_base = "api{base}.mailgun.net".format(base=base)
+
+if args.use_nodemailer and not (
+    args.nodemailer_host and args.nodemailer_user and args.nodemailer_password
+):
+    parser.error(
+        "You have to specify --nodemailer-host, --nodemailer-user and --nodemailer-password when using the nodemailer!"
+    )
+elif not args.use_nodemailer and (
+    args.nodemailer_host or args.nodemailer_user or args.nodemailer_password
+):
+    parser.error(
+        "You can't pass --nodemailer-host, --nodemailer-user or --nodemailer-password without using the nodemailer!"
+    )
+
+args.use_mailgun = None if args.use_mailgun == "" else "true"
+args.use_nodemailer = None if args.use_nodemailer == "" else "true"
 
 VARS = {
     "SESSION_SECRET": secrets.token_urlsafe(24),
@@ -121,6 +172,10 @@ VARS = {
     "MAILGUN_HOST": args.mailgun_base,
     "MAILGUN_DOMAIN": args.mailgun_domain,
     "MAILGUN_SENDER_EMAIL": args.mailgun_sender_email,
+    "NODEMAILER_ENABLED": args.use_nodemailer,
+    "NODEMAILER_HOST": args.nodemailer_host,
+    "NODEMAILER_USER": args.nodemailer_user,
+    "NODEMAILER_PASSWORD": args.nodemailer_password,
 }
 
 with open("../../.env", "w") as dotenv:

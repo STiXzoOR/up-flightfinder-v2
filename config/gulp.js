@@ -29,6 +29,10 @@ const paths = {
     src: 'src/views/**/*.pug',
     dist: 'dist/views',
   },
+  templates: {
+    src: 'src/templates/**/*.pug',
+    dist: 'dist/templates',
+  },
   css: {
     src: 'src/static/css/**/*.css',
     dist: 'dist/static/css',
