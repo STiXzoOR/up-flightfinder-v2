@@ -178,7 +178,7 @@ router.get(
 
     const airports = response.result;
 
-    return res.render('search-flights', {
+    return res.render('flight/search-flights', {
       query,
       airports,
       airlines: flights.airlines,

@@ -8,7 +8,7 @@ const Newsletter = require('../controllers/newsletter');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  return res.render('newsletter');
+  return res.render('newsletter/subscribe');
 });
 
 router.all(
@@ -70,7 +70,7 @@ router.get(
 );
 
 router.get('/unsubscribe', (req, res) => {
-  return res.render('newsletter-unsubscribe');
+  return res.render('newsletter/unsubscribe');
 });
 
 router.post(

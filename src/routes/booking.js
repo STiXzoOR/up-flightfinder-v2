@@ -90,7 +90,7 @@ router.get(
     const countries = response.result;
     req.session.flightData = query;
 
-    return res.render('new-booking', { query, flight, countries });
+    return res.render('booking/new-booking', { query, flight, countries });
   })
 );
 
@@ -191,12 +191,12 @@ router.post(
       return next(err);
     });
 
-    return res.render('new-booking-booked', { booking: { ...flightData, ...bookingDetails } });
+    return res.render('booking/new-booking-booked', { booking: { ...flightData, ...bookingDetails } });
   })
 );
 
 router.get('/manage-booking', (req, res) => {
-  return res.render('manage-booking');
+  return res.render('booking/manage-booking');
 });
 
 router.post(
@@ -273,7 +273,7 @@ router.get(
 
     const passengers = response.result;
 
-    return res.render('manage-booking-post', { booking, flight, passengers });
+    return res.render('booking/manage-booking-post', { booking, flight, passengers });
   })
 );
 

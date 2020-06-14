@@ -22,11 +22,11 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/sign-in', (req, res) => {
-  return res.render('sign-in');
+  return res.render('user/sign-in');
 });
 
 router.get('/sign-up', (req, res) => {
-  return res.render('sign-up');
+  return res.render('user/sign-up');
 });
 
 router.get('/sign-out', permit('USER', { requireVerification: false }), (req, res, next) => {
@@ -117,7 +117,7 @@ router.get(
     if (response.error) return handleResponseError(response)(req, res, next);
     const countries = response.result;
 
-    return res.render('profile', {
+    return res.render('user/profile', {
       details,
       bookings,
       countries,
@@ -187,7 +187,7 @@ router.post(
 
 if (config.mailgun.enabled) {
   router.get('/forgot-password', (req, res) => {
-    return res.render('forgot-password');
+    return res.render('user/forgot-password');
   });
 
   router.post(
@@ -233,7 +233,7 @@ if (config.mailgun.enabled) {
           next
         );
 
-      return res.render('reset-password', { customerID: response.result[0].id });
+      return res.render('user/reset-password', { customerID: response.result[0].id });
     })
   );
 

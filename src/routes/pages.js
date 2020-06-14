@@ -8,19 +8,19 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/about-us', (req, res) => {
-  return res.render('about-us');
+  return res.render('pages/about-us');
 });
 
 router.get('/contact-us', (req, res) => {
-  return res.render('contact-us');
+  return res.render('pages/contact-us');
 });
 
 router.get('/terms-and-conditions', (req, res) => {
-  return res.render('terms-and-conditions');
+  return res.render('pages/terms-and-conditions');
 });
 
 router.get('/privacy-policy', (req, res) => {
-  return res.render('privacy-policy');
+  return res.render('pages/privacy-policy');
 });
 
 module.exports = router;

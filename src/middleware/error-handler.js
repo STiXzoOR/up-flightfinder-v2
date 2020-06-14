@@ -15,7 +15,7 @@ const handler = (err, req, res, next) => {
 
   return res
     .status(statusCode)
-    .render(config.isDev() ? 'error' : `${statusCode}`, { error: err, message: err.message });
+    .render(config.isDev() ? 'error/dev' : `error/${statusCode}`, { error: err, message: err.message });
 };
 
 const notFound = (req, res, next) => {
