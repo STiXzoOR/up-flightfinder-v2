@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable class-methods-use-this */
 const dotenv = require('dotenv');
 const { platform } = require('os');
@@ -77,6 +78,12 @@ class Config {
 
   isWINDOWS() {
     return platform() === 'win32';
+  }
+
+  get dynamicModules() {
+    return {
+      mailer: this.mailgun.enabled ? '../config/mailgun' : '../config/nodemailer',
+    };
   }
 }
 

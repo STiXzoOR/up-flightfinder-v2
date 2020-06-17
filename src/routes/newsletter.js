@@ -1,8 +1,10 @@
+/* eslint-disable import/no-dynamic-require */
 const express = require('express');
+const config = require('../config/dotenv');
 const routeAsync = require('../middleware/route-async');
 const handleResponseError = require('../middleware/handle-response-error');
 const { validate, validateVerbose } = require('../middleware/superstruct');
-const mailgun = require('../config/mailgun');
+const Mailer = require(config.dynamicModules.mailer);
 const Newsletter = require('../controllers/newsletter');
 
 const router = express.Router();
@@ -104,7 +106,7 @@ router.post(
       recipient: `${member.name} <${member.address}>`,
     };
 
-    await mailgun.sendUnsubscribed(args);
+    await Mailer.sendUnsubscribed(args);
 
     res.flash('success', response.message);
     return res.redirect('/newsletter');

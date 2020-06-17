@@ -25,7 +25,7 @@ const pagesRouter = require('./routes/pages');
 const usersRouter = require('./routes/users');
 const flightsRouter = require('./routes/flight');
 const bookingRouter = require('./routes/booking');
-if (config.mailgun.enabled) var newsletterRouter = require('./routes/newsletter');
+if (config.mailgun.enabled || config.nodemailer.enabled) var newsletterRouter = require('./routes/newsletter');
 
 const app = express();
 const redisClient = redis.createClient();
@@ -95,7 +95,7 @@ app.use('/pages', pagesRouter);
 app.use('/user', usersRouter);
 app.use('/flight', flightsRouter);
 app.use('/booking', bookingRouter);
-if (config.mailgun.enabled) app.use('/newsletter', newsletterRouter);
+if (config.mailgun.enabled || config.nodemailer.enabled) app.use('/newsletter', newsletterRouter);
 app.use(error.notFound);
 app.use(error.handler);
 

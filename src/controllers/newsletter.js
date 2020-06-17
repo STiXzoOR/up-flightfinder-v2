@@ -1,5 +1,8 @@
+/* eslint-disable import/no-dynamic-require */
 const crypto = require('crypto');
+const config = require('../config/dotenv');
 const mailgun = require('../config/mailgun');
+const Mailer = require(config.dynamicModules.mailer);
 const Base = require('./base');
 
 class Newsletter extends Base {
@@ -7,6 +10,8 @@ class Newsletter extends Base {
     super();
 
     this.queries = {
+      exists: 'SELECT email FROM newsletter WHERE email=:email',
+      get: 'SELECT email as address, first_name as firstName, last_name as lastName FROM newsletter WHERE email=:email',
       verification: {
         insert:
           'INSERT INTO newsletter (email, first_name, last_name, token, token_expire) VALUES(:email, :firstName, :lastName, :token, :tokenExpire)',
@@ -53,51 +58,77 @@ class Newsletter extends Base {
   }
 
   async exists(email = '') {
-    const response = {
+    let response = {
       status: 404,
       error: true,
       message: 'No results found.',
       result: [],
     };
 
-    await mailgun
-      .getMember('newsletter', email)
-      .then((member) => {
-        response.status = 200;
-        response.error = false;
-        response.message = this.messages.exists.success;
-        response.result = true;
-      })
-      .catch((error) => {
-        if (error.statusCode && error.statusCode === 404) {
+    if (config.mailgun.enabled) {
+      await mailgun
+        .getMember('newsletter', email)
+        .then((member) => {
+          response.status = 200;
           response.error = false;
-          response.message = this.messages.exists.error;
-          response.result = false;
-          return;
-        }
-        response.tryCatchError = true;
-        response.status = error.statusCode || error.status || 500;
-        response.result = error;
-      });
+          response.message = this.messages.exists.success;
+          response.result = true;
+        })
+        .catch((error) => {
+          if (error.statusCode && error.statusCode === 404) {
+            response.error = false;
+            response.message = this.messages.exists.error;
+            response.result = false;
+            return;
+          }
+          response.tryCatchError = true;
+          response.status = error.statusCode || error.status || 500;
+          response.result = error;
+        });
+
+      return response;
+    }
+
+    const query = this.queries.exists;
+    response = await this.execute(query, { email });
+
+    if (response.error && response.tryCatchError) return response;
+
+    response.message = this.messages.exists[response.result.length ? 'success' : 'error'];
+    response.result = response.result.length > 0;
+    response.error = false;
 
     return response;
   }
 
   async get(email = '') {
-    const response = await this.exists(email);
+    let response = await this.exists(email);
     if (response.error || !response.result) return response;
 
-    await mailgun
-      .getMember('newsletter', email)
-      .then((data) => {
-        response.result = data.member;
-      })
-      .catch((error) => {
-        response.error = true;
-        response.tryCatchError = true;
-        response.status = error.statusCode || error.status || 500;
-        response.result = error;
-      });
+    if (config.mailgun.enabled) {
+      await mailgun
+        .getMember('newsletter', email)
+        .then((data) => {
+          response.result = data.member;
+        })
+        .catch((error) => {
+          response.error = true;
+          response.tryCatchError = true;
+          response.status = error.statusCode || error.status || 500;
+          response.result = error;
+        });
+
+      return response;
+    }
+
+    const query = this.queries.get;
+    response = await this.execute(query, { email }, 'fetchOne');
+
+    if (response.result.length) {
+      response.error = false;
+      [response.result] = response.result;
+      response.result.name = `${response.result.firstName} ${response.result.lastName}`;
+    }
 
     return response;
   }
@@ -113,12 +144,14 @@ class Newsletter extends Base {
 
     response.message = this.messages.verify.subscribe.success;
 
-    await mailgun.addMember('newsletter', args).catch((error) => {
-      response.error = true;
-      response.tryCatchError = true;
-      response.status = error.statusCode || error.status || 500;
-      response.result = error;
-    });
+    if (config.mailgun.enabled) {
+      await mailgun.addMember('newsletter', args).catch((error) => {
+        response.error = true;
+        response.tryCatchError = true;
+        response.status = error.statusCode || error.status || 500;
+        response.result = error;
+      });
+    }
 
     return response;
   }
@@ -134,12 +167,14 @@ class Newsletter extends Base {
 
     response.message = this.messages.remove.success;
 
-    await mailgun.removeMember('newsletter', email).catch((error) => {
-      response.error = true;
-      response.tryCatchError = true;
-      response.status = error.statusCode || error.status || 500;
-      response.result = error;
-    });
+    if (config.mailgun.enabled) {
+      await mailgun.removeMember('newsletter', email).catch((error) => {
+        response.error = true;
+        response.tryCatchError = true;
+        response.status = error.statusCode || error.status || 500;
+        response.result = error;
+      });
+    }
 
     return response;
   }
@@ -154,14 +189,17 @@ class Newsletter extends Base {
     }
 
     response.message = this.messages.update.success;
-    const member = { email: args.email, info: { name: `${args.firstName} ${args.lastName}`.trim() } };
 
-    await mailgun.updateMember('newsletter', member).catch((error) => {
-      response.error = true;
-      response.tryCatchError = true;
-      response.status = error.statusCode || error.status || 500;
-      response.result = error;
-    });
+    if (config.mailgun.enabled) {
+      const member = { email: args.email, info: { name: `${args.firstName} ${args.lastName}`.trim() } };
+
+      await mailgun.updateMember('newsletter', member).catch((error) => {
+        response.error = true;
+        response.tryCatchError = true;
+        response.status = error.statusCode || error.status || 500;
+        response.result = error;
+      });
+    }
 
     return response;
   }
@@ -211,8 +249,7 @@ class Newsletter extends Base {
       recipient: `${args.firstName} ${args.lastName} <${args.email}>`,
     };
 
-    await mailgun
-      .sendVerifySubscription(data)
+    await Mailer.sendVerifySubscription(data)
       .then((result) => {
         response.message = this.messages.verification.success;
         response.result = result;

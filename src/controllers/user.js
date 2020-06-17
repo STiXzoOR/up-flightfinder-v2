@@ -1,7 +1,8 @@
+/* eslint-disable import/no-dynamic-require */
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const config = require('../config/dotenv');
-const mailgun = require('../config/mailgun');
+const Mailer = require(config.dynamicModules.mailer);
 const Base = require('./base');
 
 class User extends Base {
@@ -195,7 +196,7 @@ class User extends Base {
       password,
       mobile: args.mobile,
       gender: args.gender,
-      status: config.mailgun.enabled ? 'UNVERIFIED' : 'VERIFIED',
+      status: config.mailgun.enabled || config.nodemailer.enabled ? 'UNVERIFIED' : 'VERIFIED',
     };
 
     const query = this.queries.insert;
@@ -287,11 +288,11 @@ class User extends Base {
     const options = {
       email: {
         tokenDuration: 86400000,
-        send: (data) => mailgun.sendVerifyAccount(data),
+        send: (data) => Mailer.sendVerifyAccount(data),
       },
       password: {
         tokenDuration: 600000,
-        send: (data) => mailgun.sendResetPassword(data),
+        send: (data) => Mailer.sendResetPassword(data),
       },
     };
 

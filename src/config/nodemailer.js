@@ -4,6 +4,7 @@ const appRoot = require('app-root-path');
 const nodemailer = require('nodemailer');
 const Email = require('email-templates');
 const config = require('./dotenv');
+const logger = require('./winston');
 
 const options = {
   mailer: {
@@ -11,12 +12,12 @@ const options = {
     message: {
       from: `FlightFinder <${config.nodemailer.auth.user}>`,
     },
-    send: config.isDev(),
   },
   transport: {
     ...config.nodemailer,
-    port: 587,
-    secure: false,
+    port: 465,
+    secure: true,
+    logger,
   },
 };
 
@@ -39,6 +40,14 @@ class Emailer {
 
   init() {
     this.transport = this.nodemailer.createTransport(this.config.transport);
+
+    this.transport.verify((error) => {
+      if (error) {
+        logger.error(error);
+        throw error;
+      }
+    });
+
     this.config.mailer.transport = this.transport;
     this.mailer = new Email(this.config.mailer);
   }

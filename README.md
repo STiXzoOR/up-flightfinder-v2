@@ -15,7 +15,7 @@ The goal is to build a web application which enables the user not only to search
   - For Windows: follow the instructions on [RedisLabs](https://redislabs.com/blog/redis-on-windows-10/).
   - For MacOS: install [brew](https://brew.sh/) and then run `brew install redis`. Finally run `redis-server` to start the server.
 - Have MySQL and phpMyAdmin installed.
-  - For Windows/Linux: install [MAMP](https://downloads.mamp.info/MAMP-PRO-WINDOWS/releases/4.1.1/MAMP_MAMP_PRO_4.1.1.exe)
+  - For Windows: install [MAMP](https://downloads.mamp.info/MAMP-PRO-WINDOWS/releases/4.1.1/MAMP_MAMP_PRO_4.1.1.exe)
   - For MacOS: install [MAMP](https://downloads.mamp.info/MAMP-PRO/releases/5.7/MAMP_MAMP_PRO_5.7.pkg)
 
 ## Project Setup
@@ -48,7 +48,9 @@ The goal is to build a web application which enables the user not only to search
       - `--nodemailer-user`: nodemailer smtp email.
       - `--nodemailer-password`: nodemailer smtp password.
 
-    **NOTE:** Mailgun and nodemailer can't be used together. Use only one of them.
+    **NOTE #1:** Mailgun and nodemailer can't be used together. Use only one of them.
+
+    **NOTE #2:** If you are using your Gmail account for the nodemailer, make sure to configure your account to allow [Less Secure Apps](https://www.google.com/settings/security/lesssecureapps) and complete the [Captcha Enable](https://accounts.google.com/b/0/displayunlockcaptcha) challenge.
 
     Example: `python generate_dotenv.py --database-user flightfinder --database-password test-flight`
 

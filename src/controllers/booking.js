@@ -1,4 +1,6 @@
-const mailgun = require('../config/mailgun');
+/* eslint-disable import/no-dynamic-require */
+const config = require('../config/dotenv');
+const Mailer = require(config.dynamicModules.mailer);
 const Base = require('./base');
 
 class Booking extends Base {
@@ -258,8 +260,7 @@ class Booking extends Base {
     // eslint-disable-next-line no-param-reassign
     data.email.recipient = `${data.email.firstName} ${data.email.lastName} <${data.email.address}>`;
 
-    await mailgun
-      .sendBookingConfirmation(data)
+    await Mailer.sendBookingConfirmation(data)
       .then((result) => {
         response.message = 'success.';
         response.error = false;

@@ -12,7 +12,10 @@ const handleResponseError = require('../middleware/handle-response-error');
 const permit = require('../middleware/permit');
 const rateLimiter = require('../middleware/rate-limit');
 const { validate } = require('../middleware/superstruct');
-if (config.mailgun.enabled) var mailgun = require('../config/mailgun');
+
+if (config.mailgun.enabled || config.nodemailer.enabled)
+  // eslint-disable-next-line import/no-dynamic-require
+  var Mailer = require(config.dynamicModules.mailer);
 require('../config/passport')(passport);
 
 const router = express.Router();
@@ -74,7 +77,7 @@ router.post(
         next
       );
 
-    if (config.mailgun.enabled) {
+    if (config.mailgun.enabled || config.nodemailer.enabled) {
       const args = {
         email: body.email,
         firstName: body.firstName,
@@ -185,7 +188,7 @@ router.post(
   })
 );
 
-if (config.mailgun.enabled) {
+if (config.mailgun.enabled || config.nodemailer.enabled) {
   router.get('/forgot-password', (req, res) => {
     return res.render('user/forgot-password');
   });
@@ -278,7 +281,7 @@ if (config.mailgun.enabled) {
         recipient: `${data.firstName} ${data.lastName} <${data.email}>`,
       };
 
-      await mailgun.sendChangedPassword(args);
+      await Mailer.sendChangedPassword(args);
 
       res.flash('success', response.message);
       return res.redirect('/user/sign-in');
@@ -329,7 +332,7 @@ if (config.mailgun.enabled) {
         recipient: `${data.firstName} ${data.lastName} <${data.email}>`,
       };
 
-      await mailgun.sendWelcome(args);
+      await Mailer.sendWelcome(args);
 
       res.flash('success', message);
       return res.redirect(route);
