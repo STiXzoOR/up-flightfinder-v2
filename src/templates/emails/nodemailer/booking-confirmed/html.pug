@@ -1,0 +1,1540 @@
+extends ../layout
+
+block title
+	title Booking Confirmed - Flight Finder
+
+block image
+	img.adapt-img(
+		src='https://fuollv.stripocdn.email/content/guids/CABINET_97291e26d968552b15cd4035799dcef4/images/9461592059933210.png',
+		alt='',
+		style='display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;',
+		width='400'
+	)
+
+block content
+	tr(style='border-collapse:collapse;')
+		td(align='center', style='padding:0;Margin:0;padding-top:15px;padding-bottom:15px;')
+			h1(
+				style='Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:20px;font-style:normal;font-weight:normal;color:#3B444F;'
+			)
+				b Booking confirmed!
+	tr(style='border-collapse:collapse;')
+		td(align='center', style='padding:0;Margin:0;padding-left:10px;padding-right:10px;')
+			p(
+				style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:24px;color:#67747C;'
+			) Thank you for booking with us, your booking is now confirmed.&nbsp;
+	tr(style='border-collapse:collapse;')
+		td(align='center', style='padding:0;Margin:0;padding-left:10px;padding-right:10px;')
+			p(
+				style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:24px;color:#67747C;'
+			) Below you will find the summary of your booking.
+
+block extraContent
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-top:20px;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='center', valign='top', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;padding-top:5px;padding-bottom:5px;')
+									h2(
+										style='Margin:0;line-height:23px;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:19px;font-style:normal;font-weight:normal;color:#3B444F;'
+									)
+										b Booking details
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='Margin:0;padding-top:10px;padding-bottom:10px;padding-left:20px;padding-right:20px;')
+			table.es-left.es-m-w-auto(
+				cellpadding='0',
+				cellspacing='0',
+				align='left',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+			)
+				tr(style='border-collapse:collapse;')
+					td.es-m-p0r.es-m-w-auto(width='367', align='center', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;padding-bottom:5px;')
+									h4(
+										style='Margin:0;line-height:120%;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;color:#3B444F;'
+									) Reference
+								tr(style='border-collapse:collapse;')
+									td(align='left', style='padding:0;Margin:0;')
+										p(
+											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:23px;color:#67747C;'
+										) #{booking.id}
+			table.es-right.es-m-w-auto(
+				cellpadding='0',
+				cellspacing='0',
+				align='right',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'
+			)
+				tr(style='border-collapse:collapse;')
+					td.es-m-w-auto(width='173', align='center', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;padding-bottom:5px;')
+									h4(
+										style='Margin:0;line-height:120%;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;color:#3B444F;'
+									) Date
+								tr(style='border-collapse:collapse;')
+									td(align='left', style='padding:0;Margin:0;')
+										p(
+											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:23px;color:#67747C;'
+										) #{booking.bookedDate}
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='center', valign='top', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='center', style='padding:0;Margin:0;padding-top:5px;padding-bottom:5px;font-size:0;')
+									table(
+										border='0',
+										width='100%',
+										height='100%',
+										cellpadding='0',
+										cellspacing='0',
+										role='presentation',
+										style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+									)
+										tr(style='border-collapse:collapse;')
+											td(
+												style='padding:0;Margin:0px 0px 0px 0px;border-bottom:1px solid #CCCCCC;background:none;height:1px;width:100%;margin:0px;'
+											)
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='Margin:0;padding-bottom:5px;padding-top:10px;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='left', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;padding-top:5px;padding-bottom:5px;')
+									h2(
+										style='Margin:0;line-height:23px;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:19px;font-style:normal;font-weight:normal;color:#3B444F;'
+									)
+										strong Departure
+	tr.es-desk-hidden(style='border-collapse:collapse;')
+		td(align='left', style='Margin:0;padding-bottom:5px;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='left', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;padding-bottom:5px;')
+									span(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:\'Rubik\', helvetica, arial, sans-serif;color:#67747C;'
+									) #{flight.departFlightID}&nbsp;|&nbsp;#{flight.departAirlineName}&nbsp;|&nbsp;#{flight.departAirplaneName}
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='Margin:0;padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;')
+			table.es-left.es-mobile-hidden(
+				cellpadding='0',
+				cellspacing='0',
+				align='left',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+			)
+				tr(style='border-collapse:collapse;')
+					td.es-m-p0r.es-m-p20b(width='124', align='center', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;padding-top:5px;padding-bottom:5px;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:23px;color:#67747C;'
+									)
+										| #{flight.departFlightID}
+										br
+										| #{flight.departAirlineName}
+										br
+										| #{flight.departAirplaneName}
+					td.es-hidden(width='20', style='padding:0;Margin:0;')
+			table.es-left.es-m-w-40(
+				cellpadding='0',
+				cellspacing='0',
+				align='left',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='120', align='center', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr.es-m-txt-c(style='border-collapse:collapse;')
+								td.es-m-txt-c(align='right', style='padding:0;Margin:0;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:24px;color:#67747C;'
+									)
+										span(style='font-size:19px;')
+											strong #{flight.departTime}
+										br
+										span(style='font-size:15px;') #{flight.departDate}
+										br
+										span(style='font-size:14px;') #{flight.departFromCity}, #{flight.departFromCountry}
+					td.es-hidden(width='20', style='padding:0;Margin:0;')
+			table.es-left.es-mobile-hidden(
+				cellpadding='0',
+				cellspacing='0',
+				align='left',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+			)
+				tr(style='border-collapse:collapse;')
+					td.es-m-p20b(width='116', align='center', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='center', style='padding:0;Margin:0;padding-top:5px;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:21px;color:#67747C;'
+									)
+										strong #{flight.departClass}
+							tr(style='border-collapse:collapse;')
+								td(
+									align='center',
+									style='Margin:0;padding-left:5px;padding-right:5px;padding-top:10px;padding-bottom:10px;font-size:0px;'
+								)
+									table(
+										border='0',
+										width='100%',
+										height='100%',
+										cellpadding='0',
+										cellspacing='0',
+										role='presentation',
+										style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+									)
+										tr(style='border-collapse:collapse;')
+											td(
+												style='padding:0;Margin:0px;border-bottom:2px solid #297CBB;background:none;height:1px;width:100%;margin:0px;'
+											)
+							tr(style='border-collapse:collapse;')
+								td(align='center', style='padding:0;Margin:0;padding-bottom:5px;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:21px;color:#67747C;'
+									) #{flight.departDuration}
+			table.es-m-d-inline-table.es-desk-hidden.es-m-w-20(
+				cellpadding='0',
+				cellspacing='0',
+				align='left',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;display:inline-table;border-collapse:collapse;border-spacing:0px;float:left;'
+			)
+				tbody
+					tr(style='border-collapse:collapse;')
+						td.es-m-w-auto(width='116', align='center', style='padding:0;Margin:0;')
+							table(
+								cellpadding='0',
+								cellspacing='0',
+								width='100%',
+								role='presentation',
+								style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+							)
+								tr(style='border-collapse:collapse;')
+									td(align='center', style='padding:0;Margin:0;padding-top:20px;font-size:0px;')
+										img(
+											src='https://fuollv.stripocdn.email/content/guids/CABINET_97291e26d968552b15cd4035799dcef4/images/78081592310615629.jpg',
+											alt='',
+											style='display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;',
+											width='30'
+										)
+			table.es-right.es-m-w-40(
+				cellpadding='0',
+				cellspacing='0',
+				align='right',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='120', align='center', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr.es-m-txt-c(style='border-collapse:collapse;')
+								td.es-m-txt-c(align='left', style='padding:0;Margin:0;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:24px;color:#67747C;'
+									)
+										span(style='font-size:19px;')
+											strong #{flight.departArrivalTime}
+										br
+										span(style='font-size:15px;') #{flight.departArrivalDate}
+										br
+										span(style='font-size:14px;') #{flight.departToCity}, #{flight.departToCountry}
+	if flight.isRoundtrip
+		tr(style='border-collapse:collapse;')
+			td(align='left', style='Margin:0;padding-bottom:5px;padding-top:10px;padding-left:20px;padding-right:20px;')
+				table(
+					cellpadding='0',
+					cellspacing='0',
+					width='100%',
+					style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+				)
+					tr(style='border-collapse:collapse;')
+						td(width='560', align='left', style='padding:0;Margin:0;')
+							table(
+								cellpadding='0',
+								cellspacing='0',
+								width='100%',
+								role='presentation',
+								style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+							)
+								tr(style='border-collapse:collapse;')
+									td(align='left', style='padding:0;Margin:0;padding-top:5px;padding-bottom:5px;')
+										h2(
+											style='Margin:0;line-height:23px;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:19px;font-style:normal;font-weight:normal;color:#3B444F;'
+										)
+											strong Return
+		tr.es-desk-hidden(style='border-collapse:collapse;')
+			td(align='left', style='Margin:0;padding-bottom:5px;padding-left:20px;padding-right:20px;')
+				table(
+					cellpadding='0',
+					cellspacing='0',
+					width='100%',
+					style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+				)
+					tr(style='border-collapse:collapse;')
+						td(width='560', align='left', style='padding:0;Margin:0;')
+							table(
+								cellpadding='0',
+								cellspacing='0',
+								width='100%',
+								role='presentation',
+								style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+							)
+								tr(style='border-collapse:collapse;')
+									td(align='left', style='padding:0;Margin:0;padding-bottom:5px;')
+										span(
+											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:\'Rubik\', helvetica, arial, sans-serif;color:#67747C;'
+										) #{flight.returnFlightID}&nbsp;|&nbsp;#{flight.returnAirlineName}&nbsp;|&nbsp;#{flight.returnAirplaneName}
+		tr(style='border-collapse:collapse;')
+			td(align='left', style='Margin:0;padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;')
+				table.es-left.es-mobile-hidden(
+					cellpadding='0',
+					cellspacing='0',
+					align='left',
+					style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+				)
+					tr(style='border-collapse:collapse;')
+						td.es-m-p0r.es-m-p20b(width='124', align='center', style='padding:0;Margin:0;')
+							table(
+								cellpadding='0',
+								cellspacing='0',
+								width='100%',
+								role='presentation',
+								style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+							)
+								tr(style='border-collapse:collapse;')
+									td(align='left', style='padding:0;Margin:0;padding-bottom:5px;')
+										p(
+											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:23px;color:#67747C;'
+										)
+											| #{flight.returnFlightID}
+											br
+											| #{flight.returnAirlineName}
+											br
+											| #{flight.returnAirplaneName}
+						td.es-hidden(width='20', style='padding:0;Margin:0;')
+			table.es-left.es-m-w-40(
+				cellpadding='0',
+				cellspacing='0',
+				align='left',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='120', align='center', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr.es-m-txt-c(style='border-collapse:collapse;')
+								td.es-m-txt-c(align='right', style='padding:0;Margin:0;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:24px;color:#67747C;'
+									)
+										span(style='font-size:19px;')
+											strong #{flight.returnTime}
+										br
+										span(style='font-size:15px;') #{flight.returnDate}
+										br
+										span(style='font-size:14px;') #{flight.returnFromCity}, #{flight.returnFromCountry}
+					td.es-hidden(width='20', style='padding:0;Margin:0;')
+			table.es-left.es-mobile-hidden(
+				cellpadding='0',
+				cellspacing='0',
+				align='left',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+			)
+				tr(style='border-collapse:collapse;')
+					td.es-m-p20b(width='116', align='center', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='center', style='padding:0;Margin:0;padding-top:5px;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:21px;color:#67747C;'
+									)
+										strong #{flight.returnClass}
+							tr(style='border-collapse:collapse;')
+								td(
+									align='center',
+									style='Margin:0;padding-left:5px;padding-right:5px;padding-top:10px;padding-bottom:10px;font-size:0px;'
+								)
+									table(
+										border='0',
+										width='100%',
+										height='100%',
+										cellpadding='0',
+										cellspacing='0',
+										role='presentation',
+										style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+									)
+										tr(style='border-collapse:collapse;')
+											td(
+												style='padding:0;Margin:0px;border-bottom:2px solid #297CBB;background:none;height:1px;width:100%;margin:0px;'
+											)
+							tr(style='border-collapse:collapse;')
+								td(align='center', style='padding:0;Margin:0;padding-bottom:5px;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:21px;color:#67747C;'
+									) #{flight.returnDuration}
+			table.es-m-d-inline-table.es-desk-hidden.es-m-w-20(
+				cellpadding='0',
+				cellspacing='0',
+				align='left',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;display:inline-table;border-collapse:collapse;border-spacing:0px;float:left;'
+			)
+				tbody
+					tr(style='border-collapse:collapse;')
+						td.es-m-w-auto(width='116', align='center', style='padding:0;Margin:0;')
+							table(
+								cellpadding='0',
+								cellspacing='0',
+								width='100%',
+								role='presentation',
+								style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+							)
+								tr(style='border-collapse:collapse;')
+									td(align='center', style='padding:0;Margin:0;padding-top:20px;font-size:0px;')
+										img(
+											src='https://fuollv.stripocdn.email/content/guids/CABINET_97291e26d968552b15cd4035799dcef4/images/78081592310615629.jpg',
+											alt='',
+											style='display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;',
+											width='30'
+										)
+			table.es-right.es-m-w-40(
+				cellpadding='0',
+				cellspacing='0',
+				align='right',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='120', align='center', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr.es-m-txt-c(style='border-collapse:collapse;')
+								td.es-m-txt-c(align='left', style='padding:0;Margin:0;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:24px;color:#67747C;'
+									)
+										span(style='font-size:19px;')
+											strong #{flight.returnArrivalTime}
+										br
+										span(style='font-size:15px;') #{flight.returnArrivalDate}
+										br
+										span(style='font-size:14px;') #{flight.returnToCity}, #{flight.returnToCountry}
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='center', valign='top', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='center', style='padding:0;Margin:0;padding-top:5px;padding-bottom:5px;font-size:0;')
+									table(
+										border='0',
+										width='100%',
+										height='100%',
+										cellpadding='0',
+										cellspacing='0',
+										role='presentation',
+										style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+									)
+										tr(style='border-collapse:collapse;')
+											td(
+												style='padding:0;Margin:0px 0px 0px 0px;border-bottom:1px solid #CCCCCC;background:none;height:1px;width:100%;margin:0px;'
+											)
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-top:20px;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='center', valign='top', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;padding-top:5px;padding-bottom:5px;')
+									h2(
+										style='Margin:0;line-height:23px;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:19px;font-style:normal;font-weight:normal;color:#3B444F;'
+									)
+										b Passengers
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='Margin:0;padding-top:10px;padding-bottom:10px;padding-left:20px;padding-right:20px;')
+			table.es-left(
+				cellpadding='0',
+				cellspacing='0',
+				align='left',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='367', align='left', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							each passenger in passengers
+								tr(style='border-collapse:collapse;')
+									td(align='left', style='padding:0;Margin:0;padding-bottom: 5px;')
+										p(
+											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+										) #{passenger.name}
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='center', valign='top', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='center', style='padding:0;Margin:0;padding-bottom:5px;font-size:0;')
+									table(
+										border='0',
+										width='100%',
+										height='100%',
+										cellpadding='0',
+										cellspacing='0',
+										role='presentation',
+										style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+									)
+										tr(style='border-collapse:collapse;')
+											td(
+												style='padding:0;Margin:0px 0px 0px 0px;border-bottom:1px solid #CCCCCC;background:none;height:1px;width:100%;margin:0px;'
+											)
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-top:20px;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='center', valign='top', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;padding-top:5px;padding-bottom:5px;')
+									h2(
+										style='Margin:0;line-height:23px;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:19px;font-style:normal;font-weight:normal;color:#3B444F;'
+									)
+										b Baggage
+	each passenger in passengers
+		tr(style='border-collapse:collapse;')
+			td(align='left', style='Margin:0;padding-top:10px;padding-bottom:10px;padding-left:20px;padding-right:20px;')
+				table.es-left(
+					cellpadding='0',
+					cellspacing='0',
+					align='left',
+					style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+				)
+					tr(style='border-collapse:collapse;')
+						td.es-m-p0r.es-m-p15b(width='174', align='center', style='padding:0;Margin:0;')
+							table(
+								cellpadding='0',
+								cellspacing='0',
+								width='100%',
+								role='presentation',
+								style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+							)
+								tr(style='border-collapse:collapse;')
+									td(align='left', style='padding:0;Margin:0;padding-bottom:5px;')
+										h3.es-m-font-weight-bold(
+											style='Margin:0;line-height:19px;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:15px;font-style:normal;font-weight:normal;color:#3B444F;'
+										) #{passenger.name}
+						td.es-hidden(width='20', style='padding:0;Margin:0;')
+				table.es-left(
+					cellpadding='0',
+					cellspacing='0',
+					align='left',
+					style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+				)
+					tr(style='border-collapse:collapse;')
+						td.es-m-p0r(width='173', align='center', style='padding:0;Margin:0;')
+							table(
+								cellpadding='0',
+								cellspacing='0',
+								width='100%',
+								role='presentation',
+								style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+							)
+								tr(style='border-collapse:collapse;')
+									td(align='left', style='padding:0;Margin:0;padding-bottom:5px;')
+										h4.es-m-font-size-16.es-m-txt-grey(
+											style='Margin:0;line-height:120%;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:15px;color:#3B444F;'
+										)#{flight.departFromCity} to #{flight.departToCity}
+								tr(style='border-collapse:collapse;')
+									td(align='left', style='padding:0;Margin:0;')
+										p(
+											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+										) #{passenger.departCabinBag}x cabin
+								if passenger.departSmallBag
+									tr(style='border-collapse:collapse;')
+										td(align='left', style='padding:0;Margin:0;')
+											p(
+												style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+											) #{passenger.departSmallBag}x 23kg
+								if passenger.departLargeBag
+									tr(style='border-collapse:collapse;')
+										td(align='left', style='padding:0;Margin:0;')
+											p(
+												style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+											) #{passenger.departLargeBag}x 32kg
+				if flight.isRoundtrip
+					table.es-right(
+						cellpadding='0',
+						cellspacing='0',
+						align='right',
+						style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'
+					)
+						tr(style='border-collapse:collapse;')
+							td.es-m-p15t(width='173', align='center', style='padding:0;Margin:0;')
+								table(
+									cellpadding='0',
+									cellspacing='0',
+									width='100%',
+									role='presentation',
+									style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+								)
+									tr(style='border-collapse:collapse;')
+										td(align='left', style='padding:0;Margin:0;padding-bottom:5px;')
+											h4.es-m-font-size-16.es-m-txt-grey(
+												style='Margin:0;line-height:120%;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:15px;color:#3B444F;'
+											) #{flight.returnFromCity} to #{flight.returnToCity}
+									tr(style='border-collapse:collapse;')
+										td(align='left', style='padding:0;Margin:0;')
+											p(
+												style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+											) #{passenger.returnCabinBag}x cabin
+									if passenger.returnSmallBag
+										tr(style='border-collapse:collapse;')
+											td(align='left', style='padding:0;Margin:0;')
+												p(
+													style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+												) #{passenger.returnSmallBag}x 23kg
+									if passenger.returnLargeBag
+										tr(style='border-collapse:collapse;')
+											td(align='left', style='padding:0;Margin:0;')
+												p(
+													style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+												) #{passenger.returnLargeBag}x 32kg
+		tr(style='border-collapse:collapse;')
+			td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
+				table(
+					cellpadding='0',
+					cellspacing='0',
+					width='100%',
+					style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+				)
+					tr(style='border-collapse:collapse;')
+						td(width='560', align='center', valign='top', style='padding:0;Margin:0;')
+							table(
+								cellpadding='0',
+								cellspacing='0',
+								width='100%',
+								role='presentation',
+								style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+							)
+								tr(style='border-collapse:collapse;')
+									td(align='center', style='padding:0;Margin:0;padding-top:5px;padding-bottom:5px;font-size:0;')
+										table(
+											border='0',
+											width='100%',
+											height='100%',
+											cellpadding='0',
+											cellspacing='0',
+											role='presentation',
+											style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+										)
+											tr(style='border-collapse:collapse;')
+												td(
+													style='padding:0;Margin:0px 0px 0px 0px;border-bottom:1px solid #CCCCCC;background:none;height:1px;width:100%;margin:0px;'
+												)
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-top:20px;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='center', valign='top', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;padding-top:5px;padding-bottom:5px;')
+									h2(
+										style='Margin:0;line-height:23px;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:19px;font-style:normal;font-weight:normal;color:#3B444F;'
+									)
+										b Insurance
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='Margin:0;padding-top:10px;padding-bottom:10px;padding-left:20px;padding-right:20px;')
+			table.es-left(
+				cellpadding='0',
+				cellspacing='0',
+				align='left',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='367', align='left', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							each passenger in passengers
+								tr(style='border-collapse:collapse;')
+									td(align='left', style='padding:0;Margin:0;padding-bottom: 5px;')
+										p(
+											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+										)
+											| #{passenger.name}:&nbsp;
+											span(
+												style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;font-weight:bold;line-height:30px;color:#67747C;'
+											) #{passenger.insurance}
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='center', valign='top', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='center', style='padding:0;Margin:0;padding-bottom:5px;font-size:0;')
+									table(
+										border='0',
+										width='100%',
+										height='100%',
+										cellpadding='0',
+										cellspacing='0',
+										role='presentation',
+										style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+									)
+										tr(style='border-collapse:collapse;')
+											td(
+												style='padding:0;Margin:0px 0px 0px 0px;border-bottom:1px solid #CCCCCC;background:none;height:1px;width:100%;margin:0px;'
+											)
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-top:20px;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='center', valign='top', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;padding-top:5px;padding-bottom:5px;')
+									h2(
+										style='Margin:0;line-height:23px;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:19px;font-style:normal;font-weight:normal;color:#3B444F;'
+									)
+										b Contact
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='Margin:0;padding-top:10px;padding-bottom:10px;padding-left:20px;padding-right:20px;')
+			table.es-left(
+				cellpadding='0',
+				cellspacing='0',
+				align='left',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+			)
+				tr(style='border-collapse:collapse;')
+					td.es-m-p0r.es-m-p20b(width='174', align='center', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;padding-bottom:5px;')
+									h4(
+										style='Margin:0;line-height:120%;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;color:#3B444F;'
+									) Name
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:23px;color:#67747C;'
+									) #{booking.contactName}
+					td.es-hidden(width='20', style='padding:0;Margin:0;')
+			table.es-left(
+				cellpadding='0',
+				cellspacing='0',
+				align='left',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+			)
+				tr(style='border-collapse:collapse;')
+					td.es-m-p20b(width='173', align='center', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;padding-bottom:5px;')
+									h4(
+										style='Margin:0;line-height:120%;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;color:#3B444F;'
+									) Email
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:23px;color:#67747C;'
+									) #{booking.contactEmail}
+			table.es-right(
+				cellpadding='0',
+				cellspacing='0',
+				align='right',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='173', align='center', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;padding-bottom:5px;')
+									h4(
+										style='Margin:0;line-height:120%;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;color:#3B444F;'
+									) Mobile
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:23px;color:#67747C;'
+									) #{booking.contactMobile}
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='center', valign='top', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='center', style='padding:0;Margin:0;padding-top:5px;padding-bottom:5px;font-size:0;')
+									table(
+										border='0',
+										width='100%',
+										height='100%',
+										cellpadding='0',
+										cellspacing='0',
+										role='presentation',
+										style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+									)
+										tr(style='border-collapse:collapse;')
+											td(
+												style='padding:0;Margin:0px 0px 0px 0px;border-bottom:1px solid #CCCCCC;background:none;height:1px;width:100%;margin:0px;'
+											)
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-top:20px;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='center', valign='top', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;padding-top:5px;padding-bottom:5px;')
+									h2(
+										style='Margin:0;line-height:23px;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:19px;font-style:normal;font-weight:normal;color:#3B444F;'
+									)
+										b Summary
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-top:10px;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='center', valign='top', style='padding:0;Margin:0;padding-bottom:5px;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;')
+									h4(
+										style='Margin:0;line-height:120%;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;color:#3B444F;'
+									) Flight
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
+			table.es-left.es-m-w-auto(
+				cellpadding='0',
+				cellspacing='0',
+				align='left',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+			)
+				tr(style='border-collapse:collapse;')
+					td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+									) #{booking.quantity}x passenger(s)
+			table.es-right.es-m-w-auto(
+				cellpadding='0',
+				cellspacing='0',
+				align='right',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'
+			)
+				tr(style='border-collapse:collapse;')
+					td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='right', style='padding:0;Margin:0;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+									) &euro;#{flight.totalUntaxedPrice}
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-top:10px;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='center', valign='top', style='padding:0;Margin:0;padding-bottom:5px;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;')
+									h4(
+										style='Margin:0;line-height:120%;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;color:#3B444F;'
+									) Baggage
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
+			table.es-left.es-m-w-auto(
+				cellpadding='0',
+				cellspacing='0',
+				align='left',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+			)
+				tr(style='border-collapse:collapse;')
+					td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+									) #{booking.baggage.cabin.quantity}x cabin&nbsp;bag
+			table.es-right.es-m-w-auto(
+				cellpadding='0',
+				cellspacing='0',
+				align='right',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'
+			)
+				tr(style='border-collapse:collapse;')
+					td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='right', style='padding:0;Margin:0;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+									) #{booking.baggage.cabin.price}
+	if booking.baggage.small.quantity
+		tr(style='border-collapse:collapse;')
+			td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
+				table.es-left.es-m-w-auto(
+					cellpadding='0',
+					cellspacing='0',
+					align='left',
+					style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+				)
+					tr(style='border-collapse:collapse;')
+						td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+							table(
+								cellpadding='0',
+								cellspacing='0',
+								width='100%',
+								role='presentation',
+								style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+							)
+								tr(style='border-collapse:collapse;')
+									td(align='left', style='padding:0;Margin:0;')
+										p(
+											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+										) #{booking.baggage.small.quantity}x 23kg bag
+				table.es-right.es-m-w-auto(
+					cellpadding='0',
+					cellspacing='0',
+					align='right',
+					style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'
+				)
+					tr(style='border-collapse:collapse;')
+						td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+							table(
+								cellpadding='0',
+								cellspacing='0',
+								width='100%',
+								role='presentation',
+								style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+							)
+								tr(style='border-collapse:collapse;')
+									td(align='right', style='padding:0;Margin:0;')
+										p(
+											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+										) &euro;#{booking.baggage.small.price}
+	if booking.baggage.large.quantity
+		tr(style='border-collapse:collapse;')
+			td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
+				table.es-left.es-m-w-auto(
+					cellpadding='0',
+					cellspacing='0',
+					align='left',
+					style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+				)
+					tr(style='border-collapse:collapse;')
+						td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+							table(
+								cellpadding='0',
+								cellspacing='0',
+								width='100%',
+								role='presentation',
+								style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+							)
+								tr(style='border-collapse:collapse;')
+									td(align='left', style='padding:0;Margin:0;')
+										p(
+											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+										) #{booking.baggage.large.quantity}x 32kg bag
+				table.es-right.es-m-w-auto(
+					cellpadding='0',
+					cellspacing='0',
+					align='right',
+					style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'
+				)
+					tr(style='border-collapse:collapse;')
+						td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+							table(
+								cellpadding='0',
+								cellspacing='0',
+								width='100%',
+								role='presentation',
+								style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+							)
+								tr(style='border-collapse:collapse;')
+									td(align='right', style='padding:0;Margin:0;')
+										p(
+											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+										) &euro;#{booking.baggage.large.price}
+	if booking.insurance.included
+		tr(style='border-collapse:collapse;')
+			td(align='left', style='padding:0;Margin:0;padding-top:10px;padding-left:20px;padding-right:20px;')
+				table(
+					cellpadding='0',
+					cellspacing='0',
+					width='100%',
+					style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+				)
+					tr(style='border-collapse:collapse;')
+						td(width='560', align='center', valign='top', style='padding:0;Margin:0;padding-bottom:5px;')
+							table(
+								cellpadding='0',
+								cellspacing='0',
+								width='100%',
+								role='presentation',
+								style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+							)
+								tr(style='border-collapse:collapse;')
+									td(align='left', style='padding:0;Margin:0;')
+										h4(
+											style='Margin:0;line-height:120%;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;color:#3B444F;'
+										) Insurance
+		if booking.insurance.none.quantity
+			tr(style='border-collapse:collapse;')
+				td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
+					table.es-left.es-m-w-auto(
+						cellpadding='0',
+						cellspacing='0',
+						align='left',
+						style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+					)
+						tr(style='border-collapse:collapse;')
+							td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+								table(
+									cellpadding='0',
+									cellspacing='0',
+									width='100%',
+									role='presentation',
+									style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+								)
+									tr(style='border-collapse:collapse;')
+										td(align='left', style='padding:0;Margin:0;')
+											p(
+												style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+											) #{booking.insurance.none.quantity}x free&nbsp;package
+					table.es-right.es-m-w-auto(
+						cellpadding='0',
+						cellspacing='0',
+						align='right',
+						style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'
+					)
+						tr(style='border-collapse:collapse;')
+							td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+								table(
+									cellpadding='0',
+									cellspacing='0',
+									width='100%',
+									role='presentation',
+									style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+								)
+									tr(style='border-collapse:collapse;')
+										td(align='right', style='padding:0;Margin:0;')
+											p(
+												style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+											) #{booking.insurance.none.price}
+		if booking.insurance.basic.quantity
+			tr(style='border-collapse:collapse;')
+				td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
+					table.es-left.es-m-w-auto(
+						cellpadding='0',
+						cellspacing='0',
+						align='left',
+						style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+					)
+						tr(style='border-collapse:collapse;')
+							td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+								table(
+									cellpadding='0',
+									cellspacing='0',
+									width='100%',
+									role='presentation',
+									style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+								)
+									tr(style='border-collapse:collapse;')
+										td(align='left', style='padding:0;Margin:0;')
+											p(
+												style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+											) #{booking.insurance.basic.quantity}x basic&nbsp;package
+					table.es-right.es-m-w-auto(
+						cellpadding='0',
+						cellspacing='0',
+						align='right',
+						style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'
+					)
+						tr(style='border-collapse:collapse;')
+							td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+								table(
+									cellpadding='0',
+									cellspacing='0',
+									width='100%',
+									role='presentation',
+									style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+								)
+									tr(style='border-collapse:collapse;')
+										td(align='right', style='padding:0;Margin:0;')
+											p(
+												style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+											) &euro;#{booking.insurance.basic.price}
+		if booking.insurance.plus.quantity
+			tr(style='border-collapse:collapse;')
+				td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
+					table.es-left.es-m-w-auto(
+						cellpadding='0',
+						cellspacing='0',
+						align='left',
+						style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+					)
+						tr(style='border-collapse:collapse;')
+							td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+								table(
+									cellpadding='0',
+									cellspacing='0',
+									width='100%',
+									role='presentation',
+									style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+								)
+									tr(style='border-collapse:collapse;')
+										td(align='left', style='padding:0;Margin:0;')
+											p(
+												style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+											) #{booking.insurance.plus.quantity}x plus&nbsp;package
+					table.es-right.es-m-w-auto(
+						cellpadding='0',
+						cellspacing='0',
+						align='right',
+						style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'
+					)
+						tr(style='border-collapse:collapse;')
+							td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+								table(
+									cellpadding='0',
+									cellspacing='0',
+									width='100%',
+									role='presentation',
+									style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+								)
+									tr(style='border-collapse:collapse;')
+										td(align='right', style='padding:0;Margin:0;')
+											p(
+												style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+											) &euro;#{booking.insurance.plus.price}
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='center', valign='top', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='center', style='padding:0;Margin:0;padding-top:5px;padding-bottom:5px;font-size:0;')
+									table(
+										border='0',
+										width='100%',
+										height='100%',
+										cellpadding='0',
+										cellspacing='0',
+										role='presentation',
+										style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+									)
+										tr(style='border-collapse:collapse;')
+											td(
+												style='padding:0;Margin:0px 0px 0px 0px;border-bottom:1px solid #CCCCCC;background:none;height:1px;width:100%;margin:0px;'
+											)
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
+			table.es-left.es-m-w-auto(
+				cellpadding='0',
+				cellspacing='0',
+				align='left',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+			)
+				tr(style='border-collapse:collapse;')
+					td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+									) taxes
+			table.es-right.es-m-w-auto(
+				cellpadding='0',
+				cellspacing='0',
+				align='right',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'
+			)
+				tr(style='border-collapse:collapse;')
+					td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='right', style='padding:0;Margin:0;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:30px;color:#67747C;'
+									) &euro;#{flight.totalTaxes}
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='Margin:0;padding-top:10px;padding-bottom:10px;padding-left:20px;padding-right:20px;')
+			table.es-left.es-m-w-auto(
+				cellpadding='0',
+				cellspacing='0',
+				align='left',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+			)
+				tr(style='border-collapse:collapse;')
+					td.es-m-w-auto(width='270', align='center', valign='top', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;')
+									h2(
+										style='Margin:0;line-height:23px;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:19px;font-style:normal;font-weight:normal;color:#3B444F;'
+									)
+										strong TOTAL
+			table.es-right.es-m-w-auto(
+				cellpadding='0',
+				cellspacing='0',
+				align='right',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'
+			)
+				tr(style='border-collapse:collapse;')
+					td.es-m-w-auto(width='270', align='left', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr.es-m-txt-r(style='border-collapse:collapse;')
+								td.es-m-txt-r(align='right', style='padding:0;Margin:0;')
+									h2(
+										style='Margin:0;line-height:23px;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:19px;font-style:normal;font-weight:normal;color:#3B444F;'
+									) &euro;#{booking.totalPrice}
+	tr(style='border-collapse:collapse;')
+		td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
+			table(
+				cellpadding='0',
+				cellspacing='0',
+				width='100%',
+				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+			)
+				tr(style='border-collapse:collapse;')
+					td(width='560', align='center', valign='top', style='padding:0;Margin:0;')
+						table(
+							cellpadding='0',
+							cellspacing='0',
+							width='100%',
+							role='presentation',
+							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+						)
+							tr(style='border-collapse:collapse;')
+								td(align='center', style='Margin:0;padding-left:10px;padding-right:10px;padding-top:40px;padding-bottom:40px;')
+									span.es-button-border.es-button-border-2(
+										style='border-style:solid;border-color:#297CBB;background:#297CBB;border-width:0px;display:inline-block;border-radius:25px;width:auto;'
+									)
+										a.es-button.es-button-1(
+											href=`${actionUrl}`,
+											target='_blank',
+											style='mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:14px;color:#FFFFFF;border-style:solid;border-color:#297CBB;border-width:15px 30px;display:inline-block;background:#297CBB;border-radius:25px;font-weight:bold;font-style:normal;line-height:17px;width:auto;text-align:center;'
+										) MANAGE BOOKING
