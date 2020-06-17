@@ -478,7 +478,7 @@ block content
 										)
 											span.section-header Flights
 											span.flex-vertical-center.justify-content-end
-												span.section-price &euro;#{flight.totalPrice.toLocaleString()}
+												span.section-price &euro;#{flight.totalUntaxedPrice.toLocaleString()}
 												span.card-btn-caret
 													i.fas.fa-chevron-down.text-dark
 								#flightsSummarySection.collapse.show(aria-labelledby='Flights summary section', data-parent='#flightsSummary')
@@ -593,3 +593,4 @@ block content
 
 block append vendorScripts
 	script(src='/static/vendors/flatpickr/flatpickr.min.js')
+	script(src='/static/vendors/navdrawer/navdrawer.min.js')

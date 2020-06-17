@@ -1,7 +1,7 @@
 const pug = require('pug');
-const path = require('path');
+const appRoot = require('app-root-path');
 
-const templateDir = path.resolve(__dirname, '../templates');
+const templateDir = appRoot.resolve('/dist/templates');
 
 const compile = (template, options) => pug.compile(template, options);
 const render = (template, options) => pug.render(template, options);
