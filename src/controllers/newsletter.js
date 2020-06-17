@@ -203,6 +203,9 @@ class Newsletter extends Base {
     }
 
     const data = {
+      email: args.email,
+      firstName: args.firstName,
+      lastName: args.lastName,
       url: args.url,
       token: fields.token,
       recipient: `${args.firstName} ${args.lastName} <${args.email}>`,

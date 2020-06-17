@@ -31,6 +31,7 @@ class Emailer {
       resetPassword: 'reset-password',
       updatedPassword: 'changed-password',
       unsubscribed: 'unsubscribed',
+      bookingConfirmation: 'booking-confirmed',
     };
 
     this.init();
@@ -52,12 +53,7 @@ class Emailer {
       message: {
         to: data.to,
       },
-      locals: {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        actionUrl: data.actionURL,
-      },
+      locals: data.locals,
     });
   }
 
@@ -66,11 +62,8 @@ class Emailer {
 
     return this.send({
       to: data.recipient,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
       template: this.templates.welcome,
-      actionURL,
+      locals: { email: data.email, firstName: data.firstName, lastName: data.lastName, actionURL },
     });
   }
 
@@ -79,11 +72,9 @@ class Emailer {
 
     return this.send({
       to: data.recipient,
-      firstName: data.firstName,
-      lastName: data.lastName,
       email: data.email,
       template: this.templates.verifyAccount,
-      actionURL,
+      locals: { email: data.email, firstName: data.firstName, lastName: data.lastName, actionURL },
     });
   }
 
@@ -92,11 +83,9 @@ class Emailer {
 
     return this.send({
       to: data.recipient,
-      firstName: data.firstName,
-      lastName: data.lastName,
       email: data.email,
       template: this.templates.resetPassword,
-      actionURL,
+      locals: { email: data.email, firstName: data.firstName, lastName: data.lastName, actionURL },
     });
   }
 
@@ -105,11 +94,9 @@ class Emailer {
 
     return this.send({
       to: data.recipient,
-      firstName: data.firstName,
-      lastName: data.lastName,
       email: data.email,
       template: this.templates.updatedPassword,
-      actionURL,
+      locals: { email: data.email, firstName: data.firstName, lastName: data.lastName, actionURL },
     });
   }
 
@@ -118,11 +105,9 @@ class Emailer {
 
     return this.send({
       to: data.recipient,
-      firstName: data.firstName,
-      lastName: data.lastName,
       email: data.email,
       template: this.templates.verifySubscription,
-      actionURL,
+      locals: { email: data.email, firstName: data.firstName, lastName: data.lastName, actionURL },
     });
   }
 
@@ -131,11 +116,25 @@ class Emailer {
 
     return this.send({
       to: data.recipient,
-      firstName: data.firstName,
-      lastName: data.lastName,
       email: data.email,
       template: this.templates.unsubscribed,
-      actionURL,
+      locals: { email: data.email, firstName: data.firstName, lastName: data.lastName, actionURL },
+    });
+  }
+
+  sendBookingConfirmation(data) {
+    const actionURL = `${data.email.url}/booking/manage-booking/bookingID=${data.variables.booking.id}&lastName=${data.email.lastName}`;
+
+    return this.send({
+      to: data.email.recipient,
+      template: this.templates.bookingConfirmation,
+      locals: {
+        email: data.email.address,
+        firstName: data.email.firstName,
+        lastName: data.email.lastName,
+        ...data.variables,
+        actionURL,
+      },
     });
   }
 }

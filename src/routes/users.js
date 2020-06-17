@@ -272,6 +272,9 @@ if (config.mailgun.enabled) {
         );
 
       const args = {
+        email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
         url: req.getUrl(),
         recipient: `${data.firstName} ${data.lastName} <${data.email}>`,
       };
@@ -320,6 +323,9 @@ if (config.mailgun.enabled) {
 
       const data = response.result[0];
       const args = {
+        email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
         url: req.getUrl(),
         recipient: `${data.firstName} ${data.lastName} <${data.email}>`,
       };
