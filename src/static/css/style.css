@@ -487,9 +487,9 @@ select.form-control:focus::-ms-value {
 .form-control.is-valid {
 	border-color: #00c9a7;
 	padding-right: calc(1.5em + 1.8rem);
-	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2300c9a7' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
-	background-position: center right calc(0.375em + 0.45rem);
-	background-size: calc(0.75em + 0.9rem) calc(0.75em + 0.9rem);
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2300c9a7' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+	background-position: right calc(0.4em + 0.375rem) center;
+	background-size: 1rem 1rem;
 }
 
 .was-validated .form-control:valid:focus,
@@ -501,17 +501,18 @@ select.form-control:focus::-ms-value {
 .was-validated textarea.form-control:valid,
 textarea.form-control.is-valid {
 	padding-right: calc(1.5em + 1.8rem);
-	background-position: top calc(0.375em + 0.45rem) right calc(0.375em + 0.45rem);
+	background-position: top calc(0.4em + 0.375rem) right calc(0.4em + 0.375rem);
 }
 
 .was-validated .custom-select:valid,
 .custom-select.is-valid {
 	border-color: #00c9a7;
-	padding-right: calc((1em + 1.8rem) * 3 / 4 + 2rem);
-	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e")
-			no-repeat right 1rem center/8px 10px,
-		url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2300c9a7' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e")
-			#fff no-repeat center right 2rem / calc(0.75em + 0.9rem) calc(0.75em + 0.9rem);
+	padding-right: calc(0.75em + 3.125rem);
+	background: url("data:image/svg+xml,%3Csvg width='22' height='22' viewBox='0 0 22 22' fill='%235c6770' stroke='%235c6770' stroke-width='1' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.72,15.78a.75.75,0,0,1-.53.22h-.38a.77.77,0,0,1-.53-.22L6.15,10.64a.5.5,0,0,1,0-.71l.71-.71a.49.49,0,0,1,.7,0L12,13.67l4.44-4.45a.5.5,0,0,1,.71,0l.7.71a.5.5,0,0,1,0,.71Z'/%3E%3C/svg%3E")
+			no-repeat right 0.75rem center/1rem 1rem,
+		url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2300c9a7' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e")
+			#fff no-repeat center right 2rem / calc(0.8em + 0.75rem) calc(0.8em + 0.75rem);
+	background-size: 1rem 1rem;
 }
 
 .was-validated .custom-select:valid:focus,
@@ -543,7 +544,7 @@ textarea.form-control.is-valid {
 
 .was-validated .custom-control-input:valid:focus ~ .custom-control-label::before,
 .custom-control-input.is-valid:focus ~ .custom-control-label::before {
-	box-shadow: 0 0 0 0.2rem rgba(0, 201, 167, 0.25);
+	box-shadow: 0 0 0 0 rgba(0, 201, 167, 0.25);
 }
 
 .was-validated .custom-control-input:valid:focus:not(:checked) ~ .custom-control-label::before,
@@ -575,9 +576,9 @@ textarea.form-control.is-valid {
 .form-control.is-invalid {
 	border-color: #de4437;
 	padding-right: calc(1.5em + 1.8rem);
-	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23de4437' viewBox='-2 -2 7 7'%3e%3cpath stroke='%23de4437' d='M0 0l3 3m0-3L0 3'/%3e%3ccircle r='.5'/%3e%3ccircle cx='3' r='.5'/%3e%3ccircle cy='3' r='.5'/%3e%3ccircle cx='3' cy='3' r='.5'/%3e%3c/svg%3E");
-	background-position: center right calc(0.375em + 0.45rem);
-	background-size: calc(0.75em + 0.9rem) calc(0.75em + 0.9rem);
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23de4437' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23de4437' stroke='none'/%3e%3c/svg%3e");
+	background-position: right calc(0.4em + 0.375rem) center;
+	background-size: 1rem 1rem;
 }
 
 .was-validated .form-control:invalid:focus,
@@ -589,17 +590,18 @@ textarea.form-control.is-valid {
 .was-validated textarea.form-control:invalid,
 textarea.form-control.is-invalid {
 	padding-right: calc(1.5em + 1.8rem);
-	background-position: top calc(0.375em + 0.45rem) right calc(0.375em + 0.45rem);
+	background-position: top calc(0.4em + 0.375rem) right calc(0.4em + 0.375rem);
 }
 
 .was-validated .custom-select:invalid,
 .custom-select.is-invalid {
 	border-color: #de4437;
-	padding-right: calc((1em + 1.8rem) * 3 / 4 + 2rem);
-	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e")
-			no-repeat right 1rem center/8px 10px,
-		url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23de4437' viewBox='-2 -2 7 7'%3e%3cpath stroke='%23de4437' d='M0 0l3 3m0-3L0 3'/%3e%3ccircle r='.5'/%3e%3ccircle cx='3' r='.5'/%3e%3ccircle cy='3' r='.5'/%3e%3ccircle cx='3' cy='3' r='.5'/%3e%3c/svg%3E")
-			#fff no-repeat center right 2rem / calc(0.75em + 0.9rem) calc(0.75em + 0.9rem);
+	padding-right: calc(0.75em + 3.125rem);
+	background: url("data:image/svg+xml,%3Csvg width='22' height='22' viewBox='0 0 22 22' fill='%235c6770' stroke='%235c6770' stroke-width='1' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.72,15.78a.75.75,0,0,1-.53.22h-.38a.77.77,0,0,1-.53-.22L6.15,10.64a.5.5,0,0,1,0-.71l.71-.71a.49.49,0,0,1,.7,0L12,13.67l4.44-4.45a.5.5,0,0,1,.71,0l.7.71a.5.5,0,0,1,0,.71Z'/%3E%3C/svg%3E")
+			no-repeat right 0.75rem center/1rem 1rem,
+		url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23de4437' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23de4437' stroke='none'/%3e%3c/svg%3e")
+			#fff no-repeat center right 2rem / calc(0.8em + 0.75rem) calc(0.8em + 0.75rem);
+	background-size: 1rem 1rem;
 }
 
 .was-validated .custom-select:invalid:focus,
@@ -1614,8 +1616,9 @@ textarea.form-control.is-invalid {
 	padding: 0.9rem 2rem 0.9rem 1rem;
 	color: #3b444f;
 	vertical-align: middle;
-	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e")
-		no-repeat right 1rem center/8px 10px;
+	background: #fff
+		url("data:image/svg+xml,%3Csvg width='22' height='22' viewBox='0 0 22 22' fill='%235c6770' stroke='%235c6770' stroke-width='1' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.72,15.78a.75.75,0,0,1-.53.22h-.38a.77.77,0,0,1-.53-.22L6.15,10.64a.5.5,0,0,1,0-.71l.71-.71a.49.49,0,0,1,.7,0L12,13.67l4.44-4.45a.5.5,0,0,1,.71,0l.7.71a.5.5,0,0,1,0,.71Z'/%3E%3C/svg%3E")
+		no-repeat right 0.75rem center/1rem 1rem;
 	border: 2px solid #ebf0f7;
 	border-radius: 0.3125rem;
 }
@@ -6951,13 +6954,13 @@ a.badge-soft-white.focus {
 
 .custom-select2 .select2-container--bootstrap[dir='ltr'] .select2-selection--single .select2-selection__arrow {
 	right: 0;
-	margin-right: 1rem;
+	margin-right: 0.85rem;
 }
 
 .custom-select2 .select2-container--bootstrap[dir='rtl'] .select2-selection--single .select2-selection__arrow {
 	left: 0;
 	right: auto;
-	margin-left: 1rem;
+	margin-left: 0.85rem;
 }
 
 .custom-select2 .select2-container--bootstrap .select2-selection--single .select2-selection__arrow b {
@@ -6978,7 +6981,7 @@ a.badge-soft-white.focus {
 .custom-select2 .select2-container--bootstrap .select2-selection--single .select2-selection__arrow b::before {
 	display: inline-block;
 	font-family: 'Font Awesome 5 Free';
-	font-size: 1rem;
+	font-size: 0.9375rem;
 	font-weight: 900;
 	line-height: 1.9;
 	color: #5c6770;
@@ -7242,9 +7245,10 @@ a.badge-soft-white.focus {
 
 .was-validated .custom-select2 select:valid + .select2-container--bootstrap[dir='ltr'] .select2-selection,
 .custom-select2 .is-valid .select2-selection {
-	padding-right: calc((1em + 1.8rem) * 3 / 4 + 2rem);
-	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2300c9a7' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e")
-		#fff no-repeat center right 2rem / calc(0.75em + 0.9rem) calc(0.75em + 0.9rem);
+	padding-right: calc(0.75em + 3.125rem);
+	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2300c9a7' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e")
+		#fff no-repeat center right 2rem / calc(0.8em + 0.75rem) calc(0.8em + 0.75rem);
+	background-size: 1rem 1rem;
 }
 
 .was-validated
@@ -7253,16 +7257,18 @@ a.badge-soft-white.focus {
 	+ .select2-container--bootstrap[dir='ltr']
 	.select2-selection.select2-selection--multiple,
 .custom-select2 .is-valid .select2-selection.select2-selection--multiple {
-	padding-right: calc((1em + 1.8rem) * 3 / 4 + 1rem);
-	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2300c9a7' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e")
-		#fff no-repeat center right 1rem / calc(0.75em + 0.9rem) calc(0.75em + 0.9rem);
+	padding-right: calc(1.5em + 1.8rem);
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2300c9a7' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+	background-position: right calc(0.4em + 0.375rem) center;
+	background-size: 1rem 1rem;
 }
 
 .was-validated .custom-select2 select:valid + .select2-container--bootstrap[dir='rtl'] .select2-selection,
 .custom-select2 .is-valid .select2-selection {
-	padding-left: calc((1em + 1.8rem) * 3 / 4 + 2rem);
-	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2300c9a7' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e")
-		#fff no-repeat center left 1.5rem / calc(0.75em + 0.9rem) calc(0.75em + 0.9rem);
+	padding-left: calc(0.75em + 3.125rem);
+	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2300c9a7' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e")
+		#fff no-repeat center left 1.5rem / calc(0.8em + 0.75rem) calc(0.8em + 0.75rem);
+	background-size: 1rem 1rem;
 }
 
 .was-validated
@@ -7271,9 +7277,10 @@ a.badge-soft-white.focus {
 	+ .select2-container--bootstrap[dir='rtl']
 	.select2-selection.select2-selection--multiple,
 .custom-select2 .is-valid .select2-selection.select2-selection--multiple {
-	padding-left: calc((1em + 1.8rem) * 3 / 4 + 1rem);
-	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2300c9a7' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e")
-		#fff no-repeat center left 1rem / calc(0.75em + 0.9rem) calc(0.75em + 0.9rem);
+	padding-left: calc(1.5em + 1.8rem);
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2300c9a7' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+	background-position: left calc(0.4em + 0.375rem) center;
+	background-size: 1rem 1rem;
 }
 
 .was-validated
@@ -7314,9 +7321,10 @@ a.badge-soft-white.focus {
 
 .was-validated .custom-select2 select:invalid + .select2-container--bootstrap[dir='ltr'] .select2-selection,
 .custom-select2 .is-invalid .select2-selection {
-	padding-right: calc((1em + 1.8rem) * 3 / 4 + 2rem);
-	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23de4437' viewBox='-2 -2 7 7'%3e%3cpath stroke='%23de4437' d='M0 0l3 3m0-3L0 3'/%3e%3ccircle r='.5'/%3e%3ccircle cx='3' r='.5'/%3e%3ccircle cy='3' r='.5'/%3e%3ccircle cx='3' cy='3' r='.5'/%3e%3c/svg%3E")
-		#fff no-repeat center right 2rem / calc(0.75em + 0.9rem) calc(0.75em + 0.9rem);
+	padding-right: calc(0.75em + 3.125rem);
+	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23de4437' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23de4437' stroke='none'/%3e%3c/svg%3e")
+		#fff no-repeat center right 2rem / calc(0.8em + 0.75rem) calc(0.8em + 0.75rem);
+	background-size: 1rem 1rem;
 }
 
 .was-validated
@@ -7325,16 +7333,18 @@ a.badge-soft-white.focus {
 	+ .select2-container--bootstrap[dir='ltr']
 	.select2-selection.select2-selection--multiple,
 .custom-select2 .is-invalid .select2-selection.select2-selection--multiple {
-	padding-right: calc((1em + 1.8rem) * 3 / 4 + 1rem);
-	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23de4437' viewBox='-2 -2 7 7'%3e%3cpath stroke='%23de4437' d='M0 0l3 3m0-3L0 3'/%3e%3ccircle r='.5'/%3e%3ccircle cx='3' r='.5'/%3e%3ccircle cy='3' r='.5'/%3e%3ccircle cx='3' cy='3' r='.5'/%3e%3c/svg%3E")
-		#fff no-repeat center right 1rem / calc(0.75em + 0.9rem) calc(0.75em + 0.9rem);
+	padding-right: calc(1.5em + 1.8rem);
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23de4437' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23de4437' stroke='none'/%3e%3c/svg%3e");
+	background-position: right calc(0.4em + 0.375rem) center;
+	background-size: 1rem 1rem;
 }
 
 .was-validated .custom-select2 select:invalid + .select2-container--bootstrap[dir='rtl'] .select2-selection,
 .custom-select2 .is-invalid .select2-selection {
-	padding-left: calc((1em + 1.8rem) * 3 / 4 + 2rem);
-	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23de4437' viewBox='-2 -2 7 7'%3e%3cpath stroke='%23de4437' d='M0 0l3 3m0-3L0 3'/%3e%3ccircle r='.5'/%3e%3ccircle cx='3' r='.5'/%3e%3ccircle cy='3' r='.5'/%3e%3ccircle cx='3' cy='3' r='.5'/%3e%3c/svg%3E")
-		#fff no-repeat center left 1.5rem / calc(0.75em + 0.9rem) calc(0.75em + 0.9rem);
+	padding-left: calc(0.75em + 3.125rem);
+	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23de4437' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23de4437' stroke='none'/%3e%3c/svg%3e")
+		#fff no-repeat center left 1.5rem / calc(0.8em + 0.75rem) calc(0.8em + 0.75rem);
+	background-size: 1rem 1rem;
 }
 
 .was-validated
@@ -7343,9 +7353,10 @@ a.badge-soft-white.focus {
 	+ .select2-container--bootstrap[dir='rtl']
 	.select2-selection.select2-selection--multiple,
 .custom-select2 .is-invalid .select2-selection.select2-selection--multiple {
-	padding-left: calc((1em + 1.8rem) * 3 / 4 + 1rem);
-	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23de4437' viewBox='-2 -2 7 7'%3e%3cpath stroke='%23de4437' d='M0 0l3 3m0-3L0 3'/%3e%3ccircle r='.5'/%3e%3ccircle cx='3' r='.5'/%3e%3ccircle cy='3' r='.5'/%3e%3ccircle cx='3' cy='3' r='.5'/%3e%3c/svg%3E")
-		#fff no-repeat center left 1rem / calc(0.75em + 0.9rem) calc(0.75em + 0.9rem);
+	padding-left: calc(1.5em + 1.8rem);
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23de4437' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23de4437' stroke='none'/%3e%3c/svg%3e");
+	background-position: left calc(0.4em + 0.375rem) center;
+	background-size: 1rem 1rem;
 }
 
 .was-validated
