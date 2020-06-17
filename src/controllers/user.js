@@ -251,7 +251,7 @@ class User extends Base {
     const salt = bcrypt.genSaltSync(10);
     const password = bcrypt.hashSync(args.password, salt);
 
-    response = this.execute(query, { ...args, password });
+    response = await this.execute(query, { ...args, password }, 'commit');
     response.message = response.error ? this.messages.generic : this.messages.update.password.success;
 
     return response;

@@ -233,7 +233,7 @@ if (config.mailgun.enabled) {
           next
         );
 
-      return res.render('user/reset-password', { customerID: response.result[0].id });
+      return res.render('user/reset-password', { token, customerID: response.result[0].id });
     })
   );
 
@@ -241,9 +241,8 @@ if (config.mailgun.enabled) {
     '/account/reset-password',
     routeAsync(async (req, res, next) => {
       const { body } = req;
-      const { token } = req.query;
-      const route = `/user/reset-password?token=${token}`;
-      let response = await User.verifyToken(token, 'password');
+      const route = `/user/reset-password?token=${body.token}`;
+      let response = await User.verifyToken(body.token, 'password');
 
       if (response.error)
         return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/sign-in' })(

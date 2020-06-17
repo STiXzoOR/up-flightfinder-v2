@@ -239,8 +239,9 @@ class Booking extends Base {
     const query = this.queries.canBook[args.isRoundtrip ? 'roundtrip' : 'oneway'];
     const response = await this.execute(query, args, 'fetchOne');
 
-    if (response.error) return response;
-    response.result = response.result[0].canBook === 1;
+    if (response.error && (response.tryCatchError || response.status === 500)) return response;
+    response.error = false;
+    response.result = response.status === 404 || response.result[0].canBook === 1;
     response.message = !response.result ? this.messages.canBook.error : response.message;
 
     return response;
