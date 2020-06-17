@@ -638,7 +638,7 @@ const rangeSlider = {
 };
 
 function initCheckedBaggage() {
-  const BaggageObj = function BaggageObj(element) {
+  const Baggage = function Baggage(element) {
     this.element = element;
     this.baggage = {
       small: {
@@ -661,6 +661,7 @@ function initCheckedBaggage() {
     this.passengersPrice = $('#passengersSummary').find('#totalPassengersPrice');
     this.totalPrice = $('#totalSummary').find('#totalPrice');
     this.type = $(element).data('type');
+    this.routeType = this.type === 'oneway' ? 'Depart' : 'Return';
     this.quantity = 0;
     this.max = 5;
     this.added = false;
@@ -668,8 +669,8 @@ function initCheckedBaggage() {
     this.bindEvents();
   };
 
-  BaggageObj.prototype = {
-    constructor: BaggageObj,
+  Baggage.prototype = {
+    constructor: Baggage,
 
     bindEvents() {
       const self = this;
@@ -725,17 +726,19 @@ function initCheckedBaggage() {
       const cell2 = row.insertCell(-1);
       const cell3 = row.insertCell(-1);
       const cell4 = row.insertCell(-1);
+      const cell5 = row.insertCell(-1);
 
-      $(cell1).addClass('font-weight-medium text-left w-sm-25').attr('scope', 'row').text('Checked bag');
-      $(cell2).text(`${this.baggage[bag].weight}kg`);
-      $(cell3).text(`€${this.baggage[bag].price}`);
-      $(cell4).addClass('py-0').attr('align', 'middle');
+      $(cell1).addClass('font-weight-medium text-left w-sm-30 w-md-25').attr('scope', 'row').text('Checked bag');
+      $(cell2).text(this.routeType);
+      $(cell3).text(`${this.baggage[bag].weight}kg`);
+      $(cell4).text(`€${this.baggage[bag].price}`);
+      $(cell5).addClass('py-0').attr('align', 'middle');
 
       const btn = $('<button/>')
         .addClass('btn btn-icon btn-xs btn-remove-bag btn-secondary rounded-circle')
         .attr('type', 'button');
       btn.append($('<i/>').addClass('fas fa-times fa-fw'));
-      btn.appendTo(cell4);
+      btn.appendTo(cell5);
 
       btn.on('click', () => {
         self.remove(row, bag);
@@ -791,12 +794,12 @@ function initCheckedBaggage() {
   };
 
   $('.add-baggage').each((i, el) => {
-    if (!$(el).data('Baggage')) $(el).data('Baggage', new BaggageObj(el));
+    if (!$(el).data('Baggage')) $(el).data('Baggage', new Baggage(el));
   });
 }
 
 function initInsuranceCard() {
-  const InsuranceObj = function InsuranceObj(element) {
+  const Insurance = function Insurance(element) {
     this.element = element;
     this.selected = false;
     this.selectBtn = $(element).find('.btn-select-insurance');
@@ -812,8 +815,8 @@ function initInsuranceCard() {
     this.bindEvents();
   };
 
-  InsuranceObj.prototype = {
-    constructor: InsuranceObj,
+  Insurance.prototype = {
+    constructor: Insurance,
 
     bindEvents() {
       const self = this;
@@ -884,7 +887,7 @@ function initInsuranceCard() {
   };
 
   $('.insurance-card').each((i, el) => {
-    if (!$(el).data('Insurance')) $(el).data('Insurance', new InsuranceObj(el));
+    if (!$(el).data('Insurance')) $(el).data('Insurance', new Insurance(el));
   });
 }
 

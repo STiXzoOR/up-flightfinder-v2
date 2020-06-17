@@ -178,10 +178,18 @@ block content
 												)
 												h5.section-subtitle.section-subtitle-tab.font-size-18 Baggage
 												.border.border-width-2.rounded-5.mb-3.mt-4
-													table.baggage-list.table.table-responsive-sm.table-borderless.font-size-16.text-gray-1.text-center.align-cells-middle.mb-0
+													table.baggage-list.table.table-responsive-sm.table-borderless.font-size-15.text-gray-1.text-center.align-cells-middle.mb-0
+														thead.border-bottom
+															tr
+																th Type
+																th Route
+																th D/W
+																th Price
+																th
 														tbody
 															tr
 																th.text-left.w-sm-25(scope='row') Cabin bag
+																td #{query.isRoundtrip ? 'Both' : 'Dep'}
 																td 42x32x20cm
 																td Free
 												.row
