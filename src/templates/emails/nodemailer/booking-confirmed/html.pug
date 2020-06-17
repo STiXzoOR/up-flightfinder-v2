@@ -75,11 +75,11 @@ block extraContent
 									h4(
 										style='Margin:0;line-height:120%;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;color:#3B444F;'
 									) Reference
-								tr(style='border-collapse:collapse;')
-									td(align='left', style='padding:0;Margin:0;')
-										p(
-											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:23px;color:#67747C;'
-										) #{booking.id}
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:23px;color:#67747C;'
+									) #{booking.id}
 			table.es-right.es-m-w-auto(
 				cellpadding='0',
 				cellspacing='0',
@@ -100,11 +100,11 @@ block extraContent
 									h4(
 										style='Margin:0;line-height:120%;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;color:#3B444F;'
 									) Date
-								tr(style='border-collapse:collapse;')
-									td(align='left', style='padding:0;Margin:0;')
-										p(
-											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:23px;color:#67747C;'
-										) #{booking.bookedDate}
+							tr(style='border-collapse:collapse;')
+								td(align='left', style='padding:0;Margin:0;')
+									p(
+										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:15px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:23px;color:#67747C;'
+									) #{booking.bookedDate}
 	tr(style='border-collapse:collapse;')
 		td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
 			table(
@@ -405,86 +405,41 @@ block extraContent
 											br
 											| #{flight.returnAirplaneName}
 						td.es-hidden(width='20', style='padding:0;Margin:0;')
-			table.es-left.es-m-w-40(
-				cellpadding='0',
-				cellspacing='0',
-				align='left',
-				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
-			)
-				tr(style='border-collapse:collapse;')
-					td(width='120', align='center', style='padding:0;Margin:0;')
-						table(
-							cellpadding='0',
-							cellspacing='0',
-							width='100%',
-							role='presentation',
-							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
-						)
-							tr.es-m-txt-c(style='border-collapse:collapse;')
-								td.es-m-txt-c(align='right', style='padding:0;Margin:0;')
-									p(
-										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:24px;color:#67747C;'
-									)
-										span(style='font-size:19px;')
-											strong #{flight.returnTime}
-										br
-										span(style='font-size:15px;') #{flight.returnDate}
-										br
-										span(style='font-size:14px;') #{flight.returnFromCity}, #{flight.returnFromCountry}
-					td.es-hidden(width='20', style='padding:0;Margin:0;')
-			table.es-left.es-mobile-hidden(
-				cellpadding='0',
-				cellspacing='0',
-				align='left',
-				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
-			)
-				tr(style='border-collapse:collapse;')
-					td.es-m-p20b(width='116', align='center', style='padding:0;Margin:0;')
-						table(
-							cellpadding='0',
-							cellspacing='0',
-							width='100%',
-							role='presentation',
-							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
-						)
-							tr(style='border-collapse:collapse;')
-								td(align='center', style='padding:0;Margin:0;padding-top:5px;')
-									p(
-										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:21px;color:#67747C;'
-									)
-										strong #{flight.returnClass}
-							tr(style='border-collapse:collapse;')
-								td(
-									align='center',
-									style='Margin:0;padding-left:5px;padding-right:5px;padding-top:10px;padding-bottom:10px;font-size:0px;'
-								)
-									table(
-										border='0',
-										width='100%',
-										height='100%',
-										cellpadding='0',
-										cellspacing='0',
-										role='presentation',
-										style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
-									)
-										tr(style='border-collapse:collapse;')
-											td(
-												style='padding:0;Margin:0px;border-bottom:2px solid #297CBB;background:none;height:1px;width:100%;margin:0px;'
-											)
-							tr(style='border-collapse:collapse;')
-								td(align='center', style='padding:0;Margin:0;padding-bottom:5px;')
-									p(
-										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:21px;color:#67747C;'
-									) #{flight.returnDuration}
-			table.es-m-d-inline-table.es-desk-hidden.es-m-w-20(
-				cellpadding='0',
-				cellspacing='0',
-				align='left',
-				style='mso-table-lspace:0pt;mso-table-rspace:0pt;display:inline-table;border-collapse:collapse;border-spacing:0px;float:left;'
-			)
-				tbody
+				table.es-left.es-m-w-40(
+					cellpadding='0',
+					cellspacing='0',
+					align='left',
+					style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+				)
 					tr(style='border-collapse:collapse;')
-						td.es-m-w-auto(width='116', align='center', style='padding:0;Margin:0;')
+						td(width='120', align='center', style='padding:0;Margin:0;')
+							table(
+								cellpadding='0',
+								cellspacing='0',
+								width='100%',
+								role='presentation',
+								style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+							)
+								tr.es-m-txt-c(style='border-collapse:collapse;')
+									td.es-m-txt-c(align='right', style='padding:0;Margin:0;')
+										p(
+											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:24px;color:#67747C;'
+										)
+											span(style='font-size:19px;')
+												strong #{flight.returnTime}
+											br
+											span(style='font-size:15px;') #{flight.returnDate}
+											br
+											span(style='font-size:14px;') #{flight.returnFromCity}, #{flight.returnFromCountry}
+						td.es-hidden(width='20', style='padding:0;Margin:0;')
+				table.es-left.es-mobile-hidden(
+					cellpadding='0',
+					cellspacing='0',
+					align='left',
+					style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'
+				)
+					tr(style='border-collapse:collapse;')
+						td.es-m-p20b(width='116', align='center', style='padding:0;Margin:0;')
 							table(
 								cellpadding='0',
 								cellspacing='0',
@@ -493,39 +448,84 @@ block extraContent
 								style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
 							)
 								tr(style='border-collapse:collapse;')
-									td(align='center', style='padding:0;Margin:0;padding-top:20px;font-size:0px;')
-										img(
-											src='https://fuollv.stripocdn.email/content/guids/CABINET_97291e26d968552b15cd4035799dcef4/images/78081592310615629.jpg',
-											alt='',
-											style='display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;',
-											width='30'
+									td(align='center', style='padding:0;Margin:0;padding-top:5px;')
+										p(
+											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:21px;color:#67747C;'
 										)
-			table.es-right.es-m-w-40(
-				cellpadding='0',
-				cellspacing='0',
-				align='right',
-				style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'
-			)
-				tr(style='border-collapse:collapse;')
-					td(width='120', align='center', style='padding:0;Margin:0;')
-						table(
-							cellpadding='0',
-							cellspacing='0',
-							width='100%',
-							role='presentation',
-							style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
-						)
-							tr.es-m-txt-c(style='border-collapse:collapse;')
-								td.es-m-txt-c(align='left', style='padding:0;Margin:0;')
-									p(
-										style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:24px;color:#67747C;'
+											strong #{flight.returnClass}
+								tr(style='border-collapse:collapse;')
+									td(
+										align='center',
+										style='Margin:0;padding-left:5px;padding-right:5px;padding-top:10px;padding-bottom:10px;font-size:0px;'
 									)
-										span(style='font-size:19px;')
-											strong #{flight.returnArrivalTime}
-										br
-										span(style='font-size:15px;') #{flight.returnArrivalDate}
-										br
-										span(style='font-size:14px;') #{flight.returnToCity}, #{flight.returnToCountry}
+										table(
+											border='0',
+											width='100%',
+											height='100%',
+											cellpadding='0',
+											cellspacing='0',
+											role='presentation',
+											style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+										)
+											tr(style='border-collapse:collapse;')
+												td(
+													style='padding:0;Margin:0px;border-bottom:2px solid #297CBB;background:none;height:1px;width:100%;margin:0px;'
+												)
+								tr(style='border-collapse:collapse;')
+									td(align='center', style='padding:0;Margin:0;padding-bottom:5px;')
+										p(
+											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:21px;color:#67747C;'
+										) #{flight.returnDuration}
+				table.es-m-d-inline-table.es-desk-hidden.es-m-w-20(
+					cellpadding='0',
+					cellspacing='0',
+					align='left',
+					style='mso-table-lspace:0pt;mso-table-rspace:0pt;display:inline-table;border-collapse:collapse;border-spacing:0px;float:left;'
+				)
+					tbody
+						tr(style='border-collapse:collapse;')
+							td.es-m-w-auto(width='116', align='center', style='padding:0;Margin:0;')
+								table(
+									cellpadding='0',
+									cellspacing='0',
+									width='100%',
+									role='presentation',
+									style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+								)
+									tr(style='border-collapse:collapse;')
+										td(align='center', style='padding:0;Margin:0;padding-top:20px;font-size:0px;')
+											img(
+												src='https://fuollv.stripocdn.email/content/guids/CABINET_97291e26d968552b15cd4035799dcef4/images/78081592310615629.jpg',
+												alt='',
+												style='display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;',
+												width='30'
+											)
+				table.es-right.es-m-w-40(
+					cellpadding='0',
+					cellspacing='0',
+					align='right',
+					style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'
+				)
+					tr(style='border-collapse:collapse;')
+						td(width='120', align='center', style='padding:0;Margin:0;')
+							table(
+								cellpadding='0',
+								cellspacing='0',
+								width='100%',
+								role='presentation',
+								style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'
+							)
+								tr.es-m-txt-c(style='border-collapse:collapse;')
+									td.es-m-txt-c(align='left', style='padding:0;Margin:0;')
+										p(
+											style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:\'Rubik\', helvetica, arial, sans-serif;line-height:24px;color:#67747C;'
+										)
+											span(style='font-size:19px;')
+												strong #{flight.returnArrivalTime}
+											br
+											span(style='font-size:15px;') #{flight.returnArrivalDate}
+											br
+											span(style='font-size:14px;') #{flight.returnToCity}, #{flight.returnToCountry}
 	tr(style='border-collapse:collapse;')
 		td(align='left', style='padding:0;Margin:0;padding-left:20px;padding-right:20px;')
 			table(
@@ -702,7 +702,7 @@ block extraContent
 									td(align='left', style='padding:0;Margin:0;padding-bottom:5px;')
 										h4.es-m-font-size-16.es-m-txt-grey(
 											style='Margin:0;line-height:120%;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:15px;color:#3B444F;'
-										)#{flight.departFromCity} to #{flight.departToCity}
+										) #{flight.departFromCity} to #{flight.departToCity}
 								tr(style='border-collapse:collapse;')
 									td(align='left', style='padding:0;Margin:0;')
 										p(
@@ -1534,7 +1534,7 @@ block extraContent
 										style='border-style:solid;border-color:#297CBB;background:#297CBB;border-width:0px;display:inline-block;border-radius:25px;width:auto;'
 									)
 										a.es-button.es-button-1(
-											href=`${actionUrl}`,
+											href=`${actionURL}`,
 											target='_blank',
 											style='mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:\'Rubik\', helvetica, arial, sans-serif;font-size:14px;color:#FFFFFF;border-style:solid;border-color:#297CBB;border-width:15px 30px;display:inline-block;background:#297CBB;border-radius:25px;font-weight:bold;font-style:normal;line-height:17px;width:auto;text-align:center;'
 										) MANAGE BOOKING
