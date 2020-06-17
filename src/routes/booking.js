@@ -88,7 +88,7 @@ router.get(
     if (response.error) return handleResponseError(response)(req, res, next);
 
     const countries = response.result;
-    req.session.flightData = query;
+    req.session.flightData = { query, route: flight };
 
     return res.render('booking/new-booking', { query, flight, countries });
   })
@@ -123,7 +123,7 @@ router.post(
       response = response.result;
     } while (response);
 
-    for (let i = 0; i < flightData.quantity; i++) {
+    for (let i = 0; i < flightData.query.quantity; i++) {
       const baggage = JSON.parse(bookingData[`checkedBaggagePassenger-${i}`]);
       const passenger = {
         bookingID,
@@ -136,6 +136,7 @@ router.post(
         id: bookingData[`idPassenger-${i}`],
         idExpirationDate: bookingData[`idExpirationDatePassenger-${i}`],
         insurance: bookingData[`insurancePassenger-${i}`],
+        departCabinBag: baggage.oneway.cabin,
         departSmallBag: baggage.oneway.small,
         departLargeBag: baggage.oneway.large,
         returnCabinBag: 0,
@@ -143,7 +144,7 @@ router.post(
         returnLargeBag: 0,
       };
 
-      if (flightData.isRoundtrip) {
+      if (flightData.query.isRoundtrip) {
         passenger.returnCabinBag = baggage.roundtrip.cabin;
         passenger.returnSmallBag = baggage.roundtrip.small;
         passenger.returnLargeBag = baggage.roundtrip.large;
@@ -155,33 +156,33 @@ router.post(
     const bookingDetails = {
       bookingID,
       customerID: req.session.user.id,
-      departFlightID: flightData.departFlightID,
-      departDate: flightData.departDate,
+      departFlightID: flightData.query.departFlightID,
+      departDate: flightData.query.departDate,
       returnFlightID: null,
       returnDate: null,
-      class: flightData.class,
+      class: flightData.query.class,
       contactFirstName: bookingData.contactFirstName,
       contactLastName: bookingData.contactLastName,
       contactEmail: bookingData.contactEmail,
       contactMobile: bookingData.contactMobile,
       bookedDate: new Date(),
       lastModifyDate: new Date(),
-      quantity: flightData.quantity,
+      quantity: flightData.query.quantity,
       baggageQuantity: passengerInfo.reduce(
         (acc, { departSmallBag, departLargeBag, returnSmallBag, returnLargeBag }) =>
           acc + departSmallBag + departLargeBag + returnSmallBag + returnLargeBag,
         0
       ),
-      pricePerPassenger: bookingData.finalPrice / flightData.quantity,
+      pricePerPassenger: bookingData.finalPrice / flightData.query.quantity,
       totalPrice: bookingData.finalPrice,
       paymentType: bookingData.paymentType,
-      flightType: flightData.isRoundtrip ? 'Roundtrip' : 'Oneway',
+      flightType: flightData.query.isRoundtrip ? 'Roundtrip' : 'Oneway',
       status: 'UPCOMING',
     };
 
-    if (flightData.isRoundtrip) {
-      bookingDetails.returnFlightID = flightData.returnFlightID;
-      bookingDetails.returnDate = flightData.returnDate;
+    if (flightData.query.isRoundtrip) {
+      bookingDetails.returnFlightID = flightData.query.returnFlightID;
+      bookingDetails.returnDate = flightData.query.returnDate;
     }
 
     response = await Booking.insert(bookingDetails);
@@ -191,7 +192,109 @@ router.post(
       return next(err);
     });
 
-    return res.render('booking/new-booking-booked', { booking: { ...flightData, ...bookingDetails } });
+    const cabinBagQuantity = passengerInfo.reduce(
+      (acc, { departCabinBag, returnCabinBag }) => acc + departCabinBag + returnCabinBag,
+      0
+    );
+    const smallBagQuantity = passengerInfo.reduce(
+      (acc, { departSmallBag, returnSmallBag }) => acc + departSmallBag + returnSmallBag,
+      0
+    );
+    const largeBagQuantity = passengerInfo.reduce(
+      (acc, { departLargeBag, returnLargeBag }) => acc + departLargeBag + returnLargeBag,
+      0
+    );
+    const passengers = passengerInfo.map(
+      ({
+        firstName,
+        lastName,
+        insurance,
+        departCabinBag,
+        departSmallBag,
+        departLargeBag,
+        returnCabinBag,
+        returnSmallBag,
+        returnLargeBag,
+      }) => ({
+        name: `${firstName} ${lastName}`,
+        insurance,
+        departCabinBag,
+        departSmallBag,
+        departLargeBag,
+        returnCabinBag,
+        returnSmallBag,
+        returnLargeBag,
+      })
+    );
+
+    const baggage = {
+      cabin: {
+        quantity: cabinBagQuantity,
+        price: 'free',
+      },
+      small: { quantity: smallBagQuantity, price: (25 * smallBagQuantity).toLocaleString() },
+      large: { quantity: largeBagQuantity, price: (50 * largeBagQuantity).toLocaleString() },
+    };
+
+    const insurance = passengerInfo.reduce(
+      (acc, { insurance }) => {
+        if (insurance) {
+          acc.included = true;
+          acc[insurance].quantity += 1;
+          // eslint-disable-next-line no-nested-ternary
+          acc[insurance].price += insurance === 'plus' ? 25 : insurance === 'basic' ? 15 : '';
+          return acc;
+        }
+      },
+      {
+        included: false,
+        none: { quantity: 0, price: 'free' },
+        basic: { quantity: 0, price: 0 },
+        plus: { quantity: 0, price: 0 },
+      }
+    );
+
+    const data = {
+      email: {
+        address: bookingData.contactEmail,
+        firstName: bookingData.contactFirstName,
+        lastName: bookingData.contactLastName,
+        url: req.getUrl(),
+      },
+      variables: {
+        booking: {
+          id: bookingID,
+          bookedDate: bookingDetails.bookedDate.toLocaleDateString('en-gb', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+          }),
+          contactName: `${bookingData.contactFirstName} ${bookingData.contactLastName}`,
+          contactEmail: bookingData.contactEmail,
+          contactMobile: bookingData.contactMobile,
+          quantity: flightData.query.quantity,
+          totalPrice: bookingData.finalPrice.toLocaleString(),
+          baggage,
+          insurance,
+        },
+        flight: flightData.route,
+        passengers,
+      },
+    };
+
+    data.variables.flight.isRoundtrip = flightData.query.isRoundtrip;
+    data.variables.flight.totalUntaxedPrice = data.variables.flight.totalUntaxedPrice.toLocaleString();
+    data.variables.flight.totalPrice = data.variables.flight.totalPrice.toLocaleString();
+    data.variables.flight.totalTaxes = data.variables.flight.totalTaxes.toLocaleString();
+    if (data.variables.flight.departDuration.startsWith('0'))
+      data.variables.flight.departDuration = data.variables.flight.departDuration.slice(1);
+    if (flightData.query.isRoundtrip && data.variables.flight.returnDuration.startsWith('0'))
+      data.variables.flight.returnDuration = data.variables.flight.returnDuration.slice(1);
+
+    response = await Booking.sendConfirmation(data);
+    if (response.error) return handleResponseError(response)(req, res, next);
+
+    return res.render('booking/new-booking-booked', { booking: { ...flightData.query, ...bookingDetails } });
   })
 );
 

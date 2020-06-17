@@ -20,6 +20,7 @@ class MailgunWrapper {
       resetPassword: 'reset_password',
       updatedPassword: 'updated_password',
       unsubscribed: 'unsubscribed',
+      bookingConfirmation: 'booking_confirmed',
     };
   }
 
@@ -37,7 +38,7 @@ class MailgunWrapper {
       to: data.to,
       subject: data.subject,
       template: data.template,
-      'h:X-Mailgun-Variables': JSON.stringify({ action_url: data.actionURL }),
+      'h:X-Mailgun-Variables': JSON.stringify(data.variables),
     });
   }
 
@@ -48,7 +49,7 @@ class MailgunWrapper {
       to: data.recipient,
       subject: 'Welcome on board',
       template: this.templates.welcome,
-      actionURL,
+      variables: { action_url: actionURL },
     });
   }
 
@@ -59,7 +60,7 @@ class MailgunWrapper {
       to: data.recipient,
       subject: 'Verify your account',
       template: this.templates.verifyAccount,
-      actionURL,
+      variables: { action_url: actionURL },
     });
   }
 
@@ -70,7 +71,7 @@ class MailgunWrapper {
       to: data.recipient,
       subject: 'Reset your password',
       template: this.templates.resetPassword,
-      actionURL,
+      variables: { action_url: actionURL },
     });
   }
 
@@ -81,7 +82,7 @@ class MailgunWrapper {
       to: data.recipient,
       subject: 'Your password has been changed',
       template: this.templates.updatedPassword,
-      actionURL,
+      variables: { action_url: actionURL },
     });
   }
 
@@ -92,7 +93,7 @@ class MailgunWrapper {
       to: data.recipient,
       subject: 'Verify newsletter subscription',
       template: this.templates.verifySubscription,
-      actionURL,
+      variables: { action_url: actionURL },
     });
   }
 
@@ -103,7 +104,18 @@ class MailgunWrapper {
       to: data.recipient,
       subject: 'Unsubscribed from newsletter',
       template: this.templates.unsubscribed,
-      actionURL,
+      variables: { action_url: actionURL },
+    });
+  }
+
+  sendBookingConfirmation(data) {
+    const actionURL = `${data.email.url}/booking/manage-booking/bookingID=${data.variables.booking.id}&lastName=${data.email.lastName}`;
+
+    return this.send({
+      to: data.email.recipient,
+      subject: `Booking confirmation - ${data.variables.booking.id}`,
+      template: this.templates.bookingConfirmation,
+      variables: { ...data.variables, action_url: actionURL },
     });
   }
 

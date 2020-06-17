@@ -1,3 +1,4 @@
+const mailgun = require('../config/mailgun');
 const Base = require('./base');
 
 class Booking extends Base {
@@ -241,6 +242,34 @@ class Booking extends Base {
     if (response.error) return response;
     response.result = response.result[0].canBook === 1;
     response.message = !response.result ? this.messages.canBook.error : response.message;
+
+    return response;
+  }
+
+  async sendConfirmation(data = {}) {
+    const response = {
+      status: 400,
+      error: true,
+      message: this.messages.generic,
+      result: {},
+    };
+
+    // eslint-disable-next-line no-param-reassign
+    data.email.recipient = `${data.email.firstName} ${data.email.lastName} <${data.email.address}>`;
+
+    await mailgun
+      .sendBookingConfirmation(data)
+      .then((result) => {
+        response.message = 'success.';
+        response.error = false;
+        response.result = result;
+      })
+      .catch((error) => {
+        response.error = true;
+        response.tryCatchError = true;
+        response.status = error.statusCode || error.status || 500;
+        response.result = error;
+      });
 
     return response;
   }
