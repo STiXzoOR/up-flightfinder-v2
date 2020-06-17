@@ -385,7 +385,9 @@ block content
 													input#cardNumber.form-control(
 														type='text',
 														name='cardNumber',
-														pattern='^\\d{4}([ \\-]?)((\\d{6}\\1?\\d{5})|(\\d{4}\\1?\\d{4}\\1?\\d{4}))$',
+														pattern='^\\d{4}[\\s\\-]?\\d{4}[\\s\\-]?\\d{4}[\\s\\-]?\\d{4}$',
+														minlength='16',
+														maxlength='19',
 														placeholder='0000-0000-0000-0000',
 														required=''
 													)
@@ -429,8 +431,8 @@ block content
 														)
 													input#cardCVV.form-control(
 														type='text',
-														pattern='[0-9]{3,4}',
-														maxlength='4',
+														pattern='[0-9]{3}',
+														maxlength='3',
 														name='cardCVV',
 														placeholder='000',
 														required=''

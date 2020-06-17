@@ -1021,6 +1021,16 @@ $('#cardYear').on('change', function fixMonth() {
   );
 });
 
+$('#cardNumber').on('change keyup paste', function format() {
+  if (!/^\d+[\d\W\s-]*$/g.test($(this).val())) return;
+
+  const number = $(this).val().replace(/\D+/g, '');
+  const groups = number.match(/(\d{1,4})/g);
+  const formatted = groups.join('-').slice(0, 19);
+
+  $(this).val(formatted);
+});
+
 $(() => {
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();
