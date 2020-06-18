@@ -8,12 +8,11 @@ The goal is to build a web application which enables the user not only to search
 
 ## Requirements
 
+- Have latest MongoDB installed.
+  - NOTE: create a [cluster](https://docs.atlas.mongodb.com/tutorial/create-new-cluster/) if local server is not an option.
 - Have latest version of Node.js installed.
 - Have latest version of Python installed.
   - NOTE: if installing on windows, tick `Add Python to PATH`
-- Have Redis installed.
-  - For Windows: follow the instructions on [RedisLabs](https://redislabs.com/blog/redis-on-windows-10/).
-  - For MacOS: install [brew](https://brew.sh/) and then run `brew install redis`. Finally run `redis-server` to start the server.
 - Have MySQL and phpMyAdmin installed.
   - For Windows: install [MAMP](https://downloads.mamp.info/MAMP-PRO-WINDOWS/releases/4.1.1/MAMP_MAMP_PRO_4.1.1.exe)
   - For MacOS: install [MAMP](https://downloads.mamp.info/MAMP-PRO/releases/5.7/MAMP_MAMP_PRO_5.7.pkg)
@@ -35,9 +34,17 @@ The goal is to build a web application which enables the user not only to search
 
   - Accepted arguments:
 
-    - `--database-user`: database username. **Default: root**.
-    - `--database-password`: database password. **Default: "" or root if it's MAMP**.
-    - `--database-host`: database host location. **Default: localhost**.
+    - `--mysql-user`: mysql username. **Default: root**.
+    - `--mysql-password`: mysql password. **Default: "" or root if it's MAMP**.
+    - `--mysql-host`: mysql host. **Default: localhost**.
+    - `--mysql-port`: mysql host port. **Default: 3306**.
+    - `--mysql-database`: mysql default database. **Default: flightfinder**.
+    - `--mongo-uri`: mongo full uri string. **Default: ""**.
+    - `--mongo-user`: mongo username. **Default: ""**.
+    - `--mongo-password`: mongo password. **Default: ""**.
+    - `--mongo-host`: mongo host. **Default: localhost**.
+    - `--mongo-port`: mongo host port. **Default: 27107**.
+    - `--mongo-database`: mongo default database. **Default: flightfinder**.
     - `--use-mailgun`: use mailgun service to send emails. **Default: disabled**.
       - `--mailgun-api-key`: mailgun generated api key.
       - `--mailgun-base`: mailgun base url server. **Default: US**.
@@ -48,11 +55,12 @@ The goal is to build a web application which enables the user not only to search
       - `--nodemailer-user`: nodemailer smtp email.
       - `--nodemailer-password`: nodemailer smtp password.
 
-    **NOTE #1:** Mailgun and nodemailer can't be used together. Use only one of them.
+  - **NOTES**
+    - If mongo uri is used, it will ovveride all the other mongo arguments. Either use only or set each argument individually.
+    - Mailgun and nodemailer can't be used together. Use only one of them.
+    - If you are using your Gmail account for the nodemailer, make sure to configure your account to allow [Less Secure Apps](https://www.google.com/settings/security/lesssecureapps) and complete the [Captcha Enable](https://accounts.google.com/b/0/displayunlockcaptcha) challenge.
 
-    **NOTE #2:** If you are using your Gmail account for the nodemailer, make sure to configure your account to allow [Less Secure Apps](https://www.google.com/settings/security/lesssecureapps) and complete the [Captcha Enable](https://accounts.google.com/b/0/displayunlockcaptcha) challenge.
-
-    Example: `python generate_dotenv.py --database-user flightfinder --database-password test-flight`
+  Example: `python generate_dotenv.py --mysql-user flightfinder --mysql-password test-flight --mongo-uri "mongodb+srv://<username>:<password>@<cluster-domain>.mongodb.net/<database>"`
 
 - Navigate to `./config/python_scripts/database` and run `python generate_db.py` without any arguments to create, initialize and fill the database.
 
@@ -65,7 +73,9 @@ The goal is to build a web application which enables the user not only to search
 
     Example: `python generate_db.py --generate-flights --days 60`
 
-  - When the script if finished, we are done with the python part and can safely deactivate the virtual environment by running `deactivate`
+  - When the script if finished, we are done with the python part and can safely deactivate the virtual environment:
+    - On Windows: Run `venv\Scripts\deactivate`
+    - On MacOS/Linux: Run `deactivate`
 
 > NPM
 
@@ -122,17 +132,17 @@ From the root of the project follow the steps below:
 
 ## Technologies Used
 
-| Area                        | Technology                               |
-| --------------------------- | ---------------------------------------- |
-| Frontend                    | Bootstrap, HTML5, CSS3, Javascript (ES6) |
-| Backend                     | Node.js, Express.js                      |
-| In-memory caching/datastore | Redis                                    |
-| Authentication middleware   | Passport.js                              |
-| Data validation middlware   | Express superstruct                      |
-| Transactional emails        | Mailgun                                  |
-| Logger                      | Morgan + Winston                         |
-| Database                    | MySQL                                    |
-| Deployment                  | Local/Remote (Custom server)             |
+| Area                      | Technology                               |
+| ------------------------- | ---------------------------------------- |
+| Frontend                  | Bootstrap, HTML5, CSS3, Javascript (ES6) |
+| Backend                   | Node.js, Express.js, Pug.js              |
+| Session datastore         | MongoDB                                  |
+| Authentication middleware | Passport.js                              |
+| Data validation middlware | Express superstruct                      |
+| Transactional emails      | Mailgun/Nodemailer                       |
+| Logger                    | Morgan + Winston                         |
+| Database                  | MySQL                                    |
+| Deployment                | Local/Remote (Custom server)             |
 
 ## Authors
 
