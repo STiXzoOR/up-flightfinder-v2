@@ -10,7 +10,7 @@ const User = require('../controllers/user');
 const routeAsync = require('../middleware/route-async');
 const handleResponseError = require('../middleware/handle-response-error');
 const permit = require('../middleware/permit');
-const rateLimiter = require('../middleware/rate-limit');
+const rateLimiter = require('../config/rate-limit');
 const { validate } = require('../middleware/superstruct');
 
 if (config.mailgun.enabled || config.nodemailer.enabled)

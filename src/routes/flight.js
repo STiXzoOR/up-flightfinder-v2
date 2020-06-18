@@ -4,7 +4,7 @@ const Common = require('../controllers/common');
 const Flight = require('../controllers/flight');
 const routeAsync = require('../middleware/route-async');
 const handleResponseError = require('../middleware/handle-response-error');
-const rateLimiter = require('../middleware/rate-limit');
+const rateLimiter = require('../config/rate-limit');
 const { validate } = require('../middleware/superstruct');
 const { compileFile } = require('../config/templates');
 

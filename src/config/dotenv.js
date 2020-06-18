@@ -21,13 +21,24 @@ class Config {
     return process.env.SESSION_SECRET;
   }
 
-  get database() {
+  get mysql() {
     return {
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT || 3306),
+      host: process.env.MYSQL_HOST,
+      port: Number(process.env.MYSQL_PORT),
+      user: process.env.MYSQL_USER,
+      password: process.env.MYSQL_PASSWORD,
+      database: process.env.MYSQL_DATABASE,
+    };
+  }
+
+  get mongo() {
+    return {
+      uri: process.env.MONGO_URI,
+      host: process.env.MONGO_HOST,
+      port: Number(process.env.MONGO_PORT),
+      user: process.env.MONGO_USER,
+      password: process.env.MONGO_PASSWORD,
+      database: process.env.MONGO_DATABASE,
     };
   }
 

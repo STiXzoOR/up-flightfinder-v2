@@ -22,11 +22,11 @@ def print_stmt(stmt=""):
     sys.stdout.flush()
 
 
-def create_connection(database=config.get("DB_NAME")):
+def create_connection(database=config.get("MYSQL_DATABASE")):
     options = {
-        "host": config.get("DB_HOST"),
-        "user": config.get("DB_USER"),
-        "password": config.get("DB_PASSWORD"),
+        "host": config.get("MYSQL_HOST"),
+        "user": config.get("MYSQL_USER"),
+        "password": config.get("MYSQL_PASSWORD"),
         "database": database,
         "charset": "utf8mb4",
         "cursorclass": DictCursor,
@@ -44,7 +44,7 @@ def database_exists():
     FROM information_schema.schemata 
     WHERE schema_name="{database}"
     """.format(
-        database=config.get("DB_NAME")
+        database=config.get("MYSQL_DATABASE")
     )
 
     cnx = create_connection(database="")
@@ -125,7 +125,7 @@ def create_database():
     query = """
     CREATE DATABASE IF NOT EXISTS {database}
     """.format(
-        database=config.get("DB_NAME")
+        database=config.get("MYSQL_DATABASE")
     )
 
     cnx = create_connection(database="")

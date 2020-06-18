@@ -3,7 +3,7 @@ const mysql = require('mysql2');
 const config = require('./dotenv');
 
 const options = {
-  ...config.database,
+  ...config.mysql,
   connectionLimit: 100,
   namedPlaceholders: true,
   debug: false,

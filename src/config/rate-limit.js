@@ -2,7 +2,8 @@
 const createError = require('http-errors');
 const RateLimit = require('express-rate-limit');
 const RedisStore = require('rate-limit-redis');
-const config = require('../config/dotenv');
+const MongoStore = require('rate-limit-mongo');
+const config = require('./dotenv');
 
 const options = {
   limiters: [
@@ -10,12 +11,14 @@ const options = {
       name: 'createAccount',
       options: {
         store: {
-          type: 'redis',
+          type: 'mongo',
           options: {
-            expiry: 3600,
-            prefix: 'account_rl:',
+            uri: config.mongo.uri,
+            expireTimeMs: 60 * 60 * 1000,
+            collectionName: 'createAccountRateLimit',
           },
         },
+        windowMs: 60 * 60 * 1000,
         max: 3,
         message: 'Too many requests for creating new account',
         skip: {
@@ -29,12 +32,14 @@ const options = {
       name: 'flightSearch',
       options: {
         store: {
-          type: 'redis',
+          type: 'mongo',
           options: {
-            expiry: 3600,
-            prefix: 'flight_rl:',
+            uri: config.mongo.uri,
+            expireTimeMs: 60 * 60 * 1000,
+            collectionName: 'flightSearchRateLimit',
           },
         },
+        windowMs: 60 * 60 * 1000,
         max: 15,
         message: 'Too many requests for new flight search',
         skip: {
@@ -79,9 +84,22 @@ class RateLimiter {
         skipSuccessfulRequests: limiter.options.skipSuccessfulRequests || false,
       };
 
-      if (limiter.options.store && limiter.options.store.type === 'redis')
-        options.store = new RedisStore(limiter.options.store.options);
-      else {
+      if (limiter.options.store) {
+        let store;
+
+        switch (limiter.options.store.type) {
+          case 'redis':
+            store = new RedisStore(limiter.options.store.options);
+            break;
+          case 'mongo':
+            store = new MongoStore(limiter.options.store.options);
+            break;
+          default:
+            throw new Error("Rate Limiter - Can't create the specific store type");
+        }
+
+        options.store = store;
+      } else {
         options.store = limiter.options.store;
         options = {
           ...options,

@@ -12,8 +12,7 @@ const passport = require('passport');
 const { v4: uuid } = require('uuid');
 const favicon = require('serve-favicon');
 const flash = require('express-flash-2');
-const redis = require('redis');
-const RedisStore = require('connect-redis')(session);
+const MongoStore = require('connect-mongo')(session);
 const config = require('./config/dotenv');
 const Maintenance = require('./modules/maintenance-mode');
 const winston = require('./config/winston');
@@ -28,7 +27,6 @@ const bookingRouter = require('./routes/booking');
 if (config.mailgun.enabled || config.nodemailer.enabled) var newsletterRouter = require('./routes/newsletter');
 
 const app = express();
-const redisClient = redis.createClient();
 const setStaticCacheHeaders = (res, duration) => {
   const date = new Date();
   date.setHours(date.getHours() + duration);
@@ -81,14 +79,14 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: { secure: config.isProd(), expires: false },
-    store: new RedisStore({ host: 'localhost', port: 6379, client: redisClient, ttl: 260 }),
+    store: new MongoStore({ url: config.mongo.uri }),
   })
 );
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-// app.use(Maintenance(app, { endpoint: true, view: '503' }).middleware);
+app.use(Maintenance(app, { endpoint: true, view: '503' }).middleware);
 app.use(beforeRequest);
 app.use('/', indexRouter);
 app.use('/pages', pagesRouter);
