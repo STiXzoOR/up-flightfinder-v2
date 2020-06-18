@@ -486,7 +486,7 @@ select.form-control:focus::-ms-value {
 .was-validated .form-control:valid,
 .form-control.is-valid {
 	border-color: #00c9a7;
-	padding-right: calc(1.5em + 1.8rem);
+	padding-right: calc(1.5em + 1rem);
 	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2300c9a7' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
 	background-position: right calc(0.4em + 0.375rem) center;
 	background-size: 1rem 1rem;
@@ -500,7 +500,7 @@ select.form-control:focus::-ms-value {
 
 .was-validated textarea.form-control:valid,
 textarea.form-control.is-valid {
-	padding-right: calc(1.5em + 1.8rem);
+	padding-right: calc(1.5em + 1rem);
 	background-position: top calc(0.4em + 0.375rem) right calc(0.4em + 0.375rem);
 }
 
@@ -575,7 +575,7 @@ textarea.form-control.is-valid {
 .was-validated .form-control:invalid,
 .form-control.is-invalid {
 	border-color: #de4437;
-	padding-right: calc(1.5em + 1.8rem);
+	padding-right: calc(1.5em + 1rem);
 	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23de4437' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23de4437' stroke='none'/%3e%3c/svg%3e");
 	background-position: right calc(0.4em + 0.375rem) center;
 	background-size: 1rem 1rem;
@@ -589,7 +589,7 @@ textarea.form-control.is-valid {
 
 .was-validated textarea.form-control:invalid,
 textarea.form-control.is-invalid {
-	padding-right: calc(1.5em + 1.8rem);
+	padding-right: calc(1.5em + 1rem);
 	background-position: top calc(0.4em + 0.375rem) right calc(0.4em + 0.375rem);
 }
 
@@ -1334,7 +1334,9 @@ textarea.form-control.is-invalid {
 .dropdown-toggle::after {
 	display: inline-block;
 	font-family: 'Font Awesome 5 Free';
+	font-size: 0.9375rem;
 	font-weight: 900;
+	line-height: 0.75;
 	content: '\f107';
 	color: inherit;
 	border: none;
@@ -6263,11 +6265,24 @@ a.badge-soft-white.focus {
 .search-flights-card .was-validated .form-control:valid ~ .dropdown-input,
 .search-flights-card .form-control.is-valid ~ .dropdown-input {
 	border-color: #00c9a7;
+	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2300c9a7' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e")
+		#fff no-repeat center right 2rem / calc(0.8em + 0.75rem) calc(0.8em + 0.75rem);
+	background-size: 1rem 1rem;
 }
 
 .search-flights-card .was-validated .form-control:invalid ~ .dropdown-input,
 .search-flights-card .form-control.is-invalid ~ .dropdown-input {
 	border-color: #de4437;
+	background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23de4437' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23de4437' stroke='none'/%3e%3c/svg%3e")
+		#fff no-repeat center right 2rem / calc(0.8em + 0.75rem) calc(0.8em + 0.75rem);
+	background-size: 1rem 1rem;
+}
+
+.search-flights-card .was-validated .form-control:valid ~ .dropdown-input.dropdown-toggle::after,
+.search-flights-card .form-control.is-valid ~ .dropdown-input.dropdown-toggle::after,
+.search-flights-card .was-validated .form-control:invalid ~ .dropdown-input.dropdown-toggle::after,
+.search-flights-card .form-control.is-invalid ~ .dropdown-input.dropdown-toggle::after {
+	margin-left: 2rem;
 }
 
 /*-------------------------------------------*\
@@ -6947,7 +6962,7 @@ a.badge-soft-white.focus {
 
 .custom-select2 .select2-container--bootstrap .select2-selection--single .select2-selection__arrow {
 	position: absolute;
-	top: 50%;
+	top: calc(50% + 2px);
 	width: 0.75rem;
 	transform: translate3d(0, -50%, 0);
 }
@@ -6957,10 +6972,24 @@ a.badge-soft-white.focus {
 	margin-right: 0.85rem;
 }
 
+.custom-select2.half-left
+	.select2-container--bootstrap[dir='ltr']
+	.select2-selection--single
+	.select2-selection__arrow {
+	margin-right: 1rem;
+}
+
 .custom-select2 .select2-container--bootstrap[dir='rtl'] .select2-selection--single .select2-selection__arrow {
 	left: 0;
 	right: auto;
 	margin-left: 0.85rem;
+}
+
+.custom-select2.half-right
+	.select2-container--bootstrap[dir='rtl']
+	.select2-selection--single
+	.select2-selection__arrow {
+	margin-left: 1rem;
 }
 
 .custom-select2 .select2-container--bootstrap .select2-selection--single .select2-selection__arrow b {
