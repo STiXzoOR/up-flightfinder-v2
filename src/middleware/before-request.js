@@ -6,7 +6,7 @@ module.exports = function beforeRequest(req, res, next) {
   if (!req.session.user) req.session.user = { id: 1, role: 'GUEST' };
   res.locals.user = req.user || req.session.user;
   res.locals.user.isAuthenticated = req.isAuthenticated();
-  res.locals.isProd = config.isProd;
+  res.locals.env = config.env;
 
   return next();
 };
