@@ -27,18 +27,21 @@ gulp.task('copy:images', () =>
     .src(config.paths.images.src)
     .pipe(
       cache(
-        imagemin([
-          imagemin.gifsicle({ interlaced: true }),
-          imageminMozjpeg({
-            quality: 85,
-            progressive: true,
-          }),
-          imageminOptipng({ optimizationLevel: 5 }),
-          imageminZopfli({
-            more: true,
-          }),
-          imagemin.svgo({ plugins: [{ removeViewBox: false }] }),
-        ])
+        imagemin(
+          [
+            imagemin.gifsicle({ interlaced: true }),
+            imageminMozjpeg({
+              quality: 85,
+              progressive: true,
+            }),
+            imageminOptipng({ optimizationLevel: 5 }),
+            imageminZopfli({
+              more: true,
+            }),
+            imagemin.svgo({ plugins: [{ removeViewBox: false }] }),
+          ],
+          { silent: true }
+        )
       )
     )
     .pipe(gulp.dest(config.paths.images.dist))

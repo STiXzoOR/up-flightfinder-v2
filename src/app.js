@@ -38,6 +38,7 @@ app.set('views', appRoot.resolve('/dist/views'));
 app.set('view engine', 'pug');
 
 app.use(compression());
+app.use(favicon(appRoot.resolve('/dist/static/images/favicons/favicon.ico')));
 app.use(morgan.infoLogger());
 app.use(morgan.errorLogger());
 
@@ -70,7 +71,6 @@ app.use(
         }
   )
 );
-app.use(favicon(appRoot.resolve('/dist/static/images/favicon.ico')));
 
 app.use(
   session({

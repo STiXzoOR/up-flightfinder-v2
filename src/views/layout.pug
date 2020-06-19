@@ -29,6 +29,18 @@ html.smooth-scroll
 		meta(name='twitter:url', content='upflightfinder.live')
 		meta(name='twitter:image', content='https://upflightfinder.live/static/images/flightfinder-og-image.jpg')
 
+		meta(name='apple-mobile-web-app-title', content='Flight Finder')
+		meta(name='application-name', content='Flight Finder')
+		meta(name='msapplication-TileColor', content='#297cbb')
+		meta(name='msapplication-config', content='/static/images/favicons/browserconfig.xml')
+		meta(name='theme-color', content='#297cbb')
+		link(rel='apple-touch-icon', sizes='180x180', href='/static/images/favicons/apple-touch-icon.png')
+		link(rel='icon', type='image/png', sizes='32x32', href='/static/images/favicons/favicon-32x32.png')
+		link(rel='icon', type='image/png', sizes='16x16', href='/static/images/favicons/favicon-16x16.png')
+		link(rel='manifest', href='/static/images/favicons/site.webmanifest')
+		link(rel='mask-icon', href='/static/images/favicons/safari-pinned-tab.svg', color='#297cbb')
+		link(rel='shortcut icon', href='/static/images/favicons/favicon.ico')
+
 		block fonts
 			link(rel='stylesheet', href='/static/vendors/font-awesome/css/all.min.css')
 			link(rel='stylesheet', href='/static/css/rubik-font-family.css')
@@ -39,7 +51,6 @@ html.smooth-scroll
 			link(rel='stylesheet', href='/static/vendors/select2/css/select2.min.css')
 			link(rel='stylesheet', href='/static/vendors/select2/css/select2-bootstrap.min.css')
 		link(rel='stylesheet', href='/static/css/style.css')
-		link(rel='shortcut icon', href='/static/images/favicon.ico')
 
 		block title
 			title Flight Finder Official Site

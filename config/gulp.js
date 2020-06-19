@@ -46,7 +46,7 @@ const paths = {
     dist: 'dist/static/fonts',
   },
   images: {
-    src: 'src/static/images/**/*.+(png|jpg|jpeg|gif|svg|ico)',
+    src: 'src/static/images/**/*.+(png|jpg|jpeg|gif|svg|ico|webmanifest|xml)',
     dist: 'dist/static/images',
   },
   vendors: [
