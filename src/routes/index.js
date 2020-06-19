@@ -1,4 +1,7 @@
 const express = require('express');
+const createError = require('http-errors');
+const { readFile } = require('fs').promises;
+const appRoot = require('app-root-path');
 const routeAsync = require('../middleware/route-async');
 const handleResponseError = require('../middleware/handle-response-error');
 const Common = require('../controllers/common');
@@ -20,5 +23,16 @@ router.get(
     return res.render('index', { airports: airports.result, destinations: destinations.result });
   })
 );
+
+router.get('/robots.txt', async (req, res, next) => {
+  await readFile(appRoot.resolve('/dist/robots.txt'), 'utf-8')
+    .then((content) => {
+      res.header('Content-Type', 'text/plain');
+      res.status(200).send(content || "found robots.txt but it's empty :(");
+    })
+    .catch(() => {
+      return next(createError(404));
+    });
+});
 
 module.exports = router;
