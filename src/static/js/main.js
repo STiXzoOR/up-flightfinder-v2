@@ -47,12 +47,14 @@ function toggleAvatarLoader(action) {
   const loader = $('#avatarLoadingOverlay');
   const parent = loader.parent();
 
-  parent.css({ 'pointer-events': `${action === 'show' ? 'none' : ''}` });
   loader[action]();
+  parent.blur().css({ 'pointer-events': `${action === 'show' ? 'none' : ''}` });
 }
 
 // TODO: Needs refactoring
 function proccessAvatar(el, action) {
+  toggleAvatarLoader('show');
+
   const $this = $(el);
   const isUpload = action === 'upload';
   const elements = {};
@@ -160,9 +162,9 @@ function proccessAvatar(el, action) {
     elements[element.target.name] = data;
   });
 
-  if (!isUpload) toggleAvatarLoader('show');
-  elements.image.parent.blur();
-  elements.image.parent.css({ 'pointer-events': 'none' });
+  // if (!isUpload) toggleAvatarLoader('show');
+  // elements.image.parent.;
+  // elements.image.parent.css({ 'pointer-events': 'none' });
 
   fetch(fetchData.url, fetchData.args)
     .then((response) => response.json())
@@ -1226,10 +1228,6 @@ $('#cardNumber').on('change keyup paste', function format() {
 
 $('#uploadAvatar').on('change', function uploadAvatar() {
   return proccessAvatar(this, 'upload');
-});
-
-$('#btnEditAvatar').on('click', () => {
-  toggleAvatarLoader('show');
 });
 
 $('#btnDeleteAvatar').on('click', function deleteAvatar() {
