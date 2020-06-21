@@ -30,7 +30,13 @@ mixin headerContent
 								)
 									.flex-vertical-center
 										| Hi, #{user.firstName}
-										i.d-none.d-md-inline-block.fas.fa-user-circle.font-size-md-30.ml-md-2
+										if user.hasAvatar
+											img#avatarIcon.d-none.d-md-inline-block.img-fluid.rounded-circle.ml-md-2(
+												src=`${user.avatar.small}`,
+												alt=`${user.firstName.charAt(0).toUpperCase() + user.lastName.charAt(0).toUpperCase()}`
+											)
+										else
+											i#avatarIconPlaceholder.d-none.d-md-inline-block.fas.fa-user-circle.font-size-md-30.ml-md-2
 								ul.dropdown-menu.dropdown-menu-md-right
 									li
 										a.dropdown-item(href='/user/profile') Profile

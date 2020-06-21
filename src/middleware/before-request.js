@@ -8,5 +8,10 @@ module.exports = function beforeRequest(req, res, next) {
   res.locals.user.isAuthenticated = req.isAuthenticated();
   res.locals.env = config.env;
 
+  if (req.isAuthenticated() && req.user.hasAvatar) {
+    const url = `/user/${req.user.id}/uploads/avatar/profile`;
+    res.locals.user.avatar = { small: `${url}_32.jpg`, large: `${url}_256.jpg` };
+  }
+
   return next();
 };

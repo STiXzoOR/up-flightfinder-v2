@@ -9,6 +9,7 @@ const helmet = require('helmet');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const passport = require('passport');
+const { existsSync, mkdirSync } = require('fs');
 const { v4: uuid } = require('uuid');
 const favicon = require('serve-favicon');
 const flash = require('express-flash-2');
@@ -19,6 +20,7 @@ const winston = require('./config/winston');
 const morgan = require('./config/morgan')();
 const beforeRequest = require('./middleware/before-request');
 const error = require('./middleware/error-handler');
+const permit = require('./middleware/permit');
 const indexRouter = require('./routes/index');
 const pagesRouter = require('./routes/pages');
 const usersRouter = require('./routes/users');
@@ -32,6 +34,28 @@ const setStaticCacheHeaders = (res, duration) => {
   date.setHours(date.getHours() + duration);
 
   res.set({ Expires: date.toUTCString(), 'Cache-Control': `public, max-age=${duration * 3600}, immutable` });
+};
+const userStaticRouter = (req, res, next) => {
+  const { id } = req.params;
+
+  // eslint-disable-next-line eqeqeq
+  if (req.user.id != id) return next();
+
+  const uploadPath = appRoot.resolve(`/dist/uploads/${id}`);
+  if (!existsSync(uploadPath)) mkdirSync(uploadPath, { recursive: true });
+
+  return express.static(
+    uploadPath,
+    config.isDev
+      ? {}
+      : {
+          setHeaders(res, path) {
+            if (path.match(/\.(cur|gif|gz|htc|ico|jpeg|jpg|mp4|ogg|ogv|png|svg|svgz|ttf|webm|woff|woff2)$/)) {
+              setStaticCacheHeaders(res, 336);
+            }
+          },
+        }
+  )(req, res, next);
 };
 
 app.set('views', appRoot.resolve('/dist/views'));
@@ -91,6 +115,7 @@ app.use(beforeRequest);
 app.use('/', indexRouter);
 app.use('/pages', pagesRouter);
 app.use('/user', usersRouter);
+app.use('/user/:id/uploads/', permit('USER'), userStaticRouter);
 app.use('/flight', flightsRouter);
 app.use('/booking', bookingRouter);
 if (config.mailgun.enabled || config.nodemailer.enabled) app.use('/newsletter', newsletterRouter);

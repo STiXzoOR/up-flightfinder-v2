@@ -4033,7 +4033,7 @@ a.badge-soft-white.focus {
 	position: relative;
 	display: flex;
 	line-height: 0;
-	font-size: 1rem;
+	font-size: 1.5rem;
 	width: 3.125rem;
 	height: 3.125rem;
 	padding: 0;
@@ -4054,8 +4054,8 @@ a.badge-soft-white.focus {
 	height: 1.7rem;
 }
 
-.btn-icon.btn-medium {
-	font-size: 1rem;
+.btn-icon.btn-md {
+	font-size: 1.25rem;
 	width: 2.1875rem;
 	height: 2.1875rem;
 }
@@ -4065,6 +4065,23 @@ a.badge-soft-white.focus {
 	font-size: 1.75rem;
 	width: 5rem;
 	height: 5rem;
+}
+
+.btn-circle {
+	border-radius: 50%;
+}
+
+.btn-upload input[type='file'] {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	color: transparent;
+	opacity: 0;
+	display: block;
+	top: 0;
+	bottom: 0;
+	font-size: 0;
+	cursor: pointer;
 }
 
 .btn-link.link-collapse {

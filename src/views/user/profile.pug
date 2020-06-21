@@ -43,8 +43,27 @@ block content
 					#overview.card.shadow-soft.mb-5
 						.card-body.p-4.p-sm-5
 							.media.d-block.d-md-flex
-								.d-block.avatar.avatar-soft-primary.avatar-circle.avatar-3x.mx-auto.mb-3.mb-md-0.mr-md-5
-									span.avatar-initials #{details.firstName.charAt(0).toUpperCase() + details.lastName.charAt(0).toUpperCase()}
+								.d-block.avatar.avatar-circle.avatar-3x.mx-auto.mb-3.mb-md-0.mr-md-5(
+									class=`${details.gender === "male" ? "avatar-soft-primary" : "avatar-soft-danger"}`
+								)
+									#avatarOverlay.avatar-overlay.avatar-overlay-dark(style='display: none;')
+										.flex-center.w-100.h-100
+											.spinner-border.text-light(role='status')
+									#avatarControls.avatar-overlay.avatar-overlay-dark.fade-in
+										.flex-center.w-100.h-100
+											#btnEditAvatar.btn.btn-md.btn-icon.btn-circle.btn-upload.btn-white(type='button')
+												input#uploadAvatar(type='file', name='avatar')
+												i.fas.fa-pencil-alt.fa-fw.font-size-16
+											if user.hasAvatar
+												button#btnDeleteAvatar.btn.btn-md.btn-icon.btn-circle.btn-danger.ml-3(type='button')
+													i.fas.fa-times.fa-fw
+									if user.hasAvatar
+										img#avatarImage.avatar-img(
+											src=`${user.avatar.large}`,
+											alt=`${details.firstName.charAt(0).toUpperCase() + details.lastName.charAt(0).toUpperCase()}`
+										)
+									else
+										span#avatarImagePlaceholder.avatar-initials #{details.firstName.charAt(0).toUpperCase() + details.lastName.charAt(0).toUpperCase()}
 								.media-body
 									h1.flex-vertical-center.flex-column.flex-md-row.font-size-25.font-weight-medium.text-center.text-md-left.mb-0
 										span.mb-2.mb-md-0.mr-md-2 #{details.firstName} #{details.lastName}

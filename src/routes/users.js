@@ -2,14 +2,19 @@
 /* eslint-disable global-require */
 /* eslint-disable no-var */
 const express = require('express');
+const { unlink } = require('fs').promises;
+const path = require('path');
+const appRoot = require('app-root-path');
 const createError = require('http-errors');
 const passport = require('passport');
+const jimp = require('jimp');
 const config = require('../config/dotenv');
 const Common = require('../controllers/common');
 const User = require('../controllers/user');
 const routeAsync = require('../middleware/route-async');
 const handleResponseError = require('../middleware/handle-response-error');
 const permit = require('../middleware/permit');
+const uploader = require('../middleware/file-upload');
 const rateLimiter = require('../config/rate-limit');
 const { validate } = require('../middleware/superstruct');
 
@@ -125,6 +130,88 @@ router.get(
       bookings,
       countries,
     });
+  })
+);
+
+router.put(
+  '/edit/avatar/upload',
+  permit('USER'),
+  uploader(),
+  routeAsync(async (req, res, next) => {
+    let response = {
+      status: 400,
+      error: true,
+      message: 'Either the file you uploaded is invalid or corrupted. Please upload again.',
+    };
+
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(404).json(response);
+    }
+
+    const { avatar } = req.files;
+    const allowedMimes = ['image/jpeg', 'image/pjpeg', 'image/png'];
+
+    if (!allowedMimes.includes(avatar.mimetype)) {
+      response.message = 'Invalid file type. Only jpg and png image files are allowed.';
+      return res.status(response.status).json(response);
+    }
+
+    if (avatar.truncated) {
+      response.message = 'The file is too big. Please upload a file smaller than 1MB.';
+      return res.status(response.status).json(response);
+    }
+
+    await jimp.read(avatar.tempFilePath).then((image) => {
+      return Promise.all(
+        [32, 256].map((size) => {
+          const clone = image.clone().cover(size, size);
+          const filename = `profile_${size}.jpg`;
+          const filePath = appRoot.resolve(`/dist/uploads/${req.user.id}/avatar`);
+
+          return clone.write(path.join(filePath, filename));
+        })
+      );
+    });
+    await unlink(avatar.tempFilePath);
+
+    response = await User.updateAvatarStatus({ customerID: req.user.id, hasAvatar: true });
+
+    if (response.error)
+      return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/profile' })(
+        req,
+        res,
+        next
+      );
+
+    const url = `/user/${req.user.id}/uploads/avatar/profile`;
+    response.urls = { small: `${url}_32.jpg`, large: `${url}_256.jpg` };
+    return res.status(response.status).json(response);
+  })
+);
+
+router.delete(
+  '/edit/avatar/delete',
+  permit('USER'),
+  routeAsync(async (req, res, next) => {
+    await Promise.all(
+      [32, 256].map((size) => {
+        const filename = `profile_${size}.jpg`;
+        const filePath = appRoot.resolve(`/dist/uploads/${req.user.id}/avatar`);
+
+        return unlink(path.join(filePath, filename));
+      })
+    );
+
+    const response = await User.updateAvatarStatus({ customerID: req.user.id, hasAvatar: false });
+
+    if (response.error)
+      return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/profile' })(
+        req,
+        res,
+        next
+      );
+
+    return res.status(response.status).json(response);
   })
 );
 

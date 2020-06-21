@@ -43,6 +43,136 @@ function formatAirports(airport) {
   return $airport;
 }
 
+// TODO: Needs refactoring
+function proccessAvatar(el, action) {
+  const $this = $(el);
+  const isUpload = action === 'upload';
+
+  if (isUpload && $this.val() === '') return;
+
+  const elements = {};
+  const actions = {
+    upload: { method: 'put', url: '/user/edit/avatar/upload' },
+    delete: { method: 'delete', url: '/user/edit/avatar/delete' },
+  };
+  const fetchData = {
+    url: actions[action].url,
+    args: { method: actions[action].method },
+  };
+
+  [
+    {
+      target: {
+        name: 'image',
+        type: 'img',
+        id: 'avatarImage',
+        size: 'large',
+        overlay: 'avatarOverlay',
+        classes: 'avatar-img',
+      },
+      placeholder: { type: 'span', id: 'avatarImagePlaceholder', classes: 'avatar-initials invisible' },
+    },
+    {
+      target: {
+        name: 'icon',
+        type: 'img',
+        id: 'avatarIcon',
+        size: 'small',
+        classes: 'd-none d-md-inline-block img-fluid rounded-circle ml-md-2',
+      },
+      placeholder: {
+        type: 'i',
+        id: 'avatarIconPlaceholder',
+        classes: 'd-none d-md-inline-block fas fa-user-circle font-size-md-30 ml-md-2 invisible',
+      },
+    },
+  ].forEach((element) => {
+    const isImage = element.target.name === 'image';
+    let data = {
+      target: { id: `#${element.target.id}`, type: element.target.type },
+      placeholder: { id: `#${element.placeholder.id}`, type: element.placeholder.type },
+    };
+    const { classes } = isUpload ? element.target : element.placeholder;
+    if (!isUpload) [data.target, data.placeholder] = [data.placeholder, data.target];
+
+    let target = $(data.target.id);
+    if (!target.length)
+      target = $(`<${data.target.type}/>`)
+        .attr({ id: data.target.id.slice(1) })
+        .addClass(classes);
+
+    const placeholder = $(data.placeholder.id);
+    const parent = placeholder.length ? placeholder.parent() : target.parent();
+
+    if (isUpload) target.attr('alt', placeholder.text());
+    else if (isImage) target.text(placeholder.attr('alt'));
+
+    data = {
+      target,
+      placeholder,
+      parent,
+    };
+
+    if (isUpload) data.size = element.target.size;
+    if (element.target.overlay) data.overlay = $(`#${element.target.overlay}`);
+
+    elements[element.target.name] = data;
+  });
+
+  if (isUpload && $this[0].files && $this[0].files[0]) {
+    const file = $this[0].files[0];
+    const formData = new FormData();
+
+    formData.append($this.attr('name'), file);
+    fetchData.args.body = formData;
+  }
+
+  elements.image.overlay.show();
+  elements.image.parent.blur();
+  elements.image.parent.css({ 'pointer-events': 'none' });
+
+  fetch(fetchData.url, fetchData.args)
+    .then((response) => response.json())
+    .then((response) => {
+      if (response.error) {
+        elements.image.overlay.hide();
+        alert(response.message);
+        return;
+      }
+
+      Object.keys(elements).forEach((name) => {
+        const isImage = name === 'image';
+        elements[name].target.one('load', function loaded() {
+          if (elements[name].overlay) elements[name].overlay.hide();
+          if (elements[name].placeholder.length) {
+            if (isUpload && isImage) {
+              const deleteBtn = $('<button/>')
+                .attr({ id: 'btnDeleteAvatar', type: 'button' })
+                .addClass('btn btn-md btn-icon btn-circle btn-danger ml-3')
+                .append($('<i/>').addClass('fas fa-times fa-fw'));
+
+              deleteBtn.insertAfter('#btnEditAvatar');
+            }
+            elements[name].placeholder.remove();
+            if (isUpload) elements[name].parent.append($(this));
+            else $(this).removeClass('invisible');
+          }
+          elements[name].parent.css({ 'pointer-events': '' });
+        });
+
+        if (isUpload) elements[name].target.attr({ src: response.urls[elements[name].size] });
+        else {
+          elements[name].parent.append(elements[name].target);
+          elements[name].target.trigger('load');
+        }
+      });
+    })
+    .catch((error) => {
+      elements.image.overlay.hide();
+      console.log(error);
+    });
+}
+
 $.fn.headerReveal = function headerReveal() {
   const $w = $(window);
   const $main = $('main');
@@ -1054,6 +1184,15 @@ $('#cardNumber').on('change keyup paste', function format() {
   const formatted = groups.join('-').slice(0, 19);
 
   $(this).val(formatted);
+});
+
+$('#uploadAvatar').on('change', function uploadAvatar() {
+  return proccessAvatar(this, 'upload');
+});
+
+$('#btnDeleteAvatar').on('click', function deleteAvatar() {
+  $(this).remove();
+  return proccessAvatar(this, 'delete');
 });
 
 $(() => {

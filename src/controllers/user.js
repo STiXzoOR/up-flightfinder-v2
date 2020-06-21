@@ -17,9 +17,9 @@ class User extends Base {
       },
       get: {
         full:
-          'SELECT DISTINCT c.first_name as firstName, c.last_name as lastName, c.email as email, c.gender as gender, c.mobile as mobile, DATE_FORMAT(c.joined_date, "%a, %d %b") as date, c.address_line_1 as addressLine1, c.address_line_2 as addressLine2, c.city as city, c.region as region, IF(c.country IS NOT NULL, cs.name, c.country) as country, c.postal_code as postalCode, c.status = "VERIFIED" as isVerified FROM customer as c, countries as cs WHERE IF(c.country IS NOT NULL, cs.country_code=c.country, 1)',
+          'SELECT DISTINCT c.first_name as firstName, c.last_name as lastName, c.email as email, c.gender as gender, c.mobile as mobile, DATE_FORMAT(c.joined_date, "%a, %d %b") as date, c.address_line_1 as addressLine1, c.address_line_2 as addressLine2, c.city as city, c.region as region, IF(c.country IS NOT NULL, cs.name, c.country) as country, c.postal_code as postalCode, c.status = "VERIFIED" as isVerified, c.has_avatar as hasAvatar FROM customer as c, countries as cs WHERE IF(c.country IS NOT NULL, cs.country_code=c.country, 1)',
         partial:
-          'SELECT c.customer_id as id, c.first_name as firstName, c.last_name as lastName, c.email as email, c.customer_type as role, c.status = "VERIFIED" as isVerified FROM customer as c WHERE 1',
+          'SELECT c.customer_id as id, c.first_name as firstName, c.last_name as lastName, c.email as email, c.customer_type as role, c.status = "VERIFIED" as isVerified, c.has_avatar as hasAvatar FROM customer as c WHERE 1',
       },
       insert:
         'INSERT INTO customer (first_name, last_name, email, password, mobile, gender, joined_date, status, customer_type) VALUES (:firstName, :lastName, :email, :password, :mobile, :gender, NOW(), :status, "USER")',
@@ -34,6 +34,7 @@ class User extends Base {
         },
       },
       update: {
+        avatar: 'UPDATE customer SET has_avatar=:hasAvatar WHERE customer_id=:customerID',
         details:
           'UPDATE customer SET first_name=:firstName, last_name=:lastName, mobile=:mobile, gender=:gender, address_line_1=:addressLine1, address_line_2=:addressLine2, city=:city, region=:region, postal_code=:postal, country=:country WHERE customer_id=:customerID',
         password: {
@@ -75,6 +76,9 @@ class User extends Base {
         },
       },
       update: {
+        avatar: {
+          success: 'Avatar status updated.',
+        },
         details: {
           success: 'Your personal information has been successfully updated.',
         },
@@ -224,15 +228,23 @@ class User extends Base {
 
   async verify(customerID = '') {
     const query = this.queries.verify.status;
-    const response = await this.execute(query, { customerID });
+    const response = await this.execute(query, { customerID }, 'commit');
     response.message = response.error ? this.messages.generic : this.messages.verify.status.success;
+
+    return response;
+  }
+
+  async updateAvatarStatus(args = {}) {
+    const query = this.queries.update.avatar;
+    const response = await this.execute(query, args, 'commit');
+    response.message = response.error ? this.messages.generic : this.messages.update.avatar.success;
 
     return response;
   }
 
   async updateDetails(args = {}) {
     const query = this.queries.update.details;
-    const response = await this.execute(query, args);
+    const response = await this.execute(query, args, 'commit');
     response.message = response.error ? this.messages.generic : this.messages.update.details.success;
 
     return response;
