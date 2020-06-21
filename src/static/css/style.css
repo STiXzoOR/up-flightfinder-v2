@@ -3103,27 +3103,43 @@ ol.list-styled.list-styled-latin {
 
 .avatar-img {
 	max-width: 100%;
-	height: auto;
+	height: 100%;
 	border-radius: 0.3125rem;
+	object-fit: cover;
 }
 
-.avatar-img-overlay {
+.avatar-overlay {
 	position: absolute;
 	top: 0;
 	left: 0;
 	bottom: 0;
 	right: 0;
-	transform: scale(0);
-	transition: all 0.5s ease-in-out;
-}
-
-.avatar-circle .avatar-img-overlay {
-	border-radius: 50%;
-}
-
-.avatar:hover .avatar-img-overlay {
 	background-color: rgba(41, 124, 187, 0.8);
+	transition: all 0.4s ease-in-out;
+}
+
+.avatar-overlay.avatar-overlay-dark {
+	background-color: rgba(0, 0, 0, 0.6);
+}
+
+.avatar-overlay.fade-in {
+	opacity: 0;
+}
+
+.avatar-overlay.zoom-in {
+	transform: scale(0);
+}
+
+.avatar:hover .avatar-overlay.fade-in {
+	opacity: 1;
+}
+
+.avatar:hover .avatar-overlay.zoom-in {
 	transform: scale(1);
+}
+
+.avatar-circle .avatar-overlay {
+	border-radius: 50%;
 }
 
 .avatar-initials {
