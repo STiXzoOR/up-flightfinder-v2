@@ -41,7 +41,7 @@ const userStaticRouter = (req, res, next) => {
   // eslint-disable-next-line eqeqeq
   if (req.user.id != id) return next();
 
-  const uploadPath = appRoot.resolve(`/dist/uploads/${id}`);
+  const uploadPath = appRoot.resolve(`/uploads/${id}`);
   if (!existsSync(uploadPath)) mkdirSync(uploadPath, { recursive: true });
 
   return express.static(

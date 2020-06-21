@@ -151,6 +151,11 @@ function proccessAvatar(el, action) {
                 .addClass('btn btn-md btn-icon btn-circle btn-danger ml-3')
                 .append($('<i/>').addClass('fas fa-times fa-fw'));
 
+              deleteBtn.on('click', function deleteAvatar() {
+                $(this).remove();
+                return proccessAvatar(this, 'delete');
+              });
+
               deleteBtn.insertAfter('#btnEditAvatar');
             }
             elements[name].placeholder.remove();

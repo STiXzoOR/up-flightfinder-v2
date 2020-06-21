@@ -166,7 +166,7 @@ router.put(
         [32, 256].map((size) => {
           const clone = image.clone().cover(size, size);
           const filename = `profile_${size}.jpg`;
-          const filePath = appRoot.resolve(`/dist/uploads/${req.user.id}/avatar`);
+          const filePath = appRoot.resolve(`/uploads/${req.user.id}/avatar`);
 
           return clone.write(path.join(filePath, filename));
         })
@@ -196,7 +196,7 @@ router.delete(
     await Promise.all(
       [32, 256].map((size) => {
         const filename = `profile_${size}.jpg`;
-        const filePath = appRoot.resolve(`/dist/uploads/${req.user.id}/avatar`);
+        const filePath = appRoot.resolve(`/uploads/${req.user.id}/avatar`);
 
         return unlink(path.join(filePath, filename));
       })

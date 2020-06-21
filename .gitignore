@@ -29,7 +29,9 @@ lerna-debug.log*
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # Distribution files
+uploads/
 dist/
+dist.zip
 
 # Runtime data
 pids
@@ -186,5 +188,3 @@ venv.bak/
 # Maintenance mode
 config/maintenance_key.json
 ./maintenance
-
-dist.zip
