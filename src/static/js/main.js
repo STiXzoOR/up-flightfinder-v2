@@ -43,13 +43,18 @@ function formatAirports(airport) {
   return $airport;
 }
 
+function toggleAvatarLoader(action) {
+  const loader = $('#avatarLoadingOverlay');
+  const parent = loader.parent();
+
+  parent.css({ 'pointer-events': `${action === 'show' ? 'none' : ''}` });
+  loader[action]();
+}
+
 // TODO: Needs refactoring
 function proccessAvatar(el, action) {
   const $this = $(el);
   const isUpload = action === 'upload';
-
-  if (isUpload && $this.val() === '') return;
-
   const elements = {};
   const actions = {
     upload: { method: 'put', url: '/user/edit/avatar/upload' },
@@ -59,6 +64,42 @@ function proccessAvatar(el, action) {
     url: actions[action].url,
     args: { method: actions[action].method },
   };
+  const limits = {
+    mimes: {
+      allowed: ['image/jpeg', 'image/pjpeg', 'image/png'],
+      message: 'Invalid file type. Only jpg and png image files are allowed.',
+    },
+    size: {
+      allowed: 1024 * 1024,
+      message: 'The file is too big. Please upload a file smaller than 1MB.',
+    },
+  };
+
+  if (isUpload && $this.val() === '') {
+    toggleAvatarLoader('hide');
+    return;
+  }
+
+  if (isUpload && $this[0].files && $this[0].files[0]) {
+    const file = $this[0].files[0];
+
+    if (!limits.mimes.allowed.includes(file.type)) {
+      alert(limits.mimes.message);
+      toggleAvatarLoader('hide');
+      return;
+    }
+
+    if (file.size > limits.size.allowed) {
+      alert(limits.size.message);
+      toggleAvatarLoader('hide');
+      return;
+    }
+
+    const formData = new FormData();
+
+    formData.append($this.attr('name'), file);
+    fetchData.args.body = formData;
+  }
 
   [
     {
@@ -67,7 +108,7 @@ function proccessAvatar(el, action) {
         type: 'img',
         id: 'avatarImage',
         size: 'large',
-        overlay: 'avatarOverlay',
+        overlay: 'avatarLoadingOverlay',
         classes: 'avatar-img',
       },
       placeholder: { type: 'span', id: 'avatarImagePlaceholder', classes: 'avatar-initials invisible' },
@@ -119,15 +160,7 @@ function proccessAvatar(el, action) {
     elements[element.target.name] = data;
   });
 
-  if (isUpload && $this[0].files && $this[0].files[0]) {
-    const file = $this[0].files[0];
-    const formData = new FormData();
-
-    formData.append($this.attr('name'), file);
-    fetchData.args.body = formData;
-  }
-
-  elements.image.overlay.show();
+  if (!isUpload) toggleAvatarLoader('show');
   elements.image.parent.blur();
   elements.image.parent.css({ 'pointer-events': 'none' });
 
@@ -135,8 +168,8 @@ function proccessAvatar(el, action) {
     .then((response) => response.json())
     .then((response) => {
       if (response.error) {
-        elements.image.overlay.hide();
         alert(response.message);
+        toggleAvatarLoader('hide');
         return;
       }
 
@@ -173,7 +206,7 @@ function proccessAvatar(el, action) {
       });
     })
     .catch((error) => {
-      elements.image.overlay.hide();
+      toggleAvatarLoader('hide');
       console.log(error);
     });
 }
@@ -1193,6 +1226,10 @@ $('#cardNumber').on('change keyup paste', function format() {
 
 $('#uploadAvatar').on('change', function uploadAvatar() {
   return proccessAvatar(this, 'upload');
+});
+
+$('#btnEditAvatar').on('click', () => {
+  toggleAvatarLoader('show');
 });
 
 $('#btnDeleteAvatar').on('click', function deleteAvatar() {
