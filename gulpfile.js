@@ -47,6 +47,8 @@ gulp.task('copy:images', () =>
     .pipe(gulp.dest(config.paths.images.dist))
 );
 
+gulp.task('copy:videos', () => gulp.src(config.paths.videos.src).pipe(gulp.dest(config.paths.videos.dist)));
+
 gulp.task('copy:vendors', (cb) => {
   config.paths.vendors.forEach((vendor) => {
     return gulp.src(vendor.src).pipe(gulp.dest(vendor.dist));
@@ -63,6 +65,8 @@ gulp.task('clean:vendors', () => del(config.paths.vendors_dir));
 gulp.task('clean:fonts', () => del(config.paths.fonts_dir));
 
 gulp.task('clean:images', () => del(config.paths.images_dir).then((cb) => cache.clearAll(cb)));
+
+gulp.task('clean:videos', () => del(config.paths.videos_dir));
 
 gulp.task('clean:dist', () => del(config.paths.cleanup_dirs));
 
@@ -156,7 +160,7 @@ const browserSyncInit = (done) => {
 };
 
 gulp.task('browser-sync', browserSyncInit);
-gulp.task('init', gulp.parallel('copy:fonts', 'copy:images', 'copy:vendors'));
+gulp.task('init', gulp.parallel('copy:fonts', 'copy:images', 'copy:videos', 'copy:vendors'));
 gulp.task('build', gulp.series('clean', gulp.parallel('init', 'copy:src', 'copy:css', 'copy:js')));
 gulp.task('build:dev', gulp.series('clean:dist', gulp.parallel('copy:views', 'copy:templates', 'copy:css', 'copy:js')));
 gulp.task(

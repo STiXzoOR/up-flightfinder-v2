@@ -2863,6 +2863,7 @@ label.required::after {
 
 .page-preloader {
 	position: fixed;
+	display: flex;
 	top: 0;
 	right: 0;
 	bottom: 0;
@@ -2870,6 +2871,8 @@ label.required::after {
 	width: 100%;
 	height: 100%;
 	z-index: 1500;
+	align-items: center;
+	justify-content: center;
 	background-color: #fff;
 }
 
@@ -2881,10 +2884,113 @@ label.required::after {
 
 .page-preloader-image[data-bg='white'] {
 	background-image: url('/static/images/preloader/preloader_white.gif');
+	background-color: #fff;
 }
 
 .page-preloader-image[data-bg='gray'] {
 	background-image: url('/static/images/preloader/preloader_gray.gif');
+	background-color: #ebf0f7;
+}
+
+@keyframes preloader {
+	0% {
+		background-position: 0px 0px;
+	}
+	3.33% {
+		background-position: -256px 0px;
+	}
+	6.67% {
+		background-position: -512px 0px;
+	}
+	10% {
+		background-position: -768px 0px;
+	}
+	13.33% {
+		background-position: -1024px 0px;
+	}
+	16.67% {
+		background-position: -1280px 0px;
+	}
+	20% {
+		background-position: -1536px 0px;
+	}
+	23.33% {
+		background-position: -1792px 0px;
+	}
+	26.67% {
+		background-position: -2048px 0px;
+	}
+	30% {
+		background-position: -2304px 0px;
+	}
+	33.33% {
+		background-position: -2560px 0px;
+	}
+	36.67% {
+		background-position: -2816px 0px;
+	}
+	40% {
+		background-position: -3072px 0px;
+	}
+	43.33% {
+		background-position: -3328px 0px;
+	}
+	46.67% {
+		background-position: -3584px 0px;
+	}
+	50% {
+		background-position: -3840px 0px;
+	}
+	53.33% {
+		background-position: -4096px 0px;
+	}
+	56.67% {
+		background-position: -4352px 0px;
+	}
+	60% {
+		background-position: -4608px 0px;
+	}
+	63.33% {
+		background-position: -4864px 0px;
+	}
+	66.67% {
+		background-position: -5120px 0px;
+	}
+	70% {
+		background-position: -5376px 0px;
+	}
+	73.33% {
+		background-position: -5632px 0px;
+	}
+	76.67% {
+		background-position: -5888px 0px;
+	}
+	80% {
+		background-position: -6144px 0px;
+	}
+	83.33% {
+		background-position: -6400px 0px;
+	}
+	86.67% {
+		background-position: -6656px 0px;
+	}
+	90% {
+		background-position: -6912px 0px;
+	}
+	93.33% {
+		background-position: -7168px 0px;
+	}
+	96.67%,
+	100% {
+		background-position: -7424px 0px;
+	}
+}
+
+.page-preloader-animation {
+	background: url('/static/images/preloader/preloader_sprite.png') no-repeat 0px 0px;
+	width: 256px;
+	height: 256px;
+	animation: preloader 1.2s infinite steps(1);
 }
 
 .smooth-scroll {

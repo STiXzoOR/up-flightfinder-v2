@@ -13,6 +13,8 @@ const paths = {
     '!dist/static',
     '!dist/static/images',
     '!dist/static/images/**/*',
+    '!dist/static/videos',
+    '!dist/static/videos/**/*',
     '!dist/static/fonts',
     '!dist/static/fonts/**/*',
     '!dist/static/vendors',
@@ -21,6 +23,7 @@ const paths = {
   vendors_dir: 'dist/static/vendors',
   fonts_dir: 'dist/static/fonts',
   images_dir: 'dist/static/images',
+  videos_dir: 'dist/static/videos',
   src_dir: 'src',
   src_files: ['src/**/*.*', '!src/static', '!src/static/**/*'],
   dist_dir: 'dist',
@@ -48,6 +51,10 @@ const paths = {
   images: {
     src: 'src/static/images/**/*.+(png|jpg|jpeg|gif|svg|ico|webmanifest|xml)',
     dist: 'dist/static/images',
+  },
+  videos: {
+    src: 'src/static/videos/**/*.+(mp4|ogg|ogv|webm)',
+    dist: 'dist/static/videos',
   },
   vendors: [
     {
