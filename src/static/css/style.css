@@ -3123,6 +3123,7 @@ ol.list-styled.list-styled-latin {
 }
 
 .avatar-overlay.fade-in {
+	visibility: hidden;
 	opacity: 0;
 }
 
@@ -3131,6 +3132,7 @@ ol.list-styled.list-styled-latin {
 }
 
 .avatar:hover .avatar-overlay.fade-in {
+	visibility: visible;
 	opacity: 1;
 }
 
@@ -4203,6 +4205,7 @@ a.badge-soft-white.focus {
 .btn-reverse-destinations {
 	height: 2.5rem;
 	width: 10px;
+	font-size: 1rem;
 	color: #77838f;
 	border-radius: 0;
 	background-color: #fff;
