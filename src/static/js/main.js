@@ -162,10 +162,6 @@ function proccessAvatar(el, action) {
     elements[element.target.name] = data;
   });
 
-  // if (!isUpload) toggleAvatarLoader('show');
-  // elements.image.parent.;
-  // elements.image.parent.css({ 'pointer-events': 'none' });
-
   fetch(fetchData.url, fetchData.args)
     .then((response) => response.json())
     .then((response) => {

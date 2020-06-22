@@ -203,7 +203,7 @@ def generate_flights(days=30):
 
     def _get_start_date():
         query = """
-        SELECT MAX(arr_date) as max_date
+        SELECT MAX(dep_date) as max_date
         FROM flight
         """
 
