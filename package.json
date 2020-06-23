@@ -14,6 +14,7 @@
 		"production-pm2": "ssh stix@167.172.173.13 'cd ~/flight-finder-server/ && pm2 startOrRestart pm2-start.json --env production'",
 		"stop-pm2": "ssh stix@167.172.173.13 'pm2 stop flight-finder'",
 		"update-remote-files": "ssh stix@167.172.173.13 'cd ~/flight-finder-server/ && git pull && npm install'",
+		"generate-remote-flights": "ssh stix@167.172.173.13 'cd ~/flight-finder-server/config/python_scripts/database && source ../venv/bin/activate && python generate_db.py --generate-flights && deactivate'",
 		"update-packages": "ncu -u && npm install",
 		"snyk-protect": "snyk protect",
 		"prepare": "npm run snyk-protect"
