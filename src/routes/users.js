@@ -108,13 +108,13 @@ router.get(
   '/profile',
   permit('USER', { requireVerification: false }),
   routeAsync(async (req, res, next) => {
-    const customerID = req.user.id;
-    let response = await User.get({ customerID });
+    const userID = req.user.id;
+    let response = await User.get({ userID });
 
     if (response.error) return handleResponseError(response)(req, res, next);
 
     const details = response.result[0];
-    response = await User.bookings(customerID);
+    response = await User.bookings(userID);
 
     if (response.error && (response.tryCatchError || !response.status === 404))
       return handleResponseError(response)(req, res, next);
@@ -174,7 +174,7 @@ router.put(
     });
     await unlink(avatar.tempFilePath);
 
-    response = await User.updateAvatarStatus({ customerID: req.user.id, hasAvatar: true });
+    response = await User.updateAvatarStatus({ userID: req.user.id, hasAvatar: true });
 
     if (response.error)
       return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/profile' })(
@@ -202,7 +202,7 @@ router.delete(
       })
     );
 
-    const response = await User.updateAvatarStatus({ customerID: req.user.id, hasAvatar: false });
+    const response = await User.updateAvatarStatus({ userID: req.user.id, hasAvatar: false });
 
     if (response.error)
       return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/profile' })(
@@ -222,7 +222,7 @@ router.post(
     const { body } = req;
     body.country = body.country || null;
 
-    const response = await User.updateDetails({ customerID: req.user.id, ...body });
+    const response = await User.updateDetails({ userID: req.user.id, ...body });
     if (response.error && response.tryCatchError) return next(response.result);
 
     res.flash(response.error ? 'error' : 'success', response.message);
@@ -235,7 +235,7 @@ router.post(
   permit('USER'),
   routeAsync(async (req, res, next) => {
     const { body } = req;
-    const response = await User.updatePassword({ customerID: req.user.id, ...body });
+    const response = await User.updatePassword({ userID: req.user.id, ...body });
 
     if (response.error)
       return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/profile' })(
@@ -257,7 +257,7 @@ router.post(
   '/delete',
   permit('USER'),
   routeAsync(async (req, res, next) => {
-    const response = await User.remove({ customerID: req.user.id, ...req.body });
+    const response = await User.remove({ userID: req.user.id, ...req.body });
 
     if (response.error)
       return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/profile' })(
@@ -323,7 +323,7 @@ if (config.mailgun.enabled || config.nodemailer.enabled) {
           next
         );
 
-      return res.render('user/reset-password', { token, customerID: response.result[0].id });
+      return res.render('user/reset-password', { token, userID: response.result[0].id });
     })
   );
 
@@ -341,7 +341,7 @@ if (config.mailgun.enabled || config.nodemailer.enabled) {
           next
         );
 
-      response = await User.get({ customerID: body.customerID }, { partial: true });
+      response = await User.get({ userID: body.userID }, { partial: true });
 
       if (response.error)
         return handleResponseError(response, { redirectOnError: 404, flashMessage: true, redirect: '/user/sign-in' })(
@@ -390,8 +390,8 @@ if (config.mailgun.enabled || config.nodemailer.enabled) {
           next
         );
 
-      const customerID = response.result[0].id;
-      response = await User.verify(customerID);
+      const userID = response.result[0].id;
+      response = await User.verify(userID);
 
       if (response.error)
         return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: route })(
@@ -401,7 +401,7 @@ if (config.mailgun.enabled || config.nodemailer.enabled) {
         );
 
       const { message } = response;
-      response = await User.get({ customerID }, { partial: true });
+      response = await User.get({ userID }, { partial: true });
 
       if (response.error)
         return handleResponseError(response, { redirectOnError: 404, flashMessage: true, redirect: route })(

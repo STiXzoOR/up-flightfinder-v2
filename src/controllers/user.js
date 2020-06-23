@@ -10,44 +10,42 @@ class User extends Base {
     super();
 
     this.queries = {
-      password: 'SELECT password From customer WHERE customer_id=:customerID',
+      password: 'SELECT password From user WHERE user_id=:userID',
       exists: {
-        byID: 'SELECT customer_id as id, email FROM customer WHERE customer_id=:customerID',
-        byEmail: 'SELECT customer_id as id, email FROM customer WHERE email=:customerID',
+        byID: 'SELECT user_id as id, email FROM user WHERE user_id=:userID',
+        byEmail: 'SELECT user_id as id, email FROM user WHERE email=:userID',
       },
       get: {
         full:
-          'SELECT DISTINCT c.first_name as firstName, c.last_name as lastName, c.email as email, c.gender as gender, c.mobile as mobile, DATE_FORMAT(c.joined_date, "%a, %d %b") as date, c.address_line_1 as addressLine1, c.address_line_2 as addressLine2, c.city as city, c.region as region, IF(c.country IS NOT NULL, cs.name, c.country) as country, c.postal_code as postalCode, c.status = "VERIFIED" as isVerified, c.has_avatar as hasAvatar FROM customer as c, countries as cs WHERE IF(c.country IS NOT NULL, cs.country_code=c.country, 1)',
+          'SELECT DISTINCT u.first_name as firstName, u.last_name as lastName, u.email as email, u.gender as gender, u.mobile as mobile, DATE_FORMAT(u.joined_date, "%a, %d %b") as date, u.address_line_1 as addressLine1, u.address_line_2 as addressLine2, u.city as city, u.region as region, IF(u.country IS NOT NULL, cs.name, u.country) as country, u.postal_code as postalCode, u.status = "VERIFIED" as isVerified, u.has_avatar as hasAvatar FROM user as u, countries as cs WHERE IF(u.country IS NOT NULL, cs.country_code=u.country, 1)',
         partial:
-          'SELECT c.customer_id as id, c.first_name as firstName, c.last_name as lastName, c.email as email, c.customer_type as role, c.status = "VERIFIED" as isVerified, c.has_avatar as hasAvatar FROM customer as c WHERE 1',
+          'SELECT u.user_id as id, u.first_name as firstName, u.last_name as lastName, u.email as email, u.user_type as role, u.status = "VERIFIED" as isVerified, u.has_avatar as hasAvatar FROM user as u WHERE 1',
       },
       insert:
-        'INSERT INTO customer (first_name, last_name, email, password, mobile, gender, joined_date, status, customer_type) VALUES (:firstName, :lastName, :email, :password, :mobile, :gender, NOW(), :status, "USER")',
-      remove: 'DELETE FROM customer WHERE customer_id=:customerID',
+        'INSERT INTO user (first_name, last_name, email, password, mobile, gender, joined_date, status, user_type) VALUES (:firstName, :lastName, :email, :password, :mobile, :gender, NOW(), :status, "USER")',
+      remove: 'DELETE FROM user WHERE user_id=:userID',
       verify: {
-        status:
-          'UPDATE customer SET status="VERIFIED", email_token=NULL, email_token_expire=NULL WHERE customer_id=:customerID',
+        status: 'UPDATE user SET status="VERIFIED", email_token=NULL, email_token_expire=NULL WHERE user_id=:userID',
         token: {
-          email: 'SELECT customer_id as id FROM customer WHERE email_token=:token and email_token_expire > NOW()',
-          password:
-            'SELECT customer_id as id FROM customer WHERE password_token=:token and password_token_expire > NOW()',
+          email: 'SELECT user_id as id FROM user WHERE email_token=:token and email_token_expire > NOW()',
+          password: 'SELECT user_id as id FROM user WHERE password_token=:token and password_token_expire > NOW()',
         },
       },
       update: {
-        avatar: 'UPDATE customer SET has_avatar=:hasAvatar WHERE customer_id=:customerID',
+        avatar: 'UPDATE user SET has_avatar=:hasAvatar WHERE user_id=:userID',
         details:
-          'UPDATE customer SET first_name=:firstName, last_name=:lastName, mobile=:mobile, gender=:gender, address_line_1=:addressLine1, address_line_2=:addressLine2, city=:city, region=:region, postal_code=:postal, country=:country WHERE customer_id=:customerID',
+          'UPDATE user SET first_name=:firstName, last_name=:lastName, mobile=:mobile, gender=:gender, address_line_1=:addressLine1, address_line_2=:addressLine2, city=:city, region=:region, postal_code=:postal, country=:country WHERE user_id=:userID',
         password: {
-          token: 'UPDATE customer SET password=:password, password_token=NULL, password_token_expire=NULL',
-          noToken: 'UPDATE customer SET password=:password',
+          token: 'UPDATE user SET password=:password, password_token=NULL, password_token_expire=NULL',
+          noToken: 'UPDATE user SET password=:password',
         },
         verification: {
-          email: 'UPDATE customer SET email_token=:token, email_token_expire=:tokenExpire WHERE email=:email',
-          password: 'UPDATE customer SET password_token=:token, password_token_expire=:tokenExpire WHERE email=:email',
+          email: 'UPDATE user SET email_token=:token, email_token_expire=:tokenExpire WHERE email=:email',
+          password: 'UPDATE user SET password_token=:token, password_token_expire=:tokenExpire WHERE email=:email',
         },
       },
       bookings:
-        'SELECT b.booking_id as id, b.last_name as lastName, DATE_FORMAT(b.booking_date, "%a, %d %b") as date, b.total_passengers as quantity, b.flight_type <> "Roundtrip" as isRoundtrip, b.status <> "CANCELED" as isCanceled, a1.city as fromCity, a2.city as toCity, DATE_FORMAT(b.depart_flight_date, "%a, %d %b") as departDate FROM booking as b, flight as f, airport as a1, airport as a2 WHERE b.customer_id=:customerID and f.flight_id=b.depart_flight_id and f.dep_date=b.depart_flight_date and f.class=b.flight_class and a1.airport_code=f.from_airport and a2.airport_code=f.to_airport ORDER BY b.depart_flight_date DESC',
+        'SELECT b.booking_id as id, b.last_name as lastName, DATE_FORMAT(b.booking_date, "%a, %d %b") as date, b.total_passengers as quantity, b.flight_type <> "Roundtrip" as isRoundtrip, b.status <> "CANCELED" as isCanceled, a1.city as fromCity, a2.city as toCity, DATE_FORMAT(b.depart_flight_date, "%a, %d %b") as departDate FROM booking as b, flight as f, airport as a1, airport as a2 WHERE b.user_id=:userID and f.flight_id=b.depart_flight_id and f.dep_date=b.depart_flight_date and f.class=b.flight_class and a1.airport_code=f.from_airport and a2.airport_code=f.to_airport ORDER BY b.depart_flight_date DESC',
     };
 
     this.messages = {
@@ -103,7 +101,7 @@ class User extends Base {
     let response;
 
     if (checkUserExistence) {
-      response = await this.exists(args.customerID);
+      response = await this.exists(args.userID);
 
       if (response.error || !response.result) {
         response.error = true;
@@ -112,7 +110,7 @@ class User extends Base {
     }
 
     const query = this.queries.password;
-    response = await this.execute(query, { customerID: args.customerID }, 'fetchOne');
+    response = await this.execute(query, { userID: args.userID }, 'fetchOne');
 
     if (response.error) return response;
 
@@ -129,9 +127,9 @@ class User extends Base {
     return response;
   }
 
-  async exists(customerID = '', { byID = true } = {}) {
+  async exists(userID = '', { byID = true } = {}) {
     const query = this.queries.exists[byID ? 'byID' : 'byEmail'];
-    const response = await this.execute(query, { customerID }, 'fetchOne');
+    const response = await this.execute(query, { userID }, 'fetchOne');
 
     if (response.tryCatchError || response.status === 500) return response;
 
@@ -146,7 +144,7 @@ class User extends Base {
   }
 
   async get(args = {}, { byID = true, byEmail = false, partial = false } = {}) {
-    const response = await this.exists(byID ? args.customerID : args.email, { byID });
+    const response = await this.exists(byID ? args.userID : args.email, { byID });
 
     if (response.error || !response.result) {
       response.error = true;
@@ -156,11 +154,11 @@ class User extends Base {
     let query = this.queries.get[partial ? 'partial' : 'full'];
 
     if (byID && byEmail) {
-      query += ' and c.customer_id=:customerID and c.email=:email';
+      query += ' and u.user_id=:userID and u.email=:email';
     } else if (byID) {
-      query += ' and c.customer_id=:customerID';
+      query += ' and u.user_id=:userID';
     } else if (byEmail) {
-      query += ' and c.email=:email';
+      query += ' and u.email=:email';
     }
 
     return this.execute(query, args);
@@ -175,7 +173,7 @@ class User extends Base {
     }
 
     const responsePassword = await this.passwordMatch({
-      customerID: response.result[0].id,
+      userID: response.result[0].id,
       currentPassword: args.password,
     });
 
@@ -220,15 +218,15 @@ class User extends Base {
     if (response.error) return response;
 
     const query = this.queries.remove;
-    response = await this.execute(query, { customerID: args.customerID }, 'commit');
+    response = await this.execute(query, { userID: args.userID }, 'commit');
     response.message = response.error ? this.messages.generic : this.messages.remove.success;
 
     return response;
   }
 
-  async verify(customerID = '') {
+  async verify(userID = '') {
     const query = this.queries.verify.status;
-    const response = await this.execute(query, { customerID }, 'commit');
+    const response = await this.execute(query, { userID }, 'commit');
     response.message = response.error ? this.messages.generic : this.messages.verify.status.success;
 
     return response;
@@ -259,7 +257,7 @@ class User extends Base {
     }
 
     let query = this.queries.update.password[expireToken ? 'token' : 'noToken'];
-    query += ' WHERE customer_id=:customerID';
+    query += ' WHERE user_id=:userID';
 
     const salt = bcrypt.genSaltSync(10);
     const password = bcrypt.hashSync(args.password, salt);
@@ -270,10 +268,10 @@ class User extends Base {
     return response;
   }
 
-  async bookings(customerID = '') {
+  async bookings(userID = '') {
     const query = this.queries.bookings;
     const bookingsData = { isEmpty: true };
-    const response = await this.execute(query, { customerID });
+    const response = await this.execute(query, { userID });
 
     if (!response.error && response.result.length) {
       bookingsData.isEmpty = false;

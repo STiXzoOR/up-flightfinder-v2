@@ -11,7 +11,7 @@ class Booking extends Base {
       exists: 'SELECT booking_id FROM booking WHERE booking_id=:bookingID',
       get: {
         full:
-          'SELECT booking_id as bookingID, customer_id as customerID, depart_flight_id as departFlightID, return_flight_id as returnFlightID, depart_flight_date as departDate, return_flight_date as returnDate, flight_class as class, first_name as contactFirstName, last_name as contactLastName, email as contactEmail, mobile as contactMobile, booking_date as bookedDate, last_modify_date as lastModifyDate, total_passengers as quantity, total_baggage as baggageQuantity, price_per_passenger as pricePerPassenger, total_price as totalPrice, payment_type as paymentType, flight_type as flightType, status FROM booking WHERE booking_id=:bookingID and first_name=:firstName and last_name=:lastName',
+          'SELECT booking_id as bookingID, user_id as userID, depart_flight_id as departFlightID, return_flight_id as returnFlightID, depart_flight_date as departDate, return_flight_date as returnDate, flight_class as class, first_name as contactFirstName, last_name as contactLastName, email as contactEmail, mobile as contactMobile, booking_date as bookedDate, last_modify_date as lastModifyDate, total_passengers as quantity, total_baggage as baggageQuantity, price_per_passenger as pricePerPassenger, total_price as totalPrice, payment_type as paymentType, flight_type as flightType, status FROM booking WHERE booking_id=:bookingID and first_name=:firstName and last_name=:lastName',
         partial:
           'SELECT booking_id as id, depart_flight_id as departFlightID, depart_flight_date as departDate, return_flight_id as returnFlightID, return_flight_date as returnDate, flight_class as class, DATE_FORMAT(booking_date, "%a, %d %b") as bookedDate, first_name as contactFirstName, last_name as contactLastName, email as contactEmail, mobile as contactMobile, total_passengers as quantity, price_per_passenger as pricePerPassenger, total_price as totalPrice, flight_type as flightType, flight_type = "Roundtrip" as isRoundtrip, status, status = "CANCELED" as isCanceled FROM booking WHERE booking_id=:bookingID',
         flights:
@@ -21,7 +21,7 @@ class Booking extends Base {
         'SELECT p.passenger_id as id, p.first_name as firstName, p.last_name as lastName, hb.insurance as insurance, hb.chkd_cabin_bag_dep_amount as departCabinBagQuantity, hb.chkd_small_bag_dep_amount as departSmallBagQuantity, hb.chkd_large_bag_dep_amount as departLargeBagQuantity, hb.chkd_cabin_bag_ret_amount as returnCabinBagQuantity, hb.chkd_small_bag_ret_amount as returnSmallBagQuantity, hb.chkd_large_bag_ret_amount as returnLargeBagQuantity, IF(i.price <> 0, i.price, "free") as insurancePrice, IF(b1.price <> 0, b1.price, "free") as cabinBagPrice, b2.price as smallBagPrice, b3.price as largeBagPrice, (b1.price*(hb.chkd_cabin_bag_dep_amount + hb.chkd_cabin_bag_ret_amount) + b2.price*(hb.chkd_small_bag_dep_amount + hb.chkd_small_bag_ret_amount) + b3.price*(hb.chkd_large_bag_dep_amount + hb.chkd_large_bag_ret_amount) + i.price) as totalPaidPrice FROM passenger as p, has_booking as hb, insurance as i, baggage as b1, baggage as b2, baggage as b3 WHERE p.passenger_id=hb.passenger_id and hb.booking_id=:bookingID and i.insurance_id=hb.insurance and b1.bag_id=hb.chkd_cabin_bag_dep and b2.bag_id=hb.chkd_small_bag_dep and b3.bag_id=hb.chkd_large_bag_dep',
       insert: {
         booking:
-          'INSERT INTO booking (booking_id, customer_id, depart_flight_id, return_flight_id, depart_flight_date, return_flight_date, flight_class, first_name, last_name, email, mobile, booking_date, last_modify_date, total_passengers, total_baggage, price_per_passenger, total_price, payment_type, flight_type, status) VALUES (:bookingID, :customerID, :departFlightID, :returnFlightID, :departDate, :returnDate, :class, :contactFirstName, :contactLastName, :contactEmail, :contactMobile, :bookedDate, :lastModifyDate, :quantity, :baggageQuantity, :pricePerPassenger, :totalPrice, :paymentType, :flightType, :status)',
+          'INSERT INTO booking (booking_id, user_id, depart_flight_id, return_flight_id, depart_flight_date, return_flight_date, flight_class, first_name, last_name, email, mobile, booking_date, last_modify_date, total_passengers, total_baggage, price_per_passenger, total_price, payment_type, flight_type, status) VALUES (:bookingID, :userID, :departFlightID, :returnFlightID, :departDate, :returnDate, :class, :contactFirstName, :contactLastName, :contactEmail, :contactMobile, :bookedDate, :lastModifyDate, :quantity, :baggageQuantity, :pricePerPassenger, :totalPrice, :paymentType, :flightType, :status)',
         passenger:
           'INSERT INTO passenger (passenger_id, first_name, last_name, date_of_birth, gender, id_type, id_expiration_date, nationality) VALUE (:id, :firstName, :lastName, :dateOfBirth, :gender, :idType, :idExpirationDate, :nationality)',
       },
@@ -46,9 +46,9 @@ class Booking extends Base {
       },
       canBook: {
         oneway:
-          'SELECT IF(f1.arr_date < f2.dep_date or (f1.arr_date >= f2.dep_date and b.status="CANCELED"), 1, 0) as canBook FROM booking as b, flight as f1, flight as f2, (SELECT IF(MAX(return_flight_date) IS NOT NULL, IF(MAX(depart_flight_date) > MAX(return_flight_date), MAX(depart_flight_date), MAX(return_flight_date)), MAX(depart_flight_date)) as max_date FROM booking WHERE customer_id=:customerID) as t WHERE IF(b.return_flight_date IS NOT NULL and b.return_flight_date=t.max_date, (b.return_flight_date=t.max_date and f1.flight_id=b.return_flight_id and f1.dep_date=b.return_flight_date), (b.depart_flight_date=t.max_date and f1.flight_id=b.depart_flight_id and f1.dep_date=b.depart_flight_date)) and f1.class=b.flight_class and b.customer_id=:customerID and f2.flight_id=:departFlightID and f2.dep_date=:departDate and f2.class=:class',
+          'SELECT IF(f1.arr_date < f2.dep_date or (f1.arr_date >= f2.dep_date and b.status="CANCELED"), 1, 0) as canBook FROM booking as b, flight as f1, flight as f2, (SELECT IF(MAX(return_flight_date) IS NOT NULL, IF(MAX(depart_flight_date) > MAX(return_flight_date), MAX(depart_flight_date), MAX(return_flight_date)), MAX(depart_flight_date)) as max_date FROM booking WHERE user_id=:userID) as t WHERE IF(b.return_flight_date IS NOT NULL and b.return_flight_date=t.max_date, (b.return_flight_date=t.max_date and f1.flight_id=b.return_flight_id and f1.dep_date=b.return_flight_date), (b.depart_flight_date=t.max_date and f1.flight_id=b.depart_flight_id and f1.dep_date=b.depart_flight_date)) and f1.class=b.flight_class and b.user_id=:userID and f2.flight_id=:departFlightID and f2.dep_date=:departDate and f2.class=:class',
         roundtrip:
-          'SELECT IF((f1.arr_date < f2.dep_date or (f1.arr_date >= f2.dep_date and b.status="CANCELED")) and (f1.arr_date < f3.dep_date or (f1.arr_date >= f3.dep_date and b.status="CANCELED")), 1, 0) as canBook FROM booking as b, flight as f1, flight as f2, flight as f3, (SELECT IF(MAX(return_flight_date) IS NOT NULL, IF(MAX(depart_flight_date) > MAX(return_flight_date), MAX(depart_flight_date), MAX(return_flight_date)), MAX(depart_flight_date)) as max_date FROM booking WHERE customer_id=:customerID) as t WHERE IF(b.return_flight_date IS NOT NULL and b.return_flight_date=t.max_date, (b.return_flight_date=t.max_date and f1.flight_id=b.return_flight_id and f1.dep_date=b.return_flight_date), (b.depart_flight_date=t.max_date and f1.flight_id=b.depart_flight_id and f1.dep_date=b.depart_flight_date)) and f1.class=b.flight_class and b.customer_id=:customerID and f2.flight_id=:departFlightID and f2.dep_date=:departDate and f2.class=:class and f3.flight_id=:returnFlightID and f3.dep_date=returnDate and f3.class=:class',
+          'SELECT IF((f1.arr_date < f2.dep_date or (f1.arr_date >= f2.dep_date and b.status="CANCELED")) and (f1.arr_date < f3.dep_date or (f1.arr_date >= f3.dep_date and b.status="CANCELED")), 1, 0) as canBook FROM booking as b, flight as f1, flight as f2, flight as f3, (SELECT IF(MAX(return_flight_date) IS NOT NULL, IF(MAX(depart_flight_date) > MAX(return_flight_date), MAX(depart_flight_date), MAX(return_flight_date)), MAX(depart_flight_date)) as max_date FROM booking WHERE user_id=:userID) as t WHERE IF(b.return_flight_date IS NOT NULL and b.return_flight_date=t.max_date, (b.return_flight_date=t.max_date and f1.flight_id=b.return_flight_id and f1.dep_date=b.return_flight_date), (b.depart_flight_date=t.max_date and f1.flight_id=b.depart_flight_id and f1.dep_date=b.depart_flight_date)) and f1.class=b.flight_class and b.user_id=:userID and f2.flight_id=:departFlightID and f2.dep_date=:departDate and f2.class=:class and f3.flight_id=:returnFlightID and f3.dep_date=returnDate and f3.class=:class',
       },
     };
 
@@ -89,7 +89,7 @@ class Booking extends Base {
 
   async exists(args = {}, { byID = false, byLastName = false, checkingFor = 'general' } = {}) {
     let query = this.queries.exists;
-    if (byID) query += ' and customer_id=:customerID';
+    if (byID) query += ' and user_id=:userID';
     if (byLastName) query += ' and last_name=:lastName';
 
     const response = await this.execute(query, args, 'fetchOne');
@@ -113,7 +113,7 @@ class Booking extends Base {
 
   async get(args = {}, { byID = false, byLastName = false } = {}) {
     let query = this.queries.get.partial;
-    if (byID) query += ' and customer_id=:customerID';
+    if (byID) query += ' and user_id=:userID';
     if (byLastName) query += ' and last_name=:lastName';
 
     return this.execute(query, args);
@@ -226,7 +226,7 @@ class Booking extends Base {
     if (response.error) return response;
 
     const [data] = response.result;
-    data.customerID = args.customerID;
+    data.userID = args.userID;
 
     response = await this.exists(args, { byID: true, checkingFor: 'insert' });
     if (response.error || response.result) {

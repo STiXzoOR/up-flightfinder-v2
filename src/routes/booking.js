@@ -19,7 +19,7 @@ router.post(
   permit('USER'),
   routeAsync(async (req, res, next) => {
     const { body } = req;
-    const response = await Booking.addUserBooking({ customerID: req.user.id, ...body });
+    const response = await Booking.addUserBooking({ userID: req.user.id, ...body });
 
     if (response.error && response.tryCatchError) return next(response.result);
     if (!response.error) {
@@ -44,7 +44,7 @@ router.get(
 
     if (req.user && req.user.role === 'USER') {
       const args = {
-        customerID: req.user.id,
+        userID: req.user.id,
         departFlightID: query.departFlightID,
         departDate: query.departDate,
         class: query.class,
@@ -315,11 +315,11 @@ router.get(
   '/manage-booking/bookingID=:bookingID&lastName=:lastName',
   routeAsync(async (req, res, next) => {
     const { bookingID, lastName } = req.params;
-    const customerID = req.session.user.id;
+    const userID = req.session.user.id;
     const byID = /(\/user\/profile)/.test(req.get('Referrer'));
 
     let response = await Booking.exists(
-      { bookingID, customerID, lastName },
+      { bookingID, userID, lastName },
       {
         byID,
         byLastName: true,
@@ -332,7 +332,7 @@ router.get(
       return res.redirect('/booking/manage-booking');
     }
 
-    response = await Booking.get({ bookingID, customerID, lastName }, { byID, byLastName: true });
+    response = await Booking.get({ bookingID, userID, lastName }, { byID, byLastName: true });
     if (response.error) return handleResponseError(response)(req, res, next);
 
     const [booking] = response.result;
