@@ -101,6 +101,7 @@ router.post(
       return next(createError(400));
     }
 
+    const userID = req.user && req.user.isVerified ? req.user.id : 1;
     const { flightData } = req.session;
     delete req.session.flightData;
     req.session.save((err) => {
@@ -155,7 +156,7 @@ router.post(
 
     const bookingDetails = {
       bookingID,
-      customerID: req.session.user.id,
+      userID,
       departFlightID: flightData.query.departFlightID,
       departDate: flightData.query.departDate,
       returnFlightID: null,

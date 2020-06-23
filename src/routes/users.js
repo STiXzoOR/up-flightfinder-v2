@@ -2,7 +2,7 @@
 /* eslint-disable global-require */
 /* eslint-disable no-var */
 const express = require('express');
-const { unlink } = require('fs').promises;
+const { unlink, rmdir } = require('fs').promises;
 const path = require('path');
 const appRoot = require('app-root-path');
 const createError = require('http-errors');
@@ -265,6 +265,8 @@ router.post(
         res,
         next
       );
+
+    await rmdir(appRoot.resolve(`/uploads/${req.user.id}`), { recursive: true });
 
     return req.session.destroy((err) => {
       if (err) return next(err);

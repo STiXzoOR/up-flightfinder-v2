@@ -13,6 +13,22 @@ block preloader
 block content
 	main.bg-gray(role='main')
 		.container.py-5.py-lg-12
+			if !details.isVerified
+				.alert.alert-warning.alert-dismissible.font-size-15.py-4.pl-4.mb-5(role='alert')
+					.d-flex.flex-column
+						h5.text-center.text-md-left.alert-heading.font-size-20 Verify your account
+						span.text-justify.mb-3
+							| Looks like you haven&apos;t verified your email yet. Please check your email for the verification link. If you can&apos;t find it, click on the
+							|
+							strong Unverified
+							|
+							| badge below to resend you the link. By verifying your email, you get access to all the features of your account including:
+						ul.list-styled.m-0.pl-4
+							li Updating your account details
+							li Changing your avatar
+							li Tracking your booking history
+					button.close(type='button', data-dismiss='alert', aria-label='Close')
+						span(aria-hidden='true') &times;
 			.row.justify-content-center
 				.d-none.d-lg-block.col-lg-4.col-xl-3
 					.card.shadow-soft(style='position: sticky; top: 6.5rem;')
@@ -46,18 +62,19 @@ block content
 								#avatar.d-block.avatar.avatar-circle.avatar-3x.mx-auto.mb-3.mb-md-0.mr-md-5(
 									class=`${details.gender === "male" ? "avatar-soft-primary" : "avatar-soft-danger"}`
 								)
-									#avatarLoadingOverlay.avatar-overlay.avatar-overlay-dark(style='display: none;')
-										.flex-center.w-100.h-100
-											.spinner-border.text-light(role='status')
-									#avatarControls.avatar-overlay.avatar-overlay-dark.fade-in
-										.flex-center.w-100.h-100
-											#btnEditAvatar.btn.btn-md.btn-icon.btn-circle.btn-upload.btn-white(type='button')
-												input#uploadAvatar(type='file', name='avatar')
-												i.fas.fa-pencil-alt.fa-fw.font-size-16
-											if user.hasAvatar
-												button#btnDeleteAvatar.btn.btn-md.btn-icon.btn-circle.btn-danger.ml-3(type='button')
-													i.fas.fa-times.fa-fw
-									if user.hasAvatar
+									if user.isVerified
+										#avatarLoadingOverlay.avatar-overlay.avatar-overlay-dark(style='display: none;')
+											.flex-center.w-100.h-100
+												.spinner-border.text-light(role='status')
+										#avatarControls.avatar-overlay.avatar-overlay-dark.fade-in
+											.flex-center.w-100.h-100
+												#btnEditAvatar.btn.btn-md.btn-icon.btn-circle.btn-upload.btn-white(type='button')
+													input#uploadAvatar(type='file', name='avatar')
+													i.fas.fa-pencil-alt.fa-fw.font-size-16
+												if user.hasAvatar
+													button#btnDeleteAvatar.btn.btn-md.btn-icon.btn-circle.btn-danger.ml-3(type='button')
+														i.fas.fa-times.fa-fw
+									if user.isVerified && user.hasAvatar
 										img#avatarImage.avatar-img(
 											src=`${user.avatar.large}`,
 											alt=`${details.firstName.charAt(0).toUpperCase() + details.lastName.charAt(0).toUpperCase()}`
@@ -65,10 +82,10 @@ block content
 									else
 										span#avatarImagePlaceholder.avatar-initials #{details.firstName.charAt(0).toUpperCase() + details.lastName.charAt(0).toUpperCase()}
 								.media-body
-									h1.flex-vertical-center.flex-column.flex-md-row.font-size-25.font-weight-medium.text-center.text-md-left.mb-0
+									h5.flex-vertical-center.flex-column.flex-md-row.font-size-23.font-weight-medium.text-center.text-md-left.mb-0
 										span.mb-2.mb-md-0.mr-md-2 #{details.firstName} #{details.lastName}
 										if !details.isVerified
-											a.badge.badge-soft-danger.font-size-14.font-weight-normal(
+											a.badge.badge-soft-danger.font-size-14.font-weight-normal.text-lh-inherit.px-2(
 												href=`/user/account/verify/resend?email=${details.email}`,
 												data-toggle='popover',
 												data-trigger='hover',
@@ -96,7 +113,7 @@ block content
 										li.flex-center-between.pt-1
 											span.font-weight-medium.text-nowrap.mr-2.mr-sm-0 Country
 											span.text-secondary.text-truncate #{details.country? details.country: 'Not configured yet'}
-					#history.card.shadow-soft.mb-5
+					#history.card.shadow-soft.mb-5(class=`${!details.isVerified ? "section-disabled" : ""}`)
 						.accordion
 							.card-collapse
 								h3.mb-0
@@ -140,7 +157,7 @@ block content
 																i.fas.fa-times.fa-fw.font-size-28.text-danger
 												.col.text-center.mt-4.mt-sm-0
 													.border-md-right.px-md-5.pl-lg-0.pr-lg-4.px-xl-5
-														.font-size-22.font-weight-medium
+														.font-size-20.font-weight-medium
 															span #{booking.fromCity}
 															span.fas.fa-plane.fa-fw.fa-sm.text-muted.mx-3
 															span #{booking.toCity}
@@ -199,7 +216,7 @@ block content
 												.invalid-feedback Last name is required.
 									.d-flex.justify-content-end
 										button.btn.btn-sm.btn-primary.w-100.w-md-20.w-xl-15(type='submit', data-toggle='loader') Add
-					#settings.card.shadow-soft.mb-5
+					#settings.card.shadow-soft.mb-5(class=`${!details.isVerified ? "section-disabled" : ""}`)
 						.accordion
 							.card-collapse
 								h3.mb-0
@@ -386,6 +403,14 @@ block content
 
 block append vendorScripts
 	script(src='/static/vendors/zxcvbn/zxcvbn.js')
+
 block append customScripts
 	script(src='/static/js/scrollspy.js')
 	script(src='/static/js/password-strength.js')
+
+block append scripts
+	if !details.isVerified
+		script.
+			$(() => {
+				$('.section-disabled').find('input, button[type="submit"], select').prop('disabled', true)
+			})
