@@ -354,6 +354,20 @@ $.fn.syncText = function syncText() {
   });
 };
 
+$.fn.showHidePassword = function showHidePassword() {
+  const $this = $(this);
+  const toggler = $('<div/>').attr('id', 'btnShowHidePassword').addClass('btn-password');
+
+  toggler.on('click', function toggle() {
+    const active = $(this).hasClass('show');
+
+    $(this).toggleClass('show', !active);
+    $this.attr('type', active ? 'password' : 'text');
+  });
+
+  $this.after(toggler);
+};
+
 const customScrollSpy = {
   defaultConfig: {
     duration: 400,
@@ -1235,6 +1249,7 @@ $(() => {
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();
   $('[data-toggle="sync-text"]').syncText();
+  $('[data-type="password"]').each((i, el) => $(el).showHidePassword());
   $('.page-header').headerReveal();
   $('.btn-go-up').goUp();
   $('.class-list').classCheckList();
