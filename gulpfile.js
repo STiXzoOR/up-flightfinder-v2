@@ -8,7 +8,7 @@ const babel = require('gulp-babel');
 const minify = require('gulp-minify');
 const concat = require('gulp-concat');
 const postcss = require('gulp-postcss');
-const autoprefixer = require('gulp-autoprefixer');
+const autoprefixer = require('autoprefixer');
 const nodemon = require('gulp-nodemon');
 const del = require('del');
 const cssnano = require('cssnano');
@@ -87,24 +87,7 @@ gulp.task('watch:templates', (done) => {
 gulp.task('copy:css', () =>
   gulp
     .src(config.paths.css.src)
-    .pipe(
-      autoprefixer(
-        [
-          'last 1 major version',
-          '>= 1%',
-          'Chrome >= 45',
-          'Firefox >= 38',
-          'Edge >= 12',
-          'Explorer >= 10',
-          'iOS >= 9',
-          'Safari >= 9',
-          'Android >= 4.4',
-          'Opera >= 30',
-        ],
-        { cascade: true }
-      )
-    )
-    .pipe(postcss([cssnano()]))
+    .pipe(postcss([autoprefixer(), cssnano()]))
     .pipe(gulp.dest(config.paths.css.dist))
     .pipe(browserSync.stream())
 );
@@ -121,12 +104,7 @@ gulp.task('minify:js', async () => {
 
   gulp
     .src(config.paths.js.src)
-    .pipe(
-      babel({
-        presets: ['@babel/env'],
-        plugins: ['@babel/plugin-proposal-class-properties'],
-      })
-    )
+    .pipe(babel())
     .pipe(concat('main.js'))
     .pipe(
       minify({
