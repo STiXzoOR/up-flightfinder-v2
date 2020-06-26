@@ -1198,15 +1198,13 @@ $('#navPaymentTabs').on('click', 'a[data-toggle="tab"]', (e) => {
   $('#navPaymentTabsContent').find('input[name="paymentType"]').val(e.currentTarget.dataset.type);
 });
 
-$('a[href="#navContactDetails"]').on('click', function clicked(e) {
+$('a[data-toggle="tab"][data-type="custom"]').on('click', function clicked(e) {
   e.preventDefault();
-  $('a[href="#navEditContactDetails"]').removeClass('active').attr('aria-selected', false);
-  $(this).tab('show');
-});
+  const id = $(this).closest('.tab-pane.active').attr('id');
+  const target = $(this).data('target');
+  const targetToggler = $(target).find(`a[data-toggle="tab"][data-target="#${id}"]`);
 
-$('a[href="#navEditContactDetails"]').on('click', function clicked(e) {
-  e.preventDefault();
-  $('a[href="#navContactDetails"]').removeClass('active').attr('aria-selected', false);
+  targetToggler.removeClass('active').attr('aria-selected', false);
   $(this).tab('show');
 });
 

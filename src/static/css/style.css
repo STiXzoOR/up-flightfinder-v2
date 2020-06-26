@@ -4505,25 +4505,25 @@ input[data-type='password'].disabled + .btn-password::before {
 }
 
 @media (max-width: 575.98px) {
-	.modal-flight-details .btn-modal-close,
-	.modal-flight-details .btn-modal-close:focus {
-		position: relative;
+	.btn-modal-close,
+	.btn-modal-close:focus {
 		transform: none;
 		color: #67747c;
 		height: 1.25rem;
 		font-size: 1.25rem;
 		width: 1.25rem;
+		padding: 1.5rem;
 		border: none;
 		background-color: transparent;
 	}
 
-	.modal-flight-details .btn-modal-close:hover {
+	.btn-modal-close:hover {
 		color: #444d52;
 		border: none;
 		background-color: transparent;
 	}
 
-	.modal-flight-details .btn-modal-close:active {
+	.btn-modal-close:active {
 		color: #3b444f;
 		border: none;
 		background-color: transparent;
@@ -5021,12 +5021,12 @@ input[data-type='password'].disabled + .btn-password::before {
 
 .edit-contact-details {
 	position: absolute;
-	top: 50%;
-	right: 1.75rem;
+	top: -3.75rem;
+	left: 8.75rem;
+	padding: 0.75rem;
 	z-index: 2;
 	opacity: 0;
 	transition: opacity 0.3s ease-in-out, color 0.3s ease-in-out;
-	transform: translateY(-50%);
 }
 
 .edit-contact-details.active,
@@ -5036,19 +5036,7 @@ input[data-type='password'].disabled + .btn-password::before {
 	pointer-events: none;
 }
 
-@media (min-width: 576px) {
-	.edit-contact-details {
-		right: 2.25rem;
-	}
-}
-
-@media (min-width: 768px) {
-	.edit-contact-details {
-		right: 2.75rem;
-	}
-}
-
-.btn[aria-expanded='true'] + .edit-contact-details {
+.collapse.show .edit-contact-details {
 	opacity: 1;
 }
 
