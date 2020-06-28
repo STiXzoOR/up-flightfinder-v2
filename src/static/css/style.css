@@ -4293,6 +4293,20 @@ input[data-type='password'] {
 	color: #206091;
 }
 
+input[data-type='password'].form-control.is-valid + .btn-password,
+.was-validated input[data-type='password'].form-control:valid + .btn-password,
+input[data-type='password'].form-control.is-invalid + .btn-password,
+.was-validated input[data-type='password'].form-control:invalid + .btn-password {
+	right: 1.5rem;
+}
+
+input[data-type='password'].form-control.is-valid,
+.was-validated input[data-type='password'].form-control:valid,
+input[data-type='password'].form-control.is-invalid,
+.was-validated input[data-type='password'].form-control:invalid {
+	padding-right: calc(1.5em + 3rem);
+}
+
 input[data-type='password']:disabled + .btn-password::before,
 input[data-type='password'].disabled + .btn-password::before {
 	opacity: 0.65;
