@@ -52,7 +52,7 @@ function toggleAvatarLoader(action) {
 }
 
 // TODO: Needs refactoring
-function proccessAvatar(el, action) {
+async function proccessAvatar(el, action) {
   toggleAvatarLoader('show');
 
   const $this = $(el);
@@ -162,7 +162,7 @@ function proccessAvatar(el, action) {
     elements[element.target.name] = data;
   });
 
-  fetch(fetchData.url, fetchData.args)
+  await fetch(fetchData.url, fetchData.args)
     .then((response) => response.json())
     .then((response) => {
       if (response.error) {
@@ -599,6 +599,35 @@ const passwordStrength = {
     this.selector.each((i, el) => {
       if (!$(el).data('PasswordStrength')) {
         $(el).data('PasswordStrength', new PasswordStrength(el));
+      }
+    });
+  },
+};
+
+const customTabs = {
+  defaultConfig: {
+    targetGroup: null,
+    target: null,
+    animation: '',
+    animationType: 'default',
+    animationExtraClasses: '',
+    animationDuration: null,
+  },
+
+  init(selector, config) {
+    const self = this;
+
+    if (!selector || !selector.length) return;
+
+    $(selector).each((i, el) => {
+      const $this = $(el);
+      const options =
+        config && $.isPlainObject(config)
+          ? $.extend(true, {}, self.defaultConfig, config, $this.data())
+          : $.extend(true, {}, self.defaultConfig, $this.data());
+
+      if (!$this.data('CustomTabs') || $this.data('override') === 'true') {
+        $this.data('CustomTabs', new CustomTabs(el, options));
       }
     });
   },
@@ -1198,16 +1227,6 @@ $('#navPaymentTabs').on('click', 'a[data-toggle="tab"]', (e) => {
   $('#navPaymentTabsContent').find('input[name="paymentType"]').val(e.currentTarget.dataset.type);
 });
 
-$('a[data-toggle="tab"][data-type="custom"]').on('click', function clicked(e) {
-  e.preventDefault();
-  const id = $(this).closest('.tab-pane.active').attr('id');
-  const target = $(this).data('target');
-  const targetToggler = $(target).find(`a[data-toggle="tab"][data-target="#${id}"]`);
-
-  targetToggler.removeClass('active').attr('aria-selected', false);
-  $(this).tab('show');
-});
-
 $('#cardYear').on('change', function fixMonth() {
   const value = parseInt($(this).val(), 10);
   const currentYear = new Date().getFullYear();
@@ -1251,6 +1270,7 @@ $(() => {
   $('.page-header').headerReveal();
   $('.btn-go-up').goUp();
   $('.class-list').classCheckList();
+  customTabs.init('[data-toggle="custom-tab"]');
   customScrollSpy.init($('.nav-scroll'));
   passwordStrength.init('[data-toggle="password-strength"]');
   datePicker.init('.flatpickr-input');

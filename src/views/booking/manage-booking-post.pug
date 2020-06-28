@@ -308,17 +308,15 @@ block content
 													i.fas.fa-chevron-down
 									#contactDetailsSection.collapse.show(aria-labelledby='Contact details section', data-parent='#contactDetails')
 										.card-body.pt-0.px-3.px-sm-4.px-md-5.pb-4
-											#navContactTabsContent.tab-content
-												#navContactDetails.position-relative.tab-pane.show.fade.active(role='tabpanel')
+											#navContactTabsContent.custom-tab-content
+												#navContactDetails.position-relative.custom-tab-pane.active(role='tabpanel')
 													if booking.isCanceled === 0
 														a.edit-contact-details.btn.btn-link.text-secondary.font-size-14(
-															data-toggle='tab',
-															data-type='custom',
-															data-target='#navEditContactDetails',
 															href='javascript:void(0)',
-															role='tab',
-															aria-controls='navEditContactDetails',
-															aria-selected='false'
+															data-toggle='custom-tab',
+															data-target='#navEditContactDetails',
+															data-target-group='edit-details',
+															data-animation-type='fade'
 														)
 															i.fas.fa-pencil-alt.fa-fw
 													ul.font-size-15
@@ -335,7 +333,7 @@ block content
 															span.font-weight-normal.text-nowrap.mr-2.mr-sm-0 Mobile
 															span.text-secondary.text-right.text-truncate #{booking.contactMobile}
 												if booking.isCanceled === 0
-													#navEditContactDetails.tab-pane.fade(role='tabpanel')
+													#navEditContactDetails.custom-tab-pane(role='tabpanel')
 														form#editContactForm.needs-validation(
 															method='POST',
 															action=`/booking/manage-booking/bookingID=${booking.id}&lastName=${booking.contactLastName}/edit`,
@@ -386,14 +384,12 @@ block content
 																	.invalid-feedback Mobile number is required.
 															.flex-vertical-center.justify-content-end.flex-column.flex-sm-row.mt-3
 																button.btn.btn-sm.btn-primary.w-100.w-sm-auto.mb-3.mb-sm-0.mr-sm-3(type='submit', data-toggle='loader') Save
-																a.btn.btn-sm.btn-danger.w-100.w-sm-auto(
-																	data-toggle='tab',
-																	data-type='custom',
-																	data-target='#navContactDetails',
+																a.btn.btn-sm.btn-danger.w-100.w-sm-auto.active(
 																	href='javascript:void(0)',
-																	role='tab',
-																	aria-controls='navContactDetails',
-																	aria-selected='true'
+																	data-toggle='custom-tab',
+																	data-target='#navContactDetails',
+																	data-target-group='edit-details',
+																	data-animation-type='fade'
 																) Cancel
 							#navPaymentHistory.tab-pane.fade(role='tabpanel')
 								#flightsSummary.accordion.rounded-0

@@ -6804,6 +6804,22 @@ input[data-type='password'].disabled + .btn-password::before {
 	background: #297cbb;
 }
 
+.custom-tab-content > .custom-tab-pane {
+	display: none;
+}
+
+.custom-tab-content > .active {
+	display: block;
+}
+
+.custom-tab-pane.fade {
+	transition: opacity 0.15s linear;
+}
+
+.custom-tab-pane.fade:not(.show) {
+	opacity: 0;
+}
+
 .nav-unjustified .nav-item {
 	-ms-flex-preferred-size: auto;
 	flex-basis: auto;
