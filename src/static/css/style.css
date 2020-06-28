@@ -21034,6 +21034,10 @@ button.bg-soft-gray:focus {
     2.20.13 Animations
 \*-------------------------------------------*/
 
+.animation {
+	animation-fill-mode: both;
+}
+
 .fadeIn {
 	animation: fadeIn;
 	animation-duration: 0.8s;
@@ -21057,7 +21061,7 @@ button.bg-soft-gray:focus {
 @keyframes fadeInDown {
 	from {
 		opacity: 0;
-		transform: translate3d(0, -100%, 0);
+		transform: translate3d(0, -15px, 0);
 	}
 
 	to {
@@ -21108,7 +21112,7 @@ button.bg-soft-gray:focus {
 @keyframes fadeInUp {
 	from {
 		opacity: 0;
-		transform: translate3d(0, 100%, 0);
+		transform: translate3d(0, 15px, 0);
 	}
 
 	to {
@@ -21117,17 +21121,148 @@ button.bg-soft-gray:focus {
 	}
 }
 
-.fadeInZoom {
-	animation: fadeInZoom;
+.fadeOut {
+	animation: fadeOut;
+	animation-duration: 0.8s;
+}
+
+@keyframes fadeOut {
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 2;
+	}
+}
+
+.fadeOutDown {
+	animation: fadeOutDown;
+	animation-duration: 0.4s;
+}
+
+@keyframes fadeOutDown {
+	from {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+
+	to {
+		opacity: 0;
+		transform: translate3d(0, 15px, 0);
+	}
+}
+
+.fadeOutLeft {
+	animation: fadeOutLeft;
+	animation-duration: 0.4s;
+}
+
+@keyframes fadeOutLeft {
+	from {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+
+	to {
+		opacity: 0;
+		transform: translate3d(-100%, 0, 0);
+	}
+}
+
+.fadeOutRight {
+	animation: fadeOutRight;
+	animation-duration: 0.4s;
+}
+
+@keyframes fadeOutRight {
+	from {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+
+	to {
+		opacity: 0;
+		transform: translate3d(100%, 0, 0);
+	}
+}
+
+.fadeOutUp {
+	animation: fadeOutUp;
+	animation-duration: 0.4s;
+}
+
+@keyframes fadeOutUp {
+	from {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+
+	to {
+		opacity: 0;
+		transform: translate3d(0, -15px, 0);
+	}
+}
+
+.slideInUp {
+	animation-name: slideInUp;
+	animation-duration: 0.4s;
+}
+
+@keyframes slideInUp {
+	from {
+		transform: translate3d(0, 10px, 0);
+		visibility: visible;
+	}
+
+	to {
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+.slideInDown {
+	animation-name: slideInDown;
+	animation-duration: 0.4s;
+}
+
+@keyframes slideInDown {
+	from {
+		transform: translate3d(0, -10px, 0);
+		visibility: visible;
+	}
+
+	to {
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+.zoomIn {
+	animation: zoomIn;
 	animation-duration: 0.6s;
 }
 
-@keyframes fadeInZoom {
+@keyframes zoomIn {
 	from {
 		transform: scale(0);
 	}
+
 	to {
 		transform: scale(1);
+	}
+}
+
+.zoomOut {
+	animation: zoomOut;
+	animation-duration: 0.6s;
+}
+
+@keyframes zoomOut {
+	from {
+		transform: scale(1);
+	}
+
+	to {
+		transform: scale(0);
 	}
 }
 
@@ -21159,7 +21294,7 @@ button.bg-soft-gray:focus {
 	animation-duration: 1s;
 }
 
-.animate-duration-2s {
+.animation-duration-2s {
 	animation-duration: 2s;
 }
 
@@ -21199,7 +21334,7 @@ button.bg-soft-gray:focus {
 	animation-delay: 1s;
 }
 
-.animate-delay-2s {
+.animation-delay-2s {
 	animation-delay: 2s;
 }
 
