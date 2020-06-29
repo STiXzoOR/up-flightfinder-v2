@@ -383,18 +383,18 @@ const customScrollSpy = {
   init(collection, config) {
     const self = this;
 
-    if (!collection || !collection.length) return;
+    if (!collection || !$(collection).length) return;
 
     collection.each((i, el) => {
       const $this = $(el);
-      const itemConfig =
+      const options =
         config && $.isPlainObject(config)
           ? $.extend(true, {}, self.defaultConfig, config, $this.data())
           : $.extend(true, {}, self.defaultConfig, $this.data());
-      itemConfig.parent = $(itemConfig.parent);
+      options.parent = $(options.parent);
 
       if (!$this.data('BSScrollSpy')) {
-        $this.data('BSScrollSpy', new BSScrollSpy($this, itemConfig));
+        $this.data('BSScrollSpy', new BSScrollSpy($this, options));
 
         self.items = self.items.add($this);
       }
@@ -434,7 +434,7 @@ const datePicker = {
   },
 
   init(selector, config) {
-    if (!$(selector).length) return;
+    if (!selector || !$(selector).length) return;
 
     this.selector = $(selector);
     this.config = config && $.isPlainObject(config) ? $.extend({}, this.defaultConfig, config) : this.defaultConfig;
@@ -494,7 +494,7 @@ const customSelect = {
   },
 
   init(selector, config) {
-    if (!$(selector).length) return;
+    if (!selector || !$(selector).length) return;
 
     this.selector = $(selector);
     this.config = config && $.isPlainObject(config) ? $.extend({}, this.defaultConfig, config) : this.defaultConfig;
@@ -590,15 +590,14 @@ const passwordStrength = {
   defaultConfig: {},
 
   init(selector, config) {
-    if (!$(selector).length) return;
+    if (!selector || !$(selector).length) return;
 
-    this.selector = $(selector);
     this.config =
       config && $.isPlainObject(config)
         ? $.extend(true, {}, this.defaultConfig, config, $(selector).data())
         : $.extend(true, {}, this.defaultConfig, $(selector).data());
 
-    this.selector.each((i, el) => {
+    $(selector).selector.each((i, el) => {
       if (!$(el).data('PasswordStrength')) {
         $(el).data('PasswordStrength', new PasswordStrength(el));
       }
@@ -619,7 +618,7 @@ const customTab = {
   init(selector, config) {
     const self = this;
 
-    if (!selector || !selector.length) return;
+    if (!selector || !$(selector).length) return;
 
     $(selector).each((i, el) => {
       const $this = $(el);
