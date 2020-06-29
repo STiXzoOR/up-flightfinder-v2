@@ -355,17 +355,19 @@ $.fn.syncText = function syncText() {
 };
 
 $.fn.showHidePassword = function showHidePassword() {
-  const $this = $(this);
-  const toggler = $('<div/>').attr('id', 'btnShowHidePassword').addClass('btn-password');
+  return this.each(function init() {
+    const $this = $(this);
+    const toggler = $('<div/>').attr('id', 'btnShowHidePassword').addClass('btn-password');
 
-  toggler.on('click', function toggle() {
-    const active = $(this).hasClass('show');
+    toggler.on('click', function toggle() {
+      const active = $(this).hasClass('show');
 
-    $(this).toggleClass('show', !active);
-    $this.attr('type', active ? 'password' : 'text');
+      $(this).toggleClass('show', !active);
+      $this.attr('type', active ? 'password' : 'text');
+    });
+
+    $this.after(toggler);
   });
-
-  $this.after(toggler);
 };
 
 const customScrollSpy = {
@@ -1266,7 +1268,7 @@ $(() => {
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();
   $('[data-toggle="sync-text"]').syncText();
-  $('[data-type="password"]').each((i, el) => $(el).showHidePassword());
+  $('[data-type="password"]').showHidePassword();
   $('.page-header').headerReveal();
   $('.btn-go-up').goUp();
   $('.class-list').classCheckList();

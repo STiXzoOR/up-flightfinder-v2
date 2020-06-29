@@ -6,7 +6,7 @@ mixin showAlert(dismiss=false, action=false)
 				.col(class=`${action ? "border-right" : ""}`)
 					.flex-vertical-center
 						i.fas.fa-lg.mr-3(class=isError ? "fa-exclamation-circle" : "fa-check-circle")
-						span #{isError ? error || flash.error : succss || flash.success}
+						span #{isError ? error || flash.error : success || flash.success}
 			if action && dismiss
 				.col-auto
 					a.btn.btn-link.btn-sm.px-0(class=isError ? "text-danger" : "text-success", href=`${action.href}`) #{action.text}
