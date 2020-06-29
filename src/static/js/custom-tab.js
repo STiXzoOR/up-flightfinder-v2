@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-class CustomTabs {
+class CustomTab {
   constructor(element, options) {
     this.options = options;
     this.element = element;
@@ -51,19 +51,20 @@ class CustomTabs {
 
       if ($(this).hasClass(self.options.classes.active)) return;
 
-      self.activate();
-      self._show();
+      self.show();
     });
   }
 
   activate() {
     $(this.controller).removeClass(this.options.classes.active);
     $(this.element).addClass(this.options.classes.active);
-  }
 
-  _show() {
     $(this.group).removeClass(this.options.classes.active);
     $(this.options.target).addClass(this.options.classes.active);
+  }
+
+  show() {
+    this.activate();
 
     switch (this.options.animationType) {
       case 'fade':

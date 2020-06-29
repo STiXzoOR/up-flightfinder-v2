@@ -604,7 +604,7 @@ const passwordStrength = {
   },
 };
 
-const customTabs = {
+const customTab = {
   defaultConfig: {
     targetGroup: null,
     target: null,
@@ -626,8 +626,8 @@ const customTabs = {
           ? $.extend(true, {}, self.defaultConfig, config, $this.data())
           : $.extend(true, {}, self.defaultConfig, $this.data());
 
-      if (!$this.data('CustomTabs') || $this.data('override') === 'true') {
-        $this.data('CustomTabs', new CustomTabs(el, options));
+      if (!$this.data('CustomTab') || $this.data('override') === 'true') {
+        $this.data('CustomTab', new CustomTab(el, options));
       }
     });
   },
@@ -1270,7 +1270,7 @@ $(() => {
   $('.page-header').headerReveal();
   $('.btn-go-up').goUp();
   $('.class-list').classCheckList();
-  customTabs.init('[data-toggle="custom-tab"]');
+  customTab.init('[data-toggle="custom-tab"]');
   customScrollSpy.init($('.nav-scroll'));
   passwordStrength.init('[data-toggle="password-strength"]');
   datePicker.init('.flatpickr-input');
