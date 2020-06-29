@@ -1,0 +1,22 @@
+.alert.py-4.mb-5(class=isError ? "alert-danger" : "alert-success", class=dismiss ? "alert-dismissible" : "", role='alert')
+	.row.align-items-center
+		.col(class=`${action ? "border-right" : ""}`)
+			.flex-vertical-center
+				i.fas.fa-lg.mr-3(class=isError ? "fa-exclamation-circle" : "fa-check-circle")
+				span #{message}
+	if action && dismiss
+		.col-auto
+			a.btn.btn-link.btn-sm.px-0(class=isError ? "text-danger" : "text-success", href=`${action.href}`) #{action.text}
+			hr
+			button.btn.btn-sm.btn-link.px-0(
+				class=isError ? "text-danger" : "text-success",
+				type='button',
+				data-dismiss='alert',
+				aria-label='Close'
+			) Dismiss
+	else if action
+		.col-auto
+			a.btn.btn-link.btn-sm.px-0.py-4(class=isError ? "text-danger" : "text-success", href=`${action.href}`) #{action.text}
+	else if dismiss
+		button.close(type='button', data-dismiss='alert', aria-label='Close')
+			span(aria-hidden='true') &times;
