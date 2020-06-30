@@ -62,7 +62,7 @@
 		"is-json-valid": "0.0.2",
 		"is-number": "7.0.0",
 		"is-plain-object": "3.0.1",
-		"jimp": "0.13.0",
+		"jimp": "0.14.0",
 		"jquery": "3.5.1",
 		"kind-of": "6.0.3",
 		"mailgun-js": "0.22.0",
