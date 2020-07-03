@@ -208,6 +208,20 @@ async function proccessAvatar(el, action) {
     });
 }
 
+function validateForm(form, event) {
+  if ($(form)[0].checkValidity() === false) {
+    event.preventDefault();
+    event.stopPropagation();
+    $(form).addClass('was-validated');
+    return false;
+  }
+
+  const submitter = $(event.originalEvent.submitter);
+  submitter.prop('disabled', true);
+  if (submitter.is('[data-toggle="loader"]')) addBtnLoader(submitter);
+
+  return true;
+}
 $.fn.headerReveal = function headerReveal() {
   const $w = $(window);
   const $main = $('main');
@@ -1140,18 +1154,8 @@ function initInsuranceCard() {
   });
 }
 
-$('.needs-validation').on('submit', function validateForm(e) {
-  if ($(this)[0].checkValidity() === false) {
-    e.preventDefault();
-    e.stopPropagation();
-    $(this).addClass('was-validated');
-    return false;
-  }
-
-  const submitter = $(this).find(':submit');
-  if (submitter.is('[data-toggle="loader"]')) addBtnLoader(submitter);
-
-  return true;
+$('.needs-validation').on('submit', function submit(event) {
+  return validateForm(this, event);
 });
 
 $(document).on('click.bs.dropdown.data-api', '.dropdown .keep-open', (e) => {
