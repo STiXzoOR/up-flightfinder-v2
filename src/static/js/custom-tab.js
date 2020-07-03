@@ -1,4 +1,9 @@
 /* eslint-disable no-underscore-dangle */
+const CT_NAME = 'customTab';
+const CT_DATA_KEY = 'CustomTab';
+const CT_EVENT_KEY = `.${CT_DATA_KEY}`;
+const CT_EVENT_CLICK = `click${CT_EVENT_KEY}`;
+
 class CustomTab {
   constructor(element, options) {
     this.options = options;
@@ -46,7 +51,7 @@ class CustomTab {
   bindEvents() {
     const self = this;
 
-    $(this.element).on('click', function clicked(event) {
+    $(this.element).on(CT_EVENT_CLICK, function clicked(event) {
       event.preventDefault();
 
       if ($(this).hasClass(self.options.classes.active)) return;
@@ -95,4 +100,44 @@ class CustomTab {
         break;
     }
   }
+
+  dispose() {
+    $(this.element).removeAttr('data-controls');
+    $(this.element).removeData(CT_DATA_KEY);
+    $(this.element).off(CT_EVENT_CLICK);
+    this.element = null;
+  }
+
+  static jQueryInterface(action, config) {
+    return this.each(function init() {
+      const options =
+        config && $.isPlainObject(config)
+          ? $.extend(true, {}, config, $(this).data())
+          : $.extend(true, {}, $(this).data());
+      let data = $(this).data(CT_DATA_KEY);
+
+      if (!data) {
+        data = new CustomTab(this, options);
+        $(this).data(CT_DATA_KEY, data);
+      }
+
+      if (typeof action === 'string') {
+        if (typeof data[action] === 'undefined') {
+          throw new TypeError(`No method named "${action}"`);
+        }
+
+        data[action]();
+      }
+    });
+  }
+}
+
+if (jQuery) {
+  const NO_CONFLICT = $.fn[CT_NAME];
+  $.fn[CT_NAME] = CustomTab.jQueryInterface;
+  $.fn[CT_NAME].Constructor = CustomTab;
+  $.fn[CT_NAME].noConflict = () => {
+    $.fn[CT_NAME] = NO_CONFLICT;
+    return CustomTab.jQueryInterface;
+  };
 }

@@ -1,5 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-
 let roundTripSelectedDates;
 let oneWaySelectedDate;
 
@@ -597,7 +596,7 @@ const passwordStrength = {
         ? $.extend(true, {}, this.defaultConfig, config, $(selector).data())
         : $.extend(true, {}, this.defaultConfig, $(selector).data());
 
-    $(selector).selector.each((i, el) => {
+    $(selector).each((i, el) => {
       if (!$(el).data('PasswordStrength')) {
         $(el).data('PasswordStrength', new PasswordStrength(el));
       }
