@@ -216,7 +216,7 @@ function validateForm(form, event) {
     return false;
   }
 
-  const submitter = $(event.originalEvent.submitter);
+  const submitter = $(form).find('button[type="submit"]');
   submitter.prop('disabled', true);
   if (submitter.is('[data-toggle="loader"]')) addBtnLoader(submitter);
 
@@ -230,7 +230,7 @@ async function quickSignIn(form, event, action) {
 
   const isVerify = /^verify-email-(password|sign-up)$/.test(action);
   const modal = $('#quickSignIn');
-  const submitter = $(event.originalEvent.submitter);
+  const submitter = $(form).find('button[type="submit"]');
   const formMethod = $(form).attr('method');
   const formAction = $(form).attr('action');
   const body = $(form).searializeObject();
