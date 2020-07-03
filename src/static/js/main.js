@@ -633,6 +633,28 @@ const customTab = {
   },
 };
 
+const pinCode = {
+  defaultConfig: { extraClasses: '', codeLength: 6 },
+
+  init(selector, config) {
+    const self = this;
+
+    if (!selector || !$(selector).length) return;
+
+    $(selector).each((i, el) => {
+      const $this = $(el);
+      const options =
+        config && $.isPlainObject(config)
+          ? $.extend(true, {}, self.defaultConfig, config, $this.data())
+          : $.extend(true, {}, self.defaultConfig, $this.data());
+
+      if (!$this.data('PinCode')) {
+        $this.data('PinCode', new PinCode(el, options));
+      }
+    });
+  },
+};
+
 function displayAdultCount(adults, children, infants) {
   const result = $('#passengerClassResult');
   const resultInput = $('#passengersClassInput');
@@ -1271,8 +1293,9 @@ $(() => {
   $('.btn-go-up').goUp();
   $('.class-list').classCheckList();
   customTab.init('[data-toggle="custom-tab"]');
-  customScrollSpy.init($('.nav-scroll'));
   passwordStrength.init('[data-toggle="password-strength"]');
+  pinCode.init('[data-toggle="pin-code"]');
+  customScrollSpy.init($('.nav-scroll'));
   datePicker.init('.flatpickr-input');
   customSelect.init('.select2-input');
   rangeSlider.init('.ion-range-slider-input');

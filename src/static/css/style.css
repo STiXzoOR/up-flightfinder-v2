@@ -8806,10 +8806,41 @@ input[data-type='password'].disabled + .btn-password::before {
 }
 
 /*-------------------------------------------*\
-    2.19. Sizing
+    2.19. Pin Code
+\*-------------------------------------------*/
+
+.pin-code-wrapper {
+	position: relative;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+}
+
+.pin-code-input {
+	max-width: 15%;
+	width: calc(1em + 1.125rem + 4px);
+	height: calc(1em + 1.8rem + 4px);
+	display: block;
+	padding: 0;
+	text-align: center;
+	font-size: 2rem;
+}
+
+.form-control.pin-code-input.is-valid,
+.was-validated .form-control.pin-code-input:valid,
+.form-control.pin-code-input.is-invalid,
+.was-validated .form-control.pin-code-input:invalid {
+	background: none;
+	background-color: #fff;
+	padding: 0;
+}
+
+/*-------------------------------------------*\
+    2.20. Sizing
 \*-------------------------------------------*/
 /*-------------------------------------------*\
-    2.19.1. Width
+    2.20.1. Width
 \*-------------------------------------------*/
 .w-0 {
 	width: 0% !important;
@@ -9240,7 +9271,7 @@ input[data-type='password'].disabled + .btn-password::before {
 }
 
 /*-------------------------------------------*\
-    2.19.2. Height
+    2.20.2. Height
 \*-------------------------------------------*/
 .h-0 {
 	height: 0% !important;
@@ -9671,10 +9702,10 @@ input[data-type='password'].disabled + .btn-password::before {
 }
 
 /*-------------------------------------------*\
-    2.20. Utilities
+    2.21. Utilities
 \*-------------------------------------------*/
 /*-------------------------------------------*\
-    2.20.1. Margin
+    2.21.1. Margin
 \*-------------------------------------------*/
 .m-0 {
 	margin: 0 !important;
@@ -14845,7 +14876,7 @@ input[data-type='password'].disabled + .btn-password::before {
 }
 
 /*-------------------------------------------*\
-    2.20.2. Padding
+    2.21.2. Padding
 \*-------------------------------------------*/
 
 .p-0dot5 {
@@ -17497,7 +17528,7 @@ input[data-type='password'].disabled + .btn-password::before {
 }
 
 /*-------------------------------------------*\
-    2.20.3 Borders
+    2.21.3 Borders
 \*-------------------------------------------*/
 .rounded-xs {
 	border-radius: 0.1875rem;
@@ -18164,7 +18195,7 @@ input[data-type='password'].disabled + .btn-password::before {
 }
 
 /*-------------------------------------------*\
-    2.20.4 Font Size
+    2.21.4 Font Size
 \*-------------------------------------------*/
 .font-size-1 {
 	font-size: 0.875rem !important;
@@ -19135,14 +19166,14 @@ input[data-type='password'].disabled + .btn-password::before {
 }
 
 /*-------------------------------------------*\
-    2.20.5 Font Weight
+    2.21.5 Font Weight
 \*-------------------------------------------*/
 .font-weight-medium {
 	font-weight: 500 !important;
 }
 
 /*-------------------------------------------*\
-    2.20.6 Text Color
+    2.21.6 Text Color
 \*-------------------------------------------*/
 .text-white {
 	color: #fff !important;
@@ -19752,7 +19783,7 @@ a.text-dark-2:focus {
 }
 
 /*-------------------------------------------*\
-    2.20.7 Line Height
+    2.21.7 Line Height
 \*-------------------------------------------*/
 
 .text-lh-sm {
@@ -19796,7 +19827,7 @@ a.text-dark-2:focus {
 }
 
 /*-------------------------------------------*\
-    2.20.8 Text Wrap
+    2.21.8 Text Wrap
 \*-------------------------------------------*/
 
 @media (min-width: 576px) {
@@ -19864,7 +19895,7 @@ a.text-dark-2:focus {
 }
 
 /*-------------------------------------------*\
-    2.20.9 Text Align
+    2.21.9 Text Align
 \*-------------------------------------------*/
 
 .text-justify {
@@ -19955,7 +19986,7 @@ a.text-dark-2:focus {
 	}
 }
 /*-------------------------------------------*\
-    2.20.10 Position
+    2.21.10 Position
 \*-------------------------------------------*/
 
 @media (min-width: 576px) {
@@ -20220,7 +20251,7 @@ a.text-dark-2:focus {
 }
 
 /*-------------------------------------------*\
-    2.20.11 Background
+    2.21.11 Background
 \*-------------------------------------------*/
 
 .bg-gray {
@@ -21043,7 +21074,7 @@ button.bg-soft-gray:focus {
 }
 
 /*-------------------------------------------*\
-    2.20.12 Dividers
+    2.21.12 Dividers
 \*-------------------------------------------*/
 
 .vr {
@@ -21061,7 +21092,7 @@ button.bg-soft-gray:focus {
 }
 
 /*-------------------------------------------*\
-    2.20.13 Animations
+    2.21.13 Animations
 \*-------------------------------------------*/
 
 .animation {
@@ -21381,7 +21412,7 @@ button.bg-soft-gray:focus {
 }
 
 /*-------------------------------------------*\
-    2.20.14 Font Awesome
+    2.21.14 Font Awesome
 \*-------------------------------------------*/
 
 :root .fa-rotate-45,
