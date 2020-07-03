@@ -1,0 +1,282 @@
+include ../views/mixins/_password-strength
+
+if (tab === 'verify')
+	#navVerifyEmail.custom-tab-pane.fade(role='tabpanel')
+		h4.mb-4.text-center Verify email
+		form#verifyEmailForm(
+			method='POST',
+			action='/user/account/verify-email',
+			novalidate='',
+			data-toggle='quick-sign-in',
+			data-type=`verify-email-${type}`
+		)
+			.form-group.mb-4
+				label.text-muted.required(for='verificationCode') Verification code
+				#verificationCode
+					div(data-toggle='pin-code')
+			.row.align-items-center
+				.col-sm-6.order-2.order-sm-1.text-center.text-sm-left
+					a.btn.btn-link.font-size-14.p-0.active(
+						href='javascript:void(0)',
+						data-action='go-back',
+						data-toggle='custom-tab',
+						data-target=`${type === "password" ? "#navForgotPassword" : "#navSignUp"}`,
+						data-target-group='quick-sign-in',
+						data-animation-type='fade'
+					)
+						i.fas.fa-chevron-left.fa-sm.mr-1
+						| Go back
+				.col-sm-6.order-1.order-sm-2.text-sm-right.mb-3.mb-sm-0
+					button.btn.btn-primary.w-100.w-sm-auto(
+						type='submit',
+						data-toggle='loader',
+						data-target=`${type === "password" ? "#navResetPassword" : "#navSignIn"}`,
+						data-target-group='quick-sign-in',
+						data-animation-type='fade'
+					) Verify
+else if (tab === 'password')
+	#navResetPassword.custom-tab-pane.fade(role='tabpanel')
+		h4.mb-4.text-center Reset password
+		form#resetPasswordForm(
+			method='POST',
+			action='/user/account/reset-password',
+			novalidate='',
+			data-toggle='quick-sign-in',
+			data-type='reset-password'
+		)
+			p.text-gray-1.mb-5 Please enter your new password below:
+			input#userID(type='hidden', name='userID', value=`${data.userID}`)
+			input#verificationCode(type='hidden', name='token', value=`${data.token}`)
+			.form-group.password-strength.mb-4
+				label.text-muted.required(for='resetPassword') New password
+				.prepend-icon
+					i.fas.fa-lock.fa-fw
+					input#resetPassword.form-control.mb-3(
+						type='password',
+						name='password',
+						pattern='^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!^+%/()=?_:`@~|\\}\\]\\[{$.,*-])[A-Za-z\\d!^+%/()=?_:`@~|\\}\\]\\[{$.,*-]{8,30}$',
+						placeholder='Password',
+						data-toggle='password-strength',
+						data-type='password',
+						required=''
+					)
+					+passwordStrength
+			.row.align-items-center
+				.col-sm-6.order-2.order-sm-1.text-center.text-sm-left
+					a.btn.btn-link.font-size-14.p-0.active(
+						href='javascript:void(0)',
+						data-action='go-back',
+						data-toggle='custom-tab',
+						data-target='#navForgotPassword',
+						data-target-group='quick-sign-in',
+						data-animation-type='fade'
+					)
+						i.fas.fa-chevron-left.fa-sm.mr-1
+						| Go back
+				.col-sm-6.order-1.order-sm-2.text-sm-right.mb-3.mb-sm-0
+					button.btn.btn-primary.w-100.w-sm-auto(
+						type='submit',
+						data-toggle='loader',
+						data-target='#navSignIn',
+						data-target-group='quick-sign-in',
+						data-animation-type='fade'
+					) Reset
+else
+	#quickSignIn.modal.fade(tabindex='-1', role='dialog', aria-labelledby='quickSignIn', aria-hidden='true')
+		.modal-dialog.modal-dialog-centered(role='document')
+			.modal-content
+				.modal-body.p-4
+					button.btn-modal-close(type='button', data-dismiss='modal', aria-label='Close')
+						span(aria-hidden='true') &#10005;
+					#navUserTabsContent.custom-tab-content
+						#navSignIn.custom-tab-pane.active(role='tabpanel')
+							h4.mb-4.text-center Account sign in
+							form#signInForm(
+								method='POST',
+								action='/user/sign-in',
+								novalidate='',
+								data-toggle='quick-sign-in',
+								data-type='sign-in'
+							)
+								.form-group
+									label.text-muted.required(for='signInEmail') Email address
+									.prepend-icon
+										i.fas.fa-envelope.fa-fw
+										input#signInEmail.form-control(
+											type='email',
+											name='email',
+											placeholder='johndoe@placeholder.com',
+											required=''
+										)
+										.invalid-feedback Email address is required.
+								.form-group
+									label.flex-center-between(for='signInPassword')
+										span.text-muted.required Password
+										a.font-size-14(
+											href='javascript:void(0)',
+											data-toggle='custom-tab',
+											data-target='#navForgotPassword',
+											data-target-group='quick-sign-in',
+											data-animation-type='fade'
+										) Forgot your password
+									.prepend-icon
+										i.fas.fa-lock.fa-fw
+										input#signInPassword.form-control(
+											type='password',
+											name='password',
+											placeholder='Password',
+											data-type='password',
+											required=''
+										)
+										.invalid-feedback Password is required.
+								.form-group.custom-control.custom-checkbox.mt-5
+									input#signInRememberMyPassword.custom-control-input(type='checkbox', name='rememberMyPassword')
+									label.custom-control-label.font-size-15(for='signInRememberMyPassword') Remember my password
+								.form-group
+									button.btn.btn-primary.btn-block(type='submit', data-toggle='loader') Sign in
+							p.font-size-14.text-center.mt-1.mb-0
+								| Don&apos;t have an account?
+								a(
+									href='javascript:void(0)',
+									data-toggle='custom-tab',
+									data-target='#navSignUp',
+									data-target-group='quick-sign-in',
+									data-animation-type='fade'
+								) &nbsp;Sign up
+						#navSignUp.custom-tab-pane(role='tabpanel')
+							h4.mb-4.text-center Account sign up
+							form#signUpForm(
+								method='POST',
+								action='/user/sign-up',
+								novalidate='',
+								data-toggle='quick-sign-in',
+								data-type='sign-up'
+							)
+								.form-row
+									.form-group.col-sm-6
+										label.text-muted.required(for='signUpFirstName') First name
+										.prepend-icon
+											i.fas.fa-user.fa-fw
+											input#signUpFirstName.form-control(type='text', name='firstName', placeholder='John', required='')
+											.invalid-feedback First name is required.
+									.form-group.col-sm-6
+										label.text-muted.required(for='signUpLastName') Last name
+										.prepend-icon
+											i.fas.fa-user.fa-fw
+											input#signUpLastName.form-control(type='text', name='lastName', placeholder='Doe', required='')
+											.invalid-feedback Last name is required.
+								.form-row
+									.form-group.col-sm-6
+										label.text-muted.required(for='signUpMobile') Mobile number
+										.prepend-icon
+											i.fas.fa-mobile.fa-fw
+											input#signUpMobile.form-control(
+												type='tel',
+												pattern='[0-9]{6,10}',
+												maxlength='10',
+												name='mobile',
+												placeholder='0123456789',
+												required=''
+											)
+											.invalid-feedback Mobile number is required.
+									.form-group.col-sm-6
+										label.text-muted.required(for='signUpGender') Gender
+										.prepend-icon.custom-select2
+											i.fas.fa-venus-mars.fa-fw
+											select#signUpGender.select2-input.form-control.custom-select(
+												name='gender',
+												data-minimum-results-for-search='Infinity',
+												data-placeholder='Male',
+												required=''
+											)
+												option(selected='', value='', disabled='', hidden='')
+												option(value='male') Male
+												option(value='female') Female
+											.invalid-feedback Gender is required.
+								.form-group
+									label.text-muted.required(for='signUpEmail') Email address
+									.prepend-icon
+										i.fas.fa-envelope.fa-fw
+										input#signUpEmail.form-control(
+											type='email',
+											name='email',
+											placeholder='johndoe@placeholder.com',
+											required=''
+										)
+										.invalid-feedback Email address is required.
+								.form-group.password-strength
+									label.text-muted.required(for='signUpPassword') Password
+									.prepend-icon
+										i.fas.fa-lock.fa-fw
+										input#signUpPassword.form-control.mb-3(
+											type='password',
+											name='password',
+											pattern='^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!^+%/()=?_:`@~|\\}\\]\\[{$.,*-])[A-Za-z\\d!^+%/()=?_:`@~|\\}\\]\\[{$.,*-]{8,30}$',
+											placeholder='Password',
+											data-toggle='password-strength',
+											data-type='password',
+											required=''
+										)
+										+passwordStrength
+								.form-group.custom-control.custom-checkbox.mt-5
+									input#signUpAcceptTAC.custom-control-input(type='checkbox', name='acceptTAC', required='')
+									label.custom-control-label.font-size-15(for='signUpAcceptTAC')
+										| I have read and accept the
+										a(href='/pages/terms-and-conditions') &nbsp;Terms and Conditions
+								.form-group
+									button.btn.btn-primary.btn-block(
+										type='submit',
+										data-toggle='loader',
+										data-target='#navVerifyEmail',
+										data-target-group='quick-sign-in',
+										data-animation-type='fade'
+									) Sign up
+							p.font-size-14.text-center.mt-1.mb-0
+								| Already a memeber?
+								a.active(
+									href='javascript:void(0)',
+									data-toggle='custom-tab',
+									data-target='#navSignIn',
+									data-target-group='quick-sign-in',
+									data-animation-type='fade'
+								) &nbsp;Sign in
+						#navForgotPassword.custom-tab-pane.fade(role='tabpanel')
+							h4.mb-4.text-center Forgot password
+							form#forgotPasswordForm(
+								method='POST',
+								action='/user/forgot-password',
+								novalidate='',
+								data-toggle='quick-sign-in',
+								data-type='forgot-password'
+							)
+								p.text-gray-1.mb-5 Enter your email address below and we'll get you back on track.
+								.form-group.mb-4
+									label.text-muted.required(for='forgotEmail') Email address
+									.prepend-icon
+										i.fas.fa-envelope.fa-fw
+										input#forgotEmail.form-control(
+											type='email',
+											name='email',
+											placeholder='johndoe@placeholder.com',
+											required=''
+										)
+										.invalid-feedback Email address is required.
+								.row.align-items-center
+									.col-sm-6.order-2.order-sm-1.text-center.text-sm-left
+										a.btn.btn-link.font-size-14.p-0.active(
+											href='javascript:void(0)',
+											data-toggle='custom-tab',
+											data-target='#navSignIn',
+											data-target-group='quick-sign-in',
+											data-animation-type='fade'
+										)
+											i.fas.fa-chevron-left.fa-sm.mr-1
+											| Go back
+									.col-sm-6.order-1.order-sm-2.text-sm-right.mb-3.mb-sm-0
+										button.btn.btn-primary.w-100.w-sm-auto(
+											type='submit',
+											data-toggle='loader',
+											data-target='#navVerifyEmail',
+											data-target-group='quick-sign-in',
+											data-animation-type='fade'
+										) Send link

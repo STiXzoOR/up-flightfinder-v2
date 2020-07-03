@@ -5,6 +5,14 @@ const config = require('../config/dotenv');
 const Mailer = require(config.dynamicModules.mailer);
 const Base = require('./base');
 
+function generateToken(type) {
+  const isLink = type === 'Link';
+  const bytesLength = isLink ? 40 : 6;
+  const token = crypto.randomBytes(bytesLength).toString('hex');
+
+  return isLink ? token : parseInt(token, 16).toString().slice(0, 6);
+}
+
 class User extends Base {
   constructor() {
     super();
@@ -294,7 +302,7 @@ class User extends Base {
     return response;
   }
 
-  async sendVerification(args = {}, type = 'email') {
+  async sendVerification(args = {}, { action = 'email', type = 'Link' } = {}) {
     const options = {
       email: {
         tokenDuration: 86400000,
@@ -308,11 +316,11 @@ class User extends Base {
 
     const fields = {
       email: args.email,
-      token: crypto.randomBytes(40).toString('hex'),
-      tokenExpire: new Date(Date.now() + options[type].tokenDuration),
+      token: generateToken(type),
+      tokenExpire: new Date(Date.now() + options[action].tokenDuration),
     };
 
-    const query = this.queries.update.verification[type];
+    const query = this.queries.update.verification[action];
     const response = await this.execute(query, fields, 'commit');
 
     if (response.error) {
@@ -321,6 +329,7 @@ class User extends Base {
     }
 
     const data = {
+      type,
       email: args.email,
       firstName: args.firstName,
       lastName: args.lastName,
@@ -329,10 +338,10 @@ class User extends Base {
       recipient: `${args.firstName} ${args.lastName} <${args.email}>`,
     };
 
-    await options[type]
+    await options[action]
       .send(data)
       .then((result) => {
-        response.message = this.messages.verification[type].success;
+        response.message = this.messages.verification[action].success;
         response.result = result;
       })
       .catch((error) => {

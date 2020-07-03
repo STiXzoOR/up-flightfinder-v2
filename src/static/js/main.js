@@ -204,7 +204,7 @@ async function proccessAvatar(el, action) {
     })
     .catch((error) => {
       toggleAvatarLoader('hide');
-      console.log(error);
+      console.error(error);
     });
 }
 
@@ -222,6 +222,104 @@ function validateForm(form, event) {
 
   return true;
 }
+
+async function quickSignIn(form, event, action) {
+  if (!validateForm(form, event)) return;
+  event.preventDefault();
+  event.stopPropagation();
+
+  const isVerify = /^verify-email-(password|sign-up)$/.test(action);
+  const modal = $('#quickSignIn');
+  const submitter = $(event.originalEvent.submitter);
+  const formMethod = $(form).attr('method');
+  const formAction = $(form).attr('action');
+  const body = $(form).searializeObject();
+  if (isVerify) body.token = $(form).find('[data-toggle="pin-code"]').data('PinCode').getCode();
+
+  const request = {
+    method: formMethod,
+    headers: new Headers({
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-User-Action': action,
+    }),
+    body: JSON.stringify(body),
+  };
+
+  await fetch(formAction, request)
+    .then((response) => response.json())
+    .then((response) => {
+      let originalSubmitter = submitter;
+
+      modal.find('[role="alert"]').remove();
+      submitter.html(submitter.find('#text').text());
+
+      if (response.error) {
+        if (isVerify) $(form).find('[data-toggle="pin-code"]').data('PinCode').clearCode();
+        $(form).before(response.alert);
+        submitter.prop('disabled', false);
+        return;
+      }
+
+      switch (action) {
+        case 'sign-in':
+          modal.modal('hide');
+          $('header').html(response.header);
+          $('#notMember').remove();
+          break;
+        case 'sign-up':
+        case 'forgot-password':
+        case 'verify-email-password': {
+          const isVerifyPassword = action === 'verify-email-password';
+          const tab = $(response.content);
+          const content = modal.find('.custom-tab-content');
+          const targetForm = tab.find('form');
+          const goBack = tab.find('[data-action="go-back"]');
+
+          content.append(tab);
+          customTab.init('[data-toggle="custom-tab"]');
+
+          if (isVerifyPassword) {
+            tab.find('[data-type="password"]').showHidePassword();
+            passwordStrength.init('[data-toggle="password-strength"]');
+            originalSubmitter = modal.find('#navForgotPassword button[type="submit"]');
+          } else pinCode.init('[data-toggle="pin-code"]');
+
+          goBack.on('click', () => {
+            originalSubmitter.customTab('dispose');
+            tab.remove();
+          });
+
+          submitter.customTab('show');
+          originalSubmitter.prop('disabled', false);
+
+          if (isVerify) modal.find('[id^="navVerify"]').remove();
+          else targetForm.before(response.alert);
+          break;
+        }
+        case 'verify-email-sign-up':
+        case 'reset-password':
+          submitter.customTab('show');
+          originalSubmitter.prop('disabled', false);
+          modal.find('[id^="navVerify"]').remove();
+          modal.find('#signInForm').before(response.alert);
+          break;
+        default:
+          break;
+      }
+    })
+    .catch(console.error);
+}
+
+$.fn.searializeObject = function searializeObject() {
+  return $(this)
+    .serializeArray()
+    .reduce((acc, { name, value }) => {
+      acc[name] = value;
+      return acc;
+    }, {});
+};
+
 $.fn.headerReveal = function headerReveal() {
   const $w = $(window);
   const $main = $('main');
@@ -1286,6 +1384,45 @@ $('#uploadAvatar').on('change', function uploadAvatar() {
 $('#btnDeleteAvatar').on('click', function deleteAvatar() {
   $(this).remove();
   return proccessAvatar(this, 'delete');
+});
+
+$(document).on('submit', 'form[data-toggle="quick-sign-in"]', function submit(e) {
+  const type = $(this).data('type');
+  return quickSignIn(this, e, type);
+});
+
+$('#btnQuickSignIn').on('click', async () => {
+  let initialized = false;
+  let modal;
+  const args = {
+    method: 'get',
+    headers: new Headers({
+      'X-User-Action': 'quick-sign-in',
+    }),
+  };
+
+  await fetch('/user/get-quick-sign-in', args)
+    .then((response) => response.json())
+    .then((response) => {
+      modal = $(response.result);
+
+      $('body').append(modal);
+
+      modal.find('[data-type="password"]').showHidePassword();
+      passwordStrength.init('[data-toggle="password-strength"]');
+      customTab.init('[data-toggle="custom-tab"]');
+      customSelect.init(modal.find('.select2-input')[0]);
+
+      modal.on('hidden.bs.modal', () => {
+        modal.remove();
+      });
+
+      modal.modal();
+      initialized = true;
+    })
+    .catch(console.error);
+
+  if (initialized) modal.show();
 });
 
 $(() => {

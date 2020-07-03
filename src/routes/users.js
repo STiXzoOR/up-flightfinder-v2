@@ -17,6 +17,7 @@ const permit = require('../middleware/permit');
 const uploader = require('../middleware/file-upload');
 const rateLimiter = require('../config/rate-limit');
 const { validate } = require('../middleware/superstruct');
+const { compileFile } = require('../config/templates');
 
 if (config.mailgun.enabled || config.nodemailer.enabled)
   // eslint-disable-next-line import/no-dynamic-require
@@ -24,9 +25,24 @@ if (config.mailgun.enabled || config.nodemailer.enabled)
 require('../config/passport')(passport);
 
 const router = express.Router();
+const generateQuickSignIn = compileFile('quick-sign-in');
+const generateAlert = compileFile('alert');
+const generateHeader = compileFile('header');
 
 router.get('/', (req, res, next) => {
   return next(createError(400));
+});
+
+router.get('/get-quick-sign-in', (req, res, next) => {
+  if (req.get('X-User-Action') === 'quick-sign-in') {
+    const quickSignIn = generateQuickSignIn();
+
+    return res.status(200).json({
+      result: quickSignIn,
+    });
+  }
+
+  return res.status(400).json(createError(400));
 });
 
 router.get('/sign-in', (req, res) => {
@@ -49,12 +65,19 @@ router.get('/sign-out', permit('USER', { requireVerification: false }), (req, re
 router.post('/sign-in', (req, res, next) => {
   passport.authenticate('login', (err, response) => {
     if (err) return next(err);
-    if (response.error)
+
+    const isFetch = req.get('X-User-Action') === 'sign-in';
+    if (isFetch) response.alert = generateAlert({ isError: response.error, message: response.message });
+
+    if (response.error) {
+      if (isFetch) return res.status(response.status).json(response);
+
       return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/sign-in' })(
         req,
         res,
         next
       );
+    }
 
     return req.login(response.result[0], (err) => {
       if (err) return next(err);
@@ -63,6 +86,21 @@ router.post('/sign-in', (req, res, next) => {
         req.session.cookie.maxAge = 90 * 24 * 60 * 60 * 1000;
 
       req.session.user = { id: req.user.id };
+
+      if (isFetch) {
+        const { user } = req;
+        user.isAuthenticated = req.isAuthenticated();
+
+        if (user.hasAvatar) {
+          const url = `/user/${user.id}/uploads/avatar/profile`;
+          user.avatar = { small: `${url}_32.jpg`, large: `${url}_256.jpg` };
+        }
+
+        response.user = user;
+        response.header = generateHeader({ user });
+        return res.status(response.status).json(response);
+      }
+
       return res.redirect('/');
     });
   })(req, res, next);
@@ -75,12 +113,18 @@ router.post(
     const { body } = req;
     let response = await User.insert(body);
 
-    if (response.error)
+    const isFetch = req.get('X-User-Action') === 'sign-up';
+    if (isFetch) response.alert = generateAlert({ isError: response.error, message: response.message });
+
+    if (response.error) {
+      if (isFetch) return res.status(response.status).json(response);
+
       return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/sign-up' })(
         req,
         res,
         next
       );
+    }
 
     if (config.mailgun.enabled || config.nodemailer.enabled) {
       const args = {
@@ -89,14 +133,24 @@ router.post(
         lastName: body.lastName,
         url: req.getUrl(),
       };
+      const options = { action: 'email' };
+      if (isFetch) options.type = 'Code';
 
-      response = await User.sendVerification(args);
-      if (response.error)
+      response = await User.sendVerification(args, options);
+      if (isFetch) response.alert = generateAlert({ isError: response.error, message: response.message });
+
+      if (!isFetch && response.error) {
         return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/sign-up' })(
           req,
           res,
           next
         );
+      }
+    }
+
+    if (isFetch) {
+      response.content = generateQuickSignIn({ tab: 'verify', type: 'sign-up' });
+      return res.status(response.status).json(response);
     }
 
     res.flash('success', response.message);
@@ -288,12 +342,18 @@ if (config.mailgun.enabled || config.nodemailer.enabled) {
       const { email } = req.body;
       let response = await User.get({ email }, { byID: false, byEmail: true, partial: true });
 
-      if (response.error)
+      const isFetch = req.get('X-User-Action') === 'forgot-password';
+      if (isFetch) response.alert = generateAlert({ isError: response.error, message: response.message });
+
+      if (response.error) {
+        if (isFetch) return res.status(response.status).json(response);
+
         return handleResponseError(response, {
           redirectOnError: 404,
           flashMessage: true,
           redirect: '/user/format-password',
         })(req, res, next);
+      }
 
       const data = response.result[0];
       const args = {
@@ -302,9 +362,17 @@ if (config.mailgun.enabled || config.nodemailer.enabled) {
         lastName: data.lastName,
         url: req.getUrl(),
       };
+      const options = { action: 'password' };
+      if (isFetch) options.type = 'Code';
 
-      response = await User.sendVerification(args, 'password');
-      if (response.error && response.tryCatchError) return next(response.result);
+      response = await User.sendVerification(args, options);
+      if (isFetch) response.alert = generateAlert({ isError: response.error, message: response.message });
+      if (!isFetch && response.error && response.tryCatchError) return next(response.result);
+
+      if (isFetch) {
+        response.content = generateQuickSignIn({ tab: 'verify', type: 'password' });
+        return res.status(response.status).json(response);
+      }
 
       res.flash(response.error ? 'error' : 'success', response.message);
       return res.redirect('/user/sign-in');
@@ -336,31 +404,44 @@ if (config.mailgun.enabled || config.nodemailer.enabled) {
       const route = `/user/reset-password?token=${body.token}`;
       let response = await User.verifyToken(body.token, 'password');
 
-      if (response.error)
+      const isFetch = req.get('X-User-Action') === 'reset-password';
+      if (isFetch) response.alert = generateAlert({ isError: response.error, message: response.message });
+
+      if (response.error) {
+        if (isFetch) return res.status(response.status).json(response);
+
         return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: '/user/sign-in' })(
           req,
           res,
           next
         );
+      }
 
       response = await User.get({ userID: body.userID }, { partial: true });
+      if (isFetch) response.alert = generateAlert({ isError: response.error, message: response.message });
 
-      if (response.error)
+      if (response.error) {
+        if (isFetch) return res.status(response.status).json(response);
+
         return handleResponseError(response, { redirectOnError: 404, flashMessage: true, redirect: '/user/sign-in' })(
           req,
           res,
           next
         );
+      }
 
       const data = response.result[0];
       response = await User.updatePassword(body, { matchPasswords: false, expireToken: true });
+      if (isFetch) response.alert = generateAlert({ isError: response.error, message: response.message });
 
-      if (response.error)
+      if (response.error) {
+        if (isFetch) return res.status(response.status).json(response);
         return handleResponseError(response, { redirectOnError: true, flashMessage: true, redirect: route })(
           req,
           res,
           next
         );
+      }
 
       const args = {
         email: data.email,
@@ -371,6 +452,8 @@ if (config.mailgun.enabled || config.nodemailer.enabled) {
       };
 
       await Mailer.sendChangedPassword(args);
+
+      if (isFetch) return res.status(response.status).json(response);
 
       res.flash('success', response.message);
       return res.redirect('/user/sign-in');
@@ -451,6 +534,59 @@ if (config.mailgun.enabled || config.nodemailer.enabled) {
 
       res.flash(response.error ? 'error' : 'success', response.message);
       return res.redirect(route);
+    })
+  );
+
+  router.post(
+    '/account/verify-email',
+    routeAsync(async (req, res, next) => {
+      const isEligable = req.get('X-User-Action');
+
+      if (isEligable) {
+        const isPassword = isEligable === 'verify-email-password';
+        const { token } = req.body;
+        let response = await User.verifyToken(token, isPassword ? 'password' : 'email');
+        response.alert = generateAlert({ isError: response.error, message: response.message });
+
+        if (response.error) return res.status(response.status).json(response);
+
+        if (isPassword) {
+          response.content = generateQuickSignIn({
+            tab: 'password',
+            data: { token, userID: response.result[0].id },
+          });
+        } else {
+          const userID = response.result[0].id;
+          response = await User.verify(userID);
+          response.alert = generateAlert({ isError: response.error, message: response.message });
+
+          if (response.error) return res.status(response.status).json(response);
+
+          const { error, message } = response;
+          response = await User.get({ userID }, { partial: true });
+
+          if (response.error) {
+            response.alert = generateAlert({ isError: response.error, message: response.message });
+            return res.status(response.status).json(response);
+          }
+
+          const data = response.result[0];
+          const args = {
+            email: data.email,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            url: req.getUrl(),
+            recipient: `${data.firstName} ${data.lastName} <${data.email}>`,
+          };
+
+          await Mailer.sendWelcome(args);
+          response.alert = generateAlert({ isError: error, message });
+        }
+
+        return res.status(response.status).json(response);
+      }
+
+      return res.status(400).json(createError(400));
     })
   );
 }

@@ -15,9 +15,11 @@ class MailgunWrapper {
     this.mailgun = new Mailgun(options);
     this.templates = {
       welcome: 'welcome',
-      verifyAccount: 'confirm_account',
+      verifyAccountLink: 'confirm_account',
+      verifyAccountCode: 'confirm_account_code',
       verifySubscription: 'confirm_subscription',
-      resetPassword: 'reset_password',
+      resetPasswordLink: 'reset_password',
+      resetPasswordCode: 'reset_password_code',
       updatedPassword: 'updated_password',
       unsubscribed: 'unsubscribed',
       bookingConfirmation: 'booking_confirmed',
@@ -54,24 +56,26 @@ class MailgunWrapper {
   }
 
   sendVerifyAccount(data) {
-    const actionURL = `${data.url}/user/account/verify?token=${data.token}`;
+    const isLink = data.type === 'Link';
+    const actionURL = isLink ? `${data.url}/user/account/verify?token=${data.token}` : '';
 
     return this.send({
       to: data.recipient,
-      subject: 'Verify your account',
-      template: this.templates.verifyAccount,
-      variables: { action_url: actionURL },
+      subject: `${!isLink ? `[${data.token}] - ` : ''}Verify your account`,
+      template: this.templates[`verifyAccount${data.type}`],
+      variables: { token: data.token, action_url: actionURL },
     });
   }
 
   sendResetPassword(data) {
-    const actionURL = `${data.url}/user/account/reset-password?token=${data.token}`;
+    const isLink = data.type === 'Link';
+    const actionURL = isLink ? `${data.url}/user/account/reset-password?token=${data.token}` : '';
 
     return this.send({
       to: data.recipient,
-      subject: 'Reset your password',
-      template: this.templates.resetPassword,
-      variables: { action_url: actionURL },
+      subject: `${!isLink ? `[${data.token}] - ` : ''}Reset your password`,
+      template: this.templates[`resetPassword${data.type}`],
+      variables: { token: data.token, action_url: actionURL },
     });
   }
 

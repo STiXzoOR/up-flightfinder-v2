@@ -16,6 +16,12 @@ block content
 		.container.py-5
 			.row.justify-content-center
 				.col-lg-8.col-xl-9.mt-lg-1
+					if !user.isAuthenticated
+						#notMember.card.shadow-soft.mb-5
+							.card-body.d-flex.flex-column.p-4
+								h5.text-center.text-sm-left.alert-heading.font-size-20 Already a member?
+								span.text-justify.mb-3 If your are alaready a member, please sign in and make the booking process easier than ever.
+								button#btnQuickSignIn.btn.btn-sm.btn-primary.align-self-md-start(type='button') Sign in
 					form#newBookingForm.needs-validation(method='POST', action='/booking/new-booking/thank-you', novalidate='')
 						input#totalPriceInput(type='hidden', name='finalPrice', value=`${flight.totalPrice}`, required='')
 						#whosIsTravelling.mb-3
@@ -604,3 +610,11 @@ block content
 block append vendorScripts
 	script(src='/static/vendors/flatpickr/flatpickr.min.js')
 	script(src='/static/vendors/navdrawer/navdrawer.min.js')
+
+	if !user.isAuthenticated
+		script(src='/static/vendors/zxcvbn/zxcvbn.js')
+
+block append customScripts
+	if !user.isAuthenticated
+		script(src='/static/js/password-strength.js')
+		script(src='/static/js/pin-code.js')

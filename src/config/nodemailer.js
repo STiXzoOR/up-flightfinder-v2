@@ -27,9 +27,11 @@ class Emailer {
     this.nodemailer = nodemailer;
     this.templates = {
       welcome: 'welcome',
-      verifyAccount: 'verify-account',
+      verifyAccountLink: 'verify-account-link',
+      verifyAccountCode: 'verify-account-code',
       verifySubscription: 'verify-subscription',
-      resetPassword: 'reset-password',
+      resetPasswordLink: 'reset-password-link',
+      resetPasswordCode: 'reset-password-code',
       updatedPassword: 'changed-password',
       unsubscribed: 'unsubscribed',
       bookingConfirmation: 'booking-confirmed',
@@ -77,24 +79,26 @@ class Emailer {
   }
 
   sendVerifyAccount(data) {
-    const actionURL = `${data.url}/user/account/verify?token=${data.token}`;
+    const isLink = data.type === 'Link';
+    const actionURL = isLink ? `${data.url}/user/account/verify?token=${data.token}` : '';
 
     return this.send({
       to: data.recipient,
       email: data.email,
-      template: this.templates.verifyAccount,
-      locals: { email: data.email, firstName: data.firstName, lastName: data.lastName, actionURL },
+      template: this.templates[`verifyAccount${data.type}`],
+      locals: { email: data.email, firstName: data.firstName, lastName: data.lastName, token: data.token, actionURL },
     });
   }
 
   sendResetPassword(data) {
-    const actionURL = `${data.url}/user/account/reset-password?token=${data.token}`;
+    const isLink = data.type === 'Link';
+    const actionURL = isLink ? `${data.url}/user/account/reset-password?token=${data.token}` : '';
 
     return this.send({
       to: data.recipient,
       email: data.email,
-      template: this.templates.resetPassword,
-      locals: { email: data.email, firstName: data.firstName, lastName: data.lastName, actionURL },
+      template: this.templates[`resetPassword${data.type}`],
+      locals: { email: data.email, firstName: data.firstName, lastName: data.lastName, token: data.token, actionURL },
     });
   }
 
