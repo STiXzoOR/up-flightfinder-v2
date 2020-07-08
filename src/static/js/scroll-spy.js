@@ -1,4 +1,12 @@
 /* eslint-disable max-classes-per-file */
+const SS_DATA_KEY = 'CustomScrollSpy';
+const SS_EVENT_KEY = `.${SS_DATA_KEY}`;
+const SS_EVENT_CLICK = `click${SS_EVENT_KEY}`;
+
+const SS_SECTION_DATA_KEY = 'CustomScrollSpySection';
+const SS_SECTION_EVENT_KEY = `.${SS_SECTION_DATA_KEY}`;
+const SS_SECTION_EVENT_CLICK = `click${SS_SECTION_EVENT_KEY}`;
+
 class CustomScrollSpy {
   constructor(element, options) {
     this.element = element;
@@ -21,8 +29,8 @@ class CustomScrollSpy {
       .each((i, el) => {
         const $this = $(el);
 
-        if (!$this.data('CustomScrollSpySection')) {
-          $this.data('CustomScrollSpySection', new CustomScrollSpySection(el, self.options));
+        if (!$this.data(SS_SECTION_DATA_KEY)) {
+          $this.data(SS_SECTION_DATA_KEY, new CustomScrollSpySection(el, self.options));
 
           self.items = self.items.add($this);
         }
@@ -32,16 +40,16 @@ class CustomScrollSpy {
   bindEvents() {
     const self = this;
 
-    $(this.element).on('click.CustomScrollSpy', 'a[href^="#"]', function click(event) {
+    $(this.element).on(SS_EVENT_CLICK, 'a[href^="#"]', function click(event) {
       event.preventDefault();
 
       const link = this;
-      const target = $(this).data('CustomScrollSpySection');
+      const target = $(this).data(SS_SECTION_DATA_KEY);
 
       self.lockHightlight = true;
       if (self.current) self.current.unhighlight();
       link.blur();
-      self.current = $(link).data('CustomScrollSpySection');
+      self.current = $(link).data(SS_SECTION_DATA_KEY);
       self.current.highlight();
 
       target.show(() => {
@@ -59,7 +67,7 @@ class CustomScrollSpy {
     const scrollTop = $(window).scrollTop();
 
     if (scrollTop + $(window).height() === $(document).height()) {
-      this.current = this.items.last().data('CustomScrollSpySection');
+      this.current = this.items.last().data(SS_SECTION_DATA_KEY);
 
       this.unhighlight();
       this.current.highlight();
@@ -69,7 +77,7 @@ class CustomScrollSpy {
     }
 
     this.items.each((i, el) => {
-      const section = $(el).data('CustomScrollSpySection');
+      const section = $(el).data(SS_SECTION_DATA_KEY);
 
       if (scrollTop > section.offset + self.options.customOffsetTop) {
         current = section;
@@ -87,7 +95,7 @@ class CustomScrollSpy {
 
   unhighlight() {
     this.items.each((i, el) => {
-      $(el).data('CustomScrollSpySection').unhighlight();
+      $(el).data(SS_SECTION_DATA_KEY).unhighlight();
     });
   }
 }

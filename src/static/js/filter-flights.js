@@ -1,6 +1,11 @@
 /* eslint-disable vars-on-top */
 /* eslint-disable no-var */
 /* eslint-disable no-underscore-dangle */
+const FH_DATA_KEY = 'FlightFilterHandler';
+const FH_EVENT_KEY = `.${FH_DATA_KEY}`;
+const FH_EVENT_CLICK = `click${FH_EVENT_KEY}`;
+const FH_EVENT_CHANGE = `change${FH_EVENT_KEY}`;
+
 function tsToTime(timestamp, options) {
   return new Date(timestamp).toLocaleTimeString('en-gb', options || {});
 }
@@ -127,7 +132,7 @@ class FlightFilterHandler {
       });
     }
 
-    $(document).on('click', '[class*="btn-clear-filters"]', function clicked() {
+    $(document).on(FH_EVENT_CLICK, '[class*="btn-clear-filters"]', function clicked() {
       if (self.filters.priceRange) self.elements.priceRange.reset();
       if (self.filters.departTimeRange) self.elements.departTimeRange.reset();
       if (self.filters.returnTimeRange) self.elements.returnTimeRange.reset();
@@ -154,7 +159,7 @@ class FlightFilterHandler {
       self.filterHandler();
     });
 
-    $(document).on('click', '#loadMoreFlights', function clicked() {
+    $(document).on(FH_EVENT_CLICK, '#loadMoreFlights', function clicked() {
       self.filters.skip = parseInt($(this).data('skip'), 10);
 
       $(this).find('#text').text('Loading...');
@@ -164,14 +169,19 @@ class FlightFilterHandler {
       self.filterHandler();
     });
 
-    this.elements.sortBy.on('change', function sort() {
+    this.elements.sortBy.on(FH_EVENT_CHANGE, function sort() {
       self.filters.orderBy = $(this).val();
 
       self.filterHandler();
     });
 
-    this.elements.stopsItem.on('change', null, { type: 'stops', self: this }, this.constructor.checkBoxFilter);
-    this.elements.airlinesItem.on('change', null, { type: 'airlines', self: this }, this.constructor.checkBoxFilter);
+    this.elements.stopsItem.on(FH_EVENT_CHANGE, null, { type: 'stops', self: this }, this.constructor.checkBoxFilter);
+    this.elements.airlinesItem.on(
+      FH_EVENT_CHANGE,
+      null,
+      { type: 'airlines', self: this },
+      this.constructor.checkBoxFilter
+    );
   }
 
   getDefaultStops() {
@@ -357,6 +367,6 @@ class FlightFilterHandler {
         self.elements.preloader.fadeOut();
         self.toggleClearBtn();
       })
-      .catch((err) => console.log(err));
+      .catch(console.error);
   }
 }

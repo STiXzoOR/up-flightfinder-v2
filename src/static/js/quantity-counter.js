@@ -1,3 +1,7 @@
+const QC_DATA_KEY = 'QuantityCounter';
+const QC_EVENT_KEY = `.${QC_DATA_KEY}`;
+const QC_EVENT_CLICK = `click${QC_EVENT_KEY}`;
+
 class QuantityCounter {
   constructor(element) {
     this.element = $(element);
@@ -14,11 +18,11 @@ class QuantityCounter {
   bindEvents() {
     const self = this;
 
-    this.$plus.on('click', () => {
+    this.$plus.on(QC_EVENT_CLICK, () => {
       self.plus();
     });
 
-    this.$minus.on('click', () => {
+    this.$minus.on(QC_EVENT_CLICK, () => {
       self.minus();
     });
   }

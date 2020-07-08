@@ -1,3 +1,9 @@
+const PS_DATA_KEY = 'PasswordStrength';
+const PS_EVENT_KEY = `.${PS_DATA_KEY}`;
+const PS_EVENT_CHANGE = `change${PS_EVENT_KEY}`;
+const PS_EVENT_KEYUP = `keyup${PS_EVENT_KEY}`;
+const PS_EVENT_PASTE = `paste${PS_EVENT_KEY}`;
+
 class PasswordStrength {
   constructor(element) {
     this.element = element;
@@ -45,7 +51,7 @@ class PasswordStrength {
   bindEvents() {
     const self = this;
 
-    $(this.element).on('change keyup paste', () => {
+    $(this.element).on(`${PS_EVENT_CHANGE} ${PS_EVENT_KEYUP} ${PS_EVENT_PASTE}`, () => {
       self.evaluatePassword();
     });
   }
