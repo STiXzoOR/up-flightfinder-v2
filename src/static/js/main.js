@@ -485,8 +485,7 @@ const customScrollSpy = {
   defaultConfig: {
     duration: 400,
     customOffsetTop: 0,
-    activeClass: 'active',
-    parent: '.page-header',
+    parent: 'header',
   },
 
   items: $(),
@@ -496,7 +495,7 @@ const customScrollSpy = {
 
     if (!collection || !$(collection).length) return;
 
-    collection.each((i, el) => {
+    $(collection).each((i, el) => {
       const $this = $(el);
       const options =
         config && $.isPlainObject(config)
@@ -504,20 +503,20 @@ const customScrollSpy = {
           : $.extend(true, {}, self.defaultConfig, $this.data());
       options.parent = $(options.parent);
 
-      if (!$this.data('BSScrollSpy')) {
-        $this.data('BSScrollSpy', new BSScrollSpy($this, options));
+      if (!$this.data('CustomScrollSpy')) {
+        $this.data('CustomScrollSpy', new CustomScrollSpy(el, options));
 
         self.items = self.items.add($this);
       }
     });
 
-    $(window)
-      .on('scroll.BSScrollSpy', () => {
-        self.items.each((i, el) => {
-          $(el).data('BSScrollSpy').highlight();
-        });
-      })
-      .trigger('scroll.BSScrollSpy');
+    $(window).on('scroll.CustomScrollSpy', () => {
+      self.items.each((i, el) => {
+        $(el).data('CustomScrollSpy').highlight();
+      });
+    });
+  },
+};
   },
 };
 
@@ -1436,7 +1435,7 @@ $(() => {
   customTab.init('[data-toggle="custom-tab"]');
   passwordStrength.init('[data-toggle="password-strength"]');
   pinCode.init('[data-toggle="pin-code"]');
-  customScrollSpy.init($('.nav-scroll'));
+  customScrollSpy.init('[data-toggle="scroll-spy"]');
   datePicker.init('.flatpickr-input');
   customSelect.init('.select2-input');
   rangeSlider.init('.ion-range-slider-input');

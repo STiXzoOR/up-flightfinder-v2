@@ -33,7 +33,10 @@ block content
 				.d-none.d-lg-block.col-lg-4.col-xl-3
 					.card.shadow-soft(style='position: sticky; top: 6.5rem;')
 						.card-body.p-4
-							ul#navListProfile.nav.nav-pills.nav-scroll.nav-scroll-box.nav-profile(data-custom-offset-top='-24')
+							ul#navListProfile.nav.nav-pills.nav-scroll.nav-scroll-box.nav-profile(
+								data-toggle='scroll-spy',
+								data-custom-offset-top='-24'
+							)
 								li.nav-item.mb-2
 									a.nav-link(href='#body')
 										span
@@ -408,7 +411,7 @@ block append vendorScripts
 	script(src='/static/vendors/zxcvbn/zxcvbn.js')
 
 block append customScripts
-	script(src='/static/js/scrollspy.js')
+	script(src='/static/js/scroll-spy.js')
 	script(src='/static/js/password-strength.js')
 
 block append scripts

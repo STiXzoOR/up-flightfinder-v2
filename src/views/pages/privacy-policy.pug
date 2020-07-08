@@ -30,7 +30,7 @@ block content
 				.d-none.d-lg-block.col-lg-4.col-xl-3
 					.bg-gray.rounded(style='position: sticky; top: 6.5rem;')
 						.px-3.py-4
-							ul#navListTerms.nav.nav-scroll(data-custom-offset-top='-24')
+							ul#navListTerms.nav.nav-scroll(data-toggle='scroll-spy', data-custom-offset-top='-24')
 								li.nav-item.mb-2
 									a.nav-link.p-0.mb-2(href='#interpretationAndDefinitions') 1. Interpretation &amp; Definitions
 									ul.pl-3
@@ -368,4 +368,4 @@ block content
 		+goUpButton
 
 block append customScripts
-	script(src='/static/js/scrollspy.js')
+	script(src='/static/js/scroll-spy.js')
