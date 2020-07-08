@@ -90,7 +90,11 @@ html.smooth-scroll(lang='en')
 	body#body
 		block preloader
 		block header
-			header.page-header.header-dark-nav-links.border-bottom.header-md-scroll.transition-scroll(data-breakpoint='md')
+			header.page-header.header-dark-nav-links.border-bottom.header-md-scroll.transition-scroll(
+				data-toggle='header-reveal',
+				data-position='relative',
+				data-breakpoint='md'
+			)
 				+headerContent
 		block content
 		block footer
@@ -166,5 +170,6 @@ html.smooth-scroll(lang='en')
 				script(src='/static/vendors/bootstrap/js/bootstrap.min.js')
 				script(src='/static/vendors/select2/js/select2.full.min.js')
 			block customScripts
+				script(src='/static/js/header-reveal.js')
 				script(src='/static/js/custom-tab.js')
 			script(src='/static/js/main.js')
