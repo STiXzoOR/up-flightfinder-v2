@@ -468,8 +468,6 @@ const customScrollSpy = {
     });
   },
 };
-  },
-};
 
 const datePicker = {
   defaultConfig: {
