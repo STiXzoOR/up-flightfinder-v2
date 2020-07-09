@@ -309,7 +309,7 @@ router.post(
 
 router.post(
   '/delete',
-  permit('USER'),
+  permit('USER', { requireVerification: false }),
   routeAsync(async (req, res, next) => {
     const response = await User.remove({ userID: req.user.id, ...req.body });
 
