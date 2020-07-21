@@ -75,7 +75,7 @@
 		"select2": "4.0.13",
 		"select2-theme-bootstrap4": "0.2.0-beta.6",
 		"serve-favicon": "2.5.0",
-		"snyk": "^1.362.1",
+		"snyk": "^1.363.0",
 		"uuid": "8.2.0",
 		"winston": "3.3.3",
 		"winston-daily-rotate-file": "4.5.0",
