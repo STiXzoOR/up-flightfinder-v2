@@ -63,7 +63,7 @@
 		"mongodb": "3.6.2",
 		"morgan": "~1.10.0",
 		"mysql": "2.18.1",
-		"mysql2": "2.1.0",
+		"mysql2": "2.2.5",
 		"nodemailer": "6.4.11",
 		"passport": "0.4.1",
 		"passport-local": "1.0.0",
@@ -92,10 +92,10 @@
 		"babel-eslint": "10.1.0",
 		"browser-sync": "2.26.12",
 		"cssnano": "4.1.10",
-		"del": "5.1.0",
+		"del": "6.0.0",
 		"eslint": "7.9.0",
 		"eslint-config-airbnb-base": "14.2.0",
-		"eslint-config-prettier": "6.11.0",
+		"eslint-config-prettier": "6.12.0",
 		"eslint-plugin-import": "2.22.1",
 		"eslint-plugin-prettier": "3.1.4",
 		"gulp": "4.0.2",
@@ -109,7 +109,7 @@
 		"imagemin-mozjpeg": "9.0.0",
 		"imagemin-optipng": "8.0.0",
 		"imagemin-zopfli": "7.0.0",
-		"prettier": "2.1.1"
+		"prettier": "2.1.2"
 	},
 	"snyk": true
 }
