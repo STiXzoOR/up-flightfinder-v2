@@ -45,7 +45,7 @@
 		"express": "~4.17.1",
 		"express-fileupload": "1.2.0",
 		"express-flash-2": "1.0.1",
-		"express-rate-limit": "5.1.3",
+		"express-rate-limit": "5.2.5",
 		"express-session": "1.17.1",
 		"express-superstruct": "1.1.1",
 		"flatpickr": "4.6.6",
