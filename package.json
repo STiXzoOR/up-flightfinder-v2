@@ -86,7 +86,7 @@
 		"@babel/core": "7.13.8",
 		"@babel/plugin-proposal-class-properties": "7.13.0",
 		"@babel/plugin-proposal-object-rest-spread": "7.13.8",
-		"@babel/preset-env": "7.13.9",
+		"@babel/preset-env": "7.13.12",
 		"@prettier/plugin-pug": "1.13.5",
 		"autoprefixer": "10.2.5",
 		"babel-eslint": "10.1.0",
