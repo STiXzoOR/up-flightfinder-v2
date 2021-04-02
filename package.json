@@ -70,7 +70,7 @@
 		"pm2": "4.5.5",
 		"popper.js": "1.16.1",
 		"pug": "3.0.2",
-		"rate-limit-mongo": "2.3.0",
+		"rate-limit-mongo": "2.3.1",
 		"rate-limit-redis": "2.1.0",
 		"select2": "4.0.13",
 		"select2-theme-bootstrap4": "1.0.0",
