@@ -41,7 +41,7 @@
 		"cross-env": "7.0.3",
 		"debug": "~4.3.1",
 		"dotenv": "8.2.0",
-		"email-templates": "8.0.3",
+		"email-templates": "8.0.7",
 		"express": "~4.17.1",
 		"express-fileupload": "1.2.1",
 		"express-flash-2": "1.0.1",
