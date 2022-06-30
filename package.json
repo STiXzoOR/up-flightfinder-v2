@@ -65,7 +65,7 @@
 		"mysql": "2.18.1",
 		"mysql2": "2.2.5",
 		"nodemailer": "6.5.0",
-		"passport": "0.4.1",
+		"passport": "0.6.0",
 		"passport-local": "1.0.0",
 		"pm2": "4.5.5",
 		"popper.js": "1.16.1",
